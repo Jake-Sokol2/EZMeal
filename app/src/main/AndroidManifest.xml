@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EZMeal">
         <activity
+            android:name=".AddListItemActivity"
+            android:exported="false" />
+        <activity
             android:name=".Login"
             android:exported="true">
             <intent-filter>
@@ -20,8 +23,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>

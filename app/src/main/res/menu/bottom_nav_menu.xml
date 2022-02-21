@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/groupListsFragment"
+        android:icon="@drawable/ic_group_lists"
+        android:title="Lists" />
+    <item
+        android:id="@+id/groupRecipesFragment"
+        android:icon="@drawable/ic_group_recipes"
+        android:title="Group Recipes" />
+    <item
+        android:id="@+id/myRecipesFragment"
+        android:icon="@drawable/ic_my_recipes"
+        android:title="My Recipes" />
+    <item
+        android:id="@+id/groupSettingsFragment"
+        android:icon="@drawable/ic_group_settings"
+        android:title="Group Settings" />
+</menu>

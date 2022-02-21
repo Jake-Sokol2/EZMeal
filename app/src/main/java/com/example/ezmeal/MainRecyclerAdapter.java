@@ -1,9 +1,3 @@
-//todo: change variable names:
-//  testList
-//  txtTest
-//  text
-
-
 package com.example.ezmeal;
 
 import android.view.LayoutInflater;
@@ -15,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-
+//todo: change variable names:
+//  testList
+//  txtTest
+//  text
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder>
 {
     private List<String> testList;
@@ -28,7 +25,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         public MainViewHolder(View view)
         {
             super(view);
-            txtTest = (TextView) view.findViewById(R.id.txtTest);
+            txtTest = (TextView) view.findViewById(R.id.txtItem);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {

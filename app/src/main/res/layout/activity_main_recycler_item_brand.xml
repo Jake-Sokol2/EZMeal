@@ -40,13 +40,22 @@
 
     <ImageButton
         android:id="@+id/ibtnEditItem"
-        android:layout_width="29dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toEndOf="@+id/txtCreator"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_draw" />
+
+    <TextView
+        android:id="@+id/txtBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:text="Brand"
+        app:layout_constraintStart_toStartOf="@+id/txtItem"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
