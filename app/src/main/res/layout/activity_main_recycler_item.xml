@@ -3,19 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/txtItem"
-        android:layout_width="222dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="12dp"
-        android:text="Item"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="wrap_content"
+    android:clickable="true">
 
     <RadioButton
         android:id="@+id/rdCheckItem"
@@ -30,23 +19,30 @@
 
     <TextView
         android:id="@+id/txtCreator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="17dp"
+        android:layout_width="0dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="292dp"
+        android:layout_marginTop="16dp"
         android:text="Creator"
-        app:layout_constraintStart_toEndOf="@+id/txtItem"
+        app:layout_constraintStart_toEndOf="@+id/rdCheckItem"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/ibtnEditItem"
-        android:layout_width="29dp"
-        android:layout_height="29dp"
+    <EditText
+        android:id="@+id/editListItem"
+        android:layout_width="269dp"
+        android:layout_height="38dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/txtCreator"
+        android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:inputType="textPersonName"
+        android:maxLength="60"
+        android:tag="@+id/editListItem"
+        android:text="Item Name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rdCheckItem"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_draw" />
+        app:layout_constraintVertical_bias="0.607" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

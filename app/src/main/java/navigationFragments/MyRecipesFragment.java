@@ -1,4 +1,4 @@
-package com.example.ezmeal;
+package navigationFragments;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ezmeal.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link GroupRecipesFragment#newInstance} factory method to
+ * Use the {@link MyRecipesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupRecipesFragment extends Fragment {
+public class MyRecipesFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class GroupRecipesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public GroupRecipesFragment() {
+    public MyRecipesFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class GroupRecipesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment GroupRecipesFragment.
+     * @return A new instance of fragment MyRecipesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GroupRecipesFragment newInstance(String param1, String param2) {
-        GroupRecipesFragment fragment = new GroupRecipesFragment();
+    public static MyRecipesFragment newInstance(String param1, String param2) {
+        MyRecipesFragment fragment = new MyRecipesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class GroupRecipesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group_recipes, container, false);
+        return inflater.inflate(R.layout.fragment_my_recipes, container, false);
     }
 }

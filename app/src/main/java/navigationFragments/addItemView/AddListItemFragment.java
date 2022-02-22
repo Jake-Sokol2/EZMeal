@@ -1,4 +1,4 @@
-package com.example.ezmeal;
+package navigationFragments.addItemView;
 
 import android.os.Bundle;
 
@@ -8,12 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ezmeal.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyRecipesFragment#newInstance} factory method to
+ * Use the {@link AddListItemFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyRecipesFragment extends Fragment {
+public class AddListItemFragment extends BottomSheetDialogFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +28,7 @@ public class MyRecipesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MyRecipesFragment() {
+    public AddListItemFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +38,11 @@ public class MyRecipesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyRecipesFragment.
+     * @return A new instance of fragment AddListItemFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyRecipesFragment newInstance(String param1, String param2) {
-        MyRecipesFragment fragment = new MyRecipesFragment();
+    public static AddListItemFragment newInstance(String param1, String param2) {
+        AddListItemFragment fragment = new AddListItemFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +63,9 @@ public class MyRecipesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_recipes, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
+
+
+        return view;
     }
 }

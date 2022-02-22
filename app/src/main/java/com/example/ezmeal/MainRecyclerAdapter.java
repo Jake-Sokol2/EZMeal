@@ -3,6 +3,7 @@ package com.example.ezmeal;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,12 +21,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView txtTest;
+        public EditText editListItem;
 
         public MainViewHolder(View view)
         {
             super(view);
-            txtTest = (TextView) view.findViewById(R.id.txtItem);
+            editListItem = (EditText) view.findViewById(R.id.editListItem);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
@@ -36,9 +37,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                             listener.onItemClick(position);
                         }
                     }
-                } });
+                }
+            });
         }
-
     }
 
     public MainRecyclerAdapter(List<String> testList)
@@ -57,7 +58,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
         String text = testList.get(position);
-        holder.txtTest.setText(text);
+        holder.editListItem.setText(text);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         notifyDataSetChanged();
     }
 
-    interface MainAdapterListener
+    public interface MainAdapterListener
     {
         void onItemClick(int position); //, String name);
     }
@@ -82,4 +83,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     {
         this.listener = listener;
     }
+
+
 }

@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/groupListsFragment"
-        android:name="com.example.ezmeal.GroupListsFragment"
+        android:name="navigationFragments.GroupListsFragment"
         android:label="Group Lists"
         tools:layout="@layout/fragment_group_lists" />
     <fragment
         android:id="@+id/groupRecipesFragment"
-        android:name="com.example.ezmeal.GroupRecipesFragment"
+        android:name="navigationFragments.GroupRecipesFragment"
         android:label="Group Recipes"
         tools:layout="@layout/fragment_group_recipes" />
     <fragment
         android:id="@+id/myRecipesFragment"
-        android:name="com.example.ezmeal.MyRecipesFragment"
+        android:name="navigationFragments.MyRecipesFragment"
         android:label="My Recipes"
         tools:layout="@layout/fragment_my_recipes" />
     <fragment
         android:id="@+id/groupSettingsFragment"
-        android:name="com.example.ezmeal.GroupSettingsFragment"
+        android:name="navigationFragments.GroupSettingsFragment"
         android:label="Group Settings"
         tools:layout="@layout/fragment_group_settings" />
 </navigation>

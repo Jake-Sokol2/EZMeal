@@ -1,20 +1,30 @@
-package com.example.ezmeal;
+package navigationFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.ezmeal.AddListItemActivity;
+import com.example.ezmeal.MainRecyclerAdapter;
+import com.example.ezmeal.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +36,7 @@ public class GroupListsFragment extends Fragment
     private List<String> testList = new ArrayList<>();
     private RecyclerView rvGroupList;
     private MainRecyclerAdapter adapter;
+    public View clickedView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,30 +99,53 @@ public class GroupListsFragment extends Fragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
+        // Add some data
+        testList.add("Gallon of Milk-----------------------------------------");
+        testList.add("Fruit");
+        testList.add("Eggs");
+        adapter.notifyDataSetChanged();
+
+        //clickedView = (View) view.findViewById(R.id.editListItem);
+
         adapter.setOnItemClickListener(new MainRecyclerAdapter.MainAdapterListener()
         {
             @Override
             public void onItemClick(int position)
             {
                 String selectedName = testList.get(position);
+                //clickedView = (View) layoutManager.findViewByPosition(position);
+                if (layoutManager.findViewByPosition(position).getTag() == "editListItem")
+                {
+                    clickedView = (EditText) layoutManager.findViewByPosition(position);
+                    Toast.makeText(getActivity(), "clicked on edit text", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "didnt click on edit text", Toast.LENGTH_SHORT).show();
+                }
+                //Toast.makeText(getActivity(), clickedView., Toast.LENGTH_SHORT).show();
                 // Code to use the selected name goes here…
-                Toast.makeText(getActivity(), selectedName, Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        // Add some data
-        testList.add("Gallon of Milk");
-        testList.add("Fruit");
-        testList.add("Eggs");
-        adapter.notifyDataSetChanged();
 
 
         Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openActivityAddListItem();
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
+                //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
+                //FragmentManager foo = getActivity().getSupportFragmentManager();
+                //bottomSheet.show();
+                //openActivityAddListItem();
+
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
             }
+
         });
 
         return view;
