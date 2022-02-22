@@ -80,6 +80,13 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     implementation 'com.google.android.material:material:1.6.0-alpha02'
+    implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    // Dependencies for the desired Firebase products (no versions)
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-analytics'
 
 
 }
+
+apply plugin: 'com.google.gms.google-services'
