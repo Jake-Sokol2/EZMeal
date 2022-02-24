@@ -1,30 +1,24 @@
 package navigationFragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.example.ezmeal.AddListItemActivity;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,10 +27,10 @@ import java.util.Objects;
  */
 public class GroupListsFragment extends Fragment
 {
-    private List<String> testList = new ArrayList<>();
+    private List<List<String>> groceryList = new ArrayList<List<String>>();
+    List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
     private MainRecyclerAdapter adapter;
-    public View clickedView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,33 +70,38 @@ public class GroupListsFragment extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-
-
-
-
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
-        adapter = new MainRecyclerAdapter(testList);
+        adapter = new MainRecyclerAdapter(groceryList);
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
         // Add some data
-        testList.add("Gallon of Milk-----------------------------------------");
-        testList.add("Fruit");
-        testList.add("Eggs");
+        // todo: remove this when user's list saves on application close
+        list = new ArrayList<String>();
+        list.add("Gallon of Milk");
+        list.add("milk brand");
+        groceryList.add(list);
+
+        list = new ArrayList<String>();
+        list.add("Fruit");
+        list.add("fruit brand");
+        groceryList.add(list);
+
+        list = new ArrayList<String>();
+        list.add("Eggs");
+        list.add("egg brand");
+        groceryList.add(list);
         adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
@@ -112,45 +111,58 @@ public class GroupListsFragment extends Fragment
             @Override
             public void onItemClick(int position)
             {
-                String selectedName = testList.get(position);
+                //String selectedName = groceryList.get(position);
                 //clickedView = (View) layoutManager.findViewByPosition(position);
-                if (layoutManager.findViewByPosition(position).getTag() == "editListItem")
-                {
-                    clickedView = (EditText) layoutManager.findViewByPosition(position);
-                    Toast.makeText(getActivity(), "clicked on edit text", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(getActivity(), "didnt click on edit text", Toast.LENGTH_SHORT).show();
-                }
                 //Toast.makeText(getActivity(), clickedView., Toast.LENGTH_SHORT).show();
                 // Code to use the selected name goes here…
 
             }
+
+
         });
-
-
 
         Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
                 //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
                 //FragmentManager foo = getActivity().getSupportFragmentManager();
                 //bottomSheet.show();
                 //openActivityAddListItem();
 
+                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item);
+
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
-            }
 
+                // onClickListeners for the bottom sheet's views
+                Button btnConfirm = (Button) bottomSheetDialog.findViewById(R.id.btnConfirm);
+                EditText editItemName = (EditText) bottomSheetDialog.findViewById(R.id.editItemName);
+                EditText editBrandName = (EditText) bottomSheetDialog.findViewById(R.id.editBrandName);
+                //TextView txtBrandName = (TextView)
+
+                btnConfirm.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        list = new ArrayList<String>();
+                        list.add(editItemName.getText().toString());
+                        list.add(editBrandName.getText().toString());
+                        groceryList.add(list);
+                        adapter.notifyDataSetChanged();
+
+                        // Closes the bottom sheet after the User enters an item
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+            }
         });
 
         return view;
     }
-
 
     // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
     @Override
@@ -158,14 +170,8 @@ public class GroupListsFragment extends Fragment
     {
         super.onPause();
 
-        testList.clear();
+        groceryList.clear();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
 
-    // todo: turn this into MVVM
-    public void openActivityAddListItem()
-    {
-        Intent intent = new Intent(getActivity(), AddListItemActivity.class);
-        startActivity(intent);
-    }
 }

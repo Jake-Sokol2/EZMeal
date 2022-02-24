@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
         AppBarConfiguration appBarConfig =  new AppBarConfiguration.Builder(R.id.groupListsFragment, R.id.groupRecipesFragment, R.id.myRecipesFragment, R.id.groupSettingsFragment).build();
 
         // todo: remove this?  Sets title for each bottom nav fragment, won't be needed if we set the title in middle of screen
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
+        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
 
         NavigationUI.setupWithNavController(bottomNav, navController);
 
