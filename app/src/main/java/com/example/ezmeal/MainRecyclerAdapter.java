@@ -8,7 +8,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+import java.util.Objects;
 
 //todo: change variable names:
 //  testList
@@ -16,17 +19,19 @@ import java.util.List;
 //  text
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder>
 {
-    private List<String> testList;
+    private List<List<String>> testList;
     private MainAdapterListener listener;
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public EditText editListItem;
+        public TextView txtListItem;
+        public TextView txtBrandName;
 
         public MainViewHolder(View view)
         {
             super(view);
-            editListItem = (EditText) view.findViewById(R.id.editListItem);
+            txtListItem = (TextView) view.findViewById(R.id.txtListItem);
+            txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
@@ -42,7 +47,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         }
     }
 
-    public MainRecyclerAdapter(List<String> testList)
+    public MainRecyclerAdapter(List<List<String>> testList)
     {
         this.testList = testList;
     }
@@ -50,15 +55,34 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. activity_main_recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. activity_main_recycler_item_rounded, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        String text = testList.get(position);
-        holder.editListItem.setText(text);
+        String text = testList.get(position).get(0);
+        String brand = testList.get(position).get(1);
+        holder.txtListItem.setText(text);
+
+        // todo: fix/remove this line when user data is being saved on app exit
+        holder.txtBrandName.setText(brand);
+
+        if (Objects.equals(brand, ""))
+        {
+            holder.txtBrandName.setVisibility(View.INVISIBLE);
+            holder.txtBrandName.setEnabled(false);
+            holder.txtBrandName.setHeight(0);
+            holder.txtBrandName.setWidth(0);
+        }
+        else
+        {
+            holder.txtBrandName.setText(brand);
+        }
+
+
+
     }
 
     @Override
@@ -68,7 +92,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     }
 
     //todo: maybe find a better way to name the varibles in setData() and other similar methods.  Could end up shadowing
-    public void setData(List<String> testList)
+    public void setData(List<List<String>> testList)
     {
         this.testList = testList;
         notifyDataSetChanged();

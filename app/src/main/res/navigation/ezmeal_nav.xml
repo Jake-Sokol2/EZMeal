@@ -25,4 +25,14 @@
         android:name="navigationFragments.GroupSettingsFragment"
         android:label="Group Settings"
         tools:layout="@layout/fragment_group_settings" />
+    <dialog
+        android:id="@+id/addListItemDialogFragment"
+        android:name="com.example.ezmeal.AddListItemDialogFragment"
+        android:label="fragment_add_list_item_dialog_list_dialog"
+        tools:layout="@layout/fragment_add_list_item_dialog_list_dialog" />
+    <dialog
+        android:id="@+id/addItemDialogFragment"
+        android:name="com.example.ezmeal.AddItemDialogFragment"
+        android:label="fragment_add_item_dialog_list_dialog"
+        tools:layout="@layout/fragment_add_item_dialog_list_dialog" />
 </navigation>

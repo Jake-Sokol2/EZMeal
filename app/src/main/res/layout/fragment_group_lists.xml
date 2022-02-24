@@ -10,37 +10,39 @@
     tools:context="navigationFragments.GroupListsFragment">
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="group lists fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/txtTitle"
+        android:layout_width="377dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="My Grocery List"
+        android:textColor="@color/purple_500"
+        android:textSize="35sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.449" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGroupLists"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="428dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.262" />
 
     <Button
         android:id="@+id/btnAddItem"
-        android:layout_width="70dp"
-        android:layout_height="68dp"
+        android:layout_width="61dp"
+        android:layout_height="61dp"
         android:text="+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvGroupLists"
-        app:layout_constraintVertical_bias="0.053" />
+        app:layout_constraintVertical_bias="0.092" />
 </androidx.constraintlayout.widget.ConstraintLayout>

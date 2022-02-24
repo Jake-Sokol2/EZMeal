@@ -3,14 +3,19 @@ package navigationFragments.addItemView;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ezmeal.R;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import navigationFragments.addItemViewModel.AddListItemFragmentViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +23,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
  * create an instance of this fragment.
  */
 public class AddListItemFragment extends BottomSheetDialogFragment {
+
+    AddListItemFragmentViewModel vmAddListItem;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,7 +71,17 @@ public class AddListItemFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
+        vmAddListItem = new ViewModelProvider(requireActivity()).get(AddListItemFragmentViewModel.class);
 
+        Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText editItemName = view.findViewById(R.id.editItemName);
+                vmAddListItem.setData(editItemName.getText().toString());
+                Toast.makeText(getContext(), "clicked button", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
