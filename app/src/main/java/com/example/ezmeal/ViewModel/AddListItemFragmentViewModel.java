@@ -1,4 +1,4 @@
-package navigationFragments.addItemViewModel;
+package com.example.ezmeal.ViewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

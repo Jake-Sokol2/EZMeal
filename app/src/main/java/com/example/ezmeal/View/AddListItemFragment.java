@@ -1,4 +1,4 @@
-package navigationFragments.addItemView;
+package com.example.ezmeal.View;
 
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import navigationFragments.addItemViewModel.AddListItemFragmentViewModel;
+import com.example.ezmeal.ViewModel.AddListItemFragmentViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
