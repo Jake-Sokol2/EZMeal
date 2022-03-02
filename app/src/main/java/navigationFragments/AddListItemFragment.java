@@ -1,6 +1,10 @@
-package com.example.ezmeal.View;
+package navigationFragments;
 
+import android.content.ClipData;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import com.example.ezmeal.ViewModel.AddListItemFragmentViewModel;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddListItemFragment#newInstance} factory method to
@@ -24,16 +30,19 @@ import com.example.ezmeal.ViewModel.AddListItemFragmentViewModel;
  */
 public class AddListItemFragment extends BottomSheetDialogFragment {
 
-    AddListItemFragmentViewModel vmAddListItem;
+
+    AddListItemFragmentViewModel theViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
+    //Args to add item
     private String mParam1;
     private String mParam2;
+
 
     public AddListItemFragment() {
         // Required empty public constructor
@@ -60,10 +69,15 @@ public class AddListItemFragment extends BottomSheetDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        if(savedInstanceState != null) {
+            mParam1 = savedInstanceState.getString("string_key1");
+            mParam2 = savedInstanceState.getString("string_key2");
+        } else {
+            if (getArguments() != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+            }//end if
+        }//end else
     }
 
     @Override
@@ -71,18 +85,26 @@ public class AddListItemFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
-        vmAddListItem = new ViewModelProvider(requireActivity()).get(AddListItemFragmentViewModel.class);
+        theViewModel = new ViewModelProvider(requireActivity()).get(AddListItemFragmentViewModel.class);
 
         Button btnConfirm = (Button) view.findViewById(R.id.btnConfirm);
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText editItemName = view.findViewById(R.id.editItemName);
-                vmAddListItem.setData(editItemName.getText().toString());
+                theViewModel.setData(editItemName.getText().toString());
                 Toast.makeText(getContext(), "clicked button", Toast.LENGTH_SHORT).show();
             }
         });
 
         return view;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState){
+        outState.putString("string_key1", mParam1);
+        outState.putString("string_key2", mParam2);
+        super.onSaveInstanceState(outState);
+    }
+
 }
