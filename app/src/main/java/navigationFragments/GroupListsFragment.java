@@ -2,10 +2,12 @@ package navigationFragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,10 +69,28 @@ public class GroupListsFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        if(savedInstanceState != null) {
+            groceryList = (List) savedInstanceState.getSerializable("grocery");
+        }else {
+            if (getArguments() != null) {
+                mParam1 = getArguments().getString(ARG_PARAM1);
+                mParam2 = getArguments().getString(ARG_PARAM2);
+            }
         }
+        list = new ArrayList<String>();
+        list.add("Gallon of Milk");
+        list.add("milk brand");
+        groceryList.add(list);
+
+        list = new ArrayList<String>();
+        list.add("Fruit");
+        list.add("fruit brand");
+        groceryList.add(list);
+
+        list = new ArrayList<String>();
+        list.add("Eggs");
+        list.add("egg brand");
+        groceryList.add(list);
     }
 
     @Override
@@ -88,20 +109,6 @@ public class GroupListsFragment extends Fragment
 
         // Add some data
         // todo: remove this when user's list saves on application close
-        list = new ArrayList<String>();
-        list.add("Gallon of Milk");
-        list.add("milk brand");
-        groceryList.add(list);
-
-        list = new ArrayList<String>();
-        list.add("Fruit");
-        list.add("fruit brand");
-        groceryList.add(list);
-
-        list = new ArrayList<String>();
-        list.add("Eggs");
-        list.add("egg brand");
-        groceryList.add(list);
         adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
@@ -173,5 +180,14 @@ public class GroupListsFragment extends Fragment
         groceryList.clear();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState){
+        super.onSaveInstanceState(outState);
+        //I need to save the grocery list here
+        outState.putSerializable("grocery", (Serializable) groceryList);
+    }
+
+
 
 }
