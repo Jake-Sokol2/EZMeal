@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ezmeal.Model.GroceryListModel;
@@ -18,6 +20,8 @@ import android.widget.LinearLayout;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +36,8 @@ public class GroupListsFragment extends Fragment
 {
     private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
     private GroceryListModel theModel = new GroceryListModel();
+    //BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
+    //BottomSheetDialogFragment bottomSheetDialogFrag = new BottomSheetDialogFragment();
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
@@ -133,6 +139,7 @@ public class GroupListsFragment extends Fragment
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
                 //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
@@ -140,7 +147,7 @@ public class GroupListsFragment extends Fragment
                 //bottomSheet.show();
                 //openActivityAddListItem();
 
-                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item);
+                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item)
 
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
@@ -161,9 +168,22 @@ public class GroupListsFragment extends Fragment
 
                         // Closes the bottom sheet after the User enters an item
                         bottomSheetDialog.dismiss();
-                    }
-                });
-            }
+                    }//end additembutton in add item BottomSheetDialog
+                });//OnclickListener
+
+
+                /*
+                    TODO: This block creates new frag, but layout is fucky.
+                     Implement cancel button as well so you can get back to previous screen.
+                */
+/*
+                AddListItemFragment AddItemFrag = new AddListItemFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.group_lists, AddItemFrag);
+                transaction.commit();
+*/
+
+            }//Add item onClick
         });
 
         return view;
@@ -188,6 +208,7 @@ public class GroupListsFragment extends Fragment
         outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
         //save recycler view items?
         outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
+        //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
 
     }
 
