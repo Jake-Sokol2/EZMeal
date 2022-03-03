@@ -4,9 +4,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.ezmeal.Model.GroceryListModel;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import android.widget.LinearLayout;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,7 +34,11 @@ import java.util.List;
  */
 public class GroupListsFragment extends Fragment
 {
-    private List<List<String>> groceryList = new ArrayList<List<String>>();
+    private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
+    private GroceryListModel theModel = new GroceryListModel();
+    //BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
+    //BottomSheetDialogFragment bottomSheetDialogFrag = new BottomSheetDialogFragment();
+
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
     private MainRecyclerAdapter adapter;
@@ -39,7 +47,8 @@ public class GroupListsFragment extends Fragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
+    private static final String RV_DATA = "rv_data";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -68,29 +77,26 @@ public class GroupListsFragment extends Fragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            groceryList = (List) savedInstanceState.getSerializable("grocery");
+            theModel.restoreGroceryList((List<List<String>>)savedInstanceState.getSerializable(RV_DATA));
         }else {
             if (getArguments() != null) {
                 mParam1 = getArguments().getString(ARG_PARAM1);
                 mParam2 = getArguments().getString(ARG_PARAM2);
             }
         }
-        list = new ArrayList<String>();
-        list.add("Gallon of Milk");
-        list.add("milk brand");
-        groceryList.add(list);
 
-        list = new ArrayList<String>();
-        list.add("Fruit");
-        list.add("fruit brand");
-        groceryList.add(list);
+        /*
+        No longer needed because adding items works and the items
+        are not nuked on rotation.
 
-        list = new ArrayList<String>();
-        list.add("Eggs");
-        list.add("egg brand");
-        groceryList.add(list);
+        theModel.addItem("Milk", "milk brand");
+        theModel.addItem("Fruit", "fruit brand");
+        theModel.addItem("Huevo", "Huevo del super");
+        */
+
     }
 
     @Override
@@ -102,7 +108,8 @@ public class GroupListsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
-        adapter = new MainRecyclerAdapter(groceryList);
+        //adapter = new MainRecyclerAdapter(groceryList);
+        adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
@@ -132,6 +139,7 @@ public class GroupListsFragment extends Fragment
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
                 //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
@@ -139,7 +147,7 @@ public class GroupListsFragment extends Fragment
                 //bottomSheet.show();
                 //openActivityAddListItem();
 
-                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item);
+                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item)
 
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
@@ -155,17 +163,27 @@ public class GroupListsFragment extends Fragment
                     @Override
                     public void onClick(View view)
                     {
-                        list = new ArrayList<String>();
-                        list.add(editItemName.getText().toString());
-                        list.add(editBrandName.getText().toString());
-                        groceryList.add(list);
+                        theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                         adapter.notifyDataSetChanged();
 
                         // Closes the bottom sheet after the User enters an item
                         bottomSheetDialog.dismiss();
-                    }
-                });
-            }
+                    }//end additembutton in add item BottomSheetDialog
+                });//OnclickListener
+
+
+                /*
+                    TODO: This block creates new frag, but layout is fucky.
+                     Implement cancel button as well so you can get back to previous screen.
+                */
+/*
+                AddListItemFragment AddItemFrag = new AddListItemFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.group_lists, AddItemFrag);
+                transaction.commit();
+*/
+
+            }//Add item onClick
         });
 
         return view;
@@ -183,9 +201,15 @@ public class GroupListsFragment extends Fragment
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
+        Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
         super.onSaveInstanceState(outState);
         //I need to save the grocery list here
-        outState.putSerializable("grocery", (Serializable) groceryList);
+        //save recycler view position?
+        outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
+        //save recycler view items?
+        outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
+        //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
+
     }
 
 

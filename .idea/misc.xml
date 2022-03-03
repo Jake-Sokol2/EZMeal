@@ -3,8 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Marco/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.264" />
-        <entry key="..\:/Users/Marco/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main.xml" value="0.19630192502532928" />
+        <entry key="..\:/CodeStuff/AndroidApps/EZMeal/app/src/main/res/layout/fragment_group_lists.xml" value="0.25625" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/ic_group_lists.xml" value="0.1" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.20147255689424365" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w936dp/activity_login.xml" value="0.22131147540983606" />
@@ -26,7 +25,6 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes.xml" value="0.4732789855072464" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test_activity.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/menu/bottom_nav_menu.xml" value="0.5541666666666667" />
-        <entry key="app/src/main/res/layout/fragment_add_list_item.xml" value="0.21875" />
       </map>
     </option>
   </component>
