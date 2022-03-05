@@ -1,5 +1,6 @@
 package navigationFragments;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,13 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.checkbox.MaterialCheckBox;
 
 
 import java.io.Serializable;
@@ -99,27 +104,30 @@ public class GroupListsFragment extends Fragment
 
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
-        //adapter = new MainRecyclerAdapter(groceryList);
         adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
+
+
+
         // Add some data
         // todo: remove this when user's list saves on application close
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
 
+        // edit list item feature should start here
         adapter.setOnItemClickListener(new MainRecyclerAdapter.MainAdapterListener()
         {
             @Override
@@ -127,36 +135,29 @@ public class GroupListsFragment extends Fragment
             {
                 //String selectedName = groceryList.get(position);
                 //clickedView = (View) layoutManager.findViewByPosition(position);
-                //Toast.makeText(getActivity(), clickedView., Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "tap", Toast.LENGTH_SHORT).show();
                 // Code to use the selected name goes here…
-
             }
-
-
         });
+
+
+
 
         Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
-                //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
-                //FragmentManager foo = getActivity().getSupportFragmentManager();
-                //bottomSheet.show();
-                //openActivityAddListItem();
-
-                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item)
 
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
 
-                // onClickListeners for the bottom sheet's views
+                // the bottom sheet views
                 Button btnConfirm = (Button) bottomSheetDialog.findViewById(R.id.btnConfirm);
                 EditText editItemName = (EditText) bottomSheetDialog.findViewById(R.id.editItemName);
                 EditText editBrandName = (EditText) bottomSheetDialog.findViewById(R.id.editBrandName);
-                //TextView txtBrandName = (TextView)
 
                 btnConfirm.setOnClickListener(new View.OnClickListener()
                 {
@@ -170,7 +171,6 @@ public class GroupListsFragment extends Fragment
                         bottomSheetDialog.dismiss();
                     }//end additembutton in add item BottomSheetDialog
                 });//OnclickListener
-
 
                 /*
                     TODO: This block creates new frag, but layout is fucky.
@@ -189,15 +189,7 @@ public class GroupListsFragment extends Fragment
         return view;
     }
 
-    // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
-    @Override
-    public void onPause()
-    {
-        super.onPause();
 
-        groceryList.clear();
-        rvGroupList.getAdapter().notifyDataSetChanged();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
@@ -209,6 +201,7 @@ public class GroupListsFragment extends Fragment
         //save recycler view items?
         outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
+
 
     }
 
