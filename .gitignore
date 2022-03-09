@@ -16,4 +16,4 @@ gradle.properties
 local.properties
 
 #Exception to above rule.
-!build.gradle
+# !build.gradle
