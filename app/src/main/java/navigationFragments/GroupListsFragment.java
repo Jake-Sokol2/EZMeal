@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ezmeal.Model.GroceryListModel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,9 @@ public class GroupListsFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
 
+        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        Log.w("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
@@ -126,17 +130,20 @@ public class GroupListsFragment extends Fragment
         //adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
-
         // edit list item feature should start here
         adapter.setOnItemClickListener(new MainRecyclerAdapter.MainAdapterListener()
         {
             @Override
-            public void onItemClick(int position)
+            public void onItemClick(int position, TextView text)
             {
                 //String selectedName = groceryList.get(position);
                 //clickedView = (View) layoutManager.findViewByPosition(position);
-                Toast.makeText(getContext(), "tap", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), text.getText().toString(), Toast.LENGTH_SHORT).show();
                 // Code to use the selected name goes here…
+                //long tv = adapter.getItemId(position);
+
+               // RecyclerView.ViewHolder vh = adapter.getView;
+                //View v = vh.itemView;
             }
         });
 

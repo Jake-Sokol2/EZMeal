@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+       <KeyFrameSet>
+           <KeyAttribute
+               motion:motionTarget="@+id/imageTheRecipe"
+               motion:framePosition="100"
+               android:alpha="0" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageTheRecipe"
+               motion:framePosition="100"
+               android:alpha="0.5" />
+       </KeyFrameSet>
+        <OnSwipe />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/imageTheRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/txtNutritionalInfo"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            motion:layout_constraintTop_toBottomOf="@+id/imageTheRecipe"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/rvInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/txtNutritionalInfo"
+            motion:layout_constraintStart_toStartOf="parent" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/imageTheRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:layout_height="100dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            motion:layout_constraintTop_toBottomOf="@+id/imageTheRecipe"
+            android:id="@+id/txtNutritionalInfo" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            motion:layout_constraintTop_toBottomOf="@+id/txtNutritionalInfo"
+            android:id="@+id/rvInstruction" />
+    </ConstraintSet>
+</MotionScene>

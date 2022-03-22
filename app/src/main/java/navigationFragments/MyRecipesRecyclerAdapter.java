@@ -1,49 +1,43 @@
-package com.example.ezmeal;
+package navigationFragments;
 
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.checkbox.MaterialCheckBox;
-
-import org.w3c.dom.Text;
+import com.example.ezmeal.R;
 
 import java.util.List;
 import java.util.Objects;
 
-public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder>
+public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecyclerAdapter.MainViewHolder>
 {
     private List<List<String>> list;
     private MainAdapterListener listener;
 
+
+
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView txtListItem;
-        public TextView txtBrandName;
-        public CheckBox checkCrossOffItem;
+        private CardView cardView;
+        //public TextView txtListItem;
+        //public TextView txtBrandName;
+        //public CheckBox checkCrossOffItem;
 
         public MainViewHolder(View view)
         {
             super(view);
-            txtListItem = (TextView) view.findViewById(R.id.txtListItem);
-            txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
-            checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+            //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
+            //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
+            //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+            cardView = (CardView) view.findViewById(R.id.cardCategory);
+
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -55,7 +49,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
-                            listener.onItemClick(position, txtListItem);
+                            listener.onItemClick(position, cardView);
                         }
                     }
                 }
@@ -63,7 +57,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         }
     }
 
-    public MainRecyclerAdapter(List<List<String>> list)
+    public MyRecipesRecyclerAdapter(List<List<String>> list)
     {
         this.list = list;
     }
@@ -71,14 +65,17 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. activity_main_recycler_item_rounded, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. fragment_my_recipe_recycler_category_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
+        holder.cardView.setTransitionName("transition" + position);
+
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
+        /*
         String itemName = list.get(position).get(0);
         String brand = list.get(position).get(1);
         holder.txtListItem.setText(itemName);
@@ -120,6 +117,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 }
             }
         });
+         */
     }
 
     @Override
@@ -136,7 +134,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     public interface MainAdapterListener
     {
-        void onItemClick(int position, TextView text);
+        void onItemClick(int position, CardView cardView);
     }
 
     public void setOnItemClickListener(MainAdapterListener listener)
