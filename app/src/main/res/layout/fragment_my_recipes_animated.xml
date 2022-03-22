@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollMyRecipesAnimated"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="@android:string/untitled"
+    android:fillViewport="true">
+
+    <FrameLayout
+        android:id="@+id/frameCategoriesAnimated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardVegetablesAnimated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:elevation="8dp"
+
+            android:visibility="visible"
+            app:cardCornerRadius="25dp">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clVegetablesAnimated"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageVegetablesAnimated"
+                    android:layout_width="165dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="55dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_group_recipes" />
+
+                <TextView
+                    android:id="@+id/txtVegetablesAnimated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="20dp"
+                    android:text="Vegetables"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardChickenAnimated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:visibility="visible"
+            app:cardCornerRadius="25dp"
+            app:cardUseCompatPadding="false"
+            app:strokeColor="@color/common_google_signin_btn_text_dark"
+            app:strokeWidth="1dp">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clChickenAnimated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvChickenAnimated"
+                    android:layout_width="1dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.485"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txtChickenAnimated"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <ImageView
+                    android:id="@+id/imageChickenAnimated"
+                    android:layout_width="165dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="55dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_group_lists" />
+
+                <TextView
+                    android:id="@+id/txtChickenAnimated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+
+                    android:paddingTop="5dp"
+                    android:paddingBottom="20dp"
+                    android:text="Chicken"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSteakAnimated"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="200dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="8dp"
+
+            android:visibility="visible"
+            app:cardCornerRadius="25dp">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clSteakAnimated"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageSteakAnimated"
+                    android:layout_width="165dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="55dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_my_recipes" />
+
+                <TextView
+                    android:id="@+id/txtSteakAnimated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="20dp"
+                    android:text="Steak"
+                    android:textSize="25sp"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="700dp"
+            android:text="TextView" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_donut_large_24"
+            android:backgroundTint="@color/purple_200"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="200dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"/>
+
+            <View
+                android:id="@+id/circle"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:visibility="invisible"
+                android:background="@drawable/ic_baseline_donut_large_24"
+                android:layout_marginLeft="250dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"/>
+
+    </FrameLayout>
+</ScrollView>
