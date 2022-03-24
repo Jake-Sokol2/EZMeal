@@ -5,7 +5,11 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
 import androidx.transition.Transition;
 import androidx.transition.TransitionInflater;
 
@@ -13,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
@@ -47,7 +52,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private CardView mCard;
+    //private CardView mCard;
 
     public MyRecipesSpecificCategoryFragment() {
         // Required empty public constructor
@@ -100,6 +105,96 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
             // retrieve category name from the Intent
             categoryName = extras.getString("category name");
         }
+
+        rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipes);
+        adapter = new RecipeSpecificCategoryRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList.setAdapter(adapter);
+        //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+        //rvGroupList.setLayoutManager(layoutManager);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+
+        // LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvGroupList.setLayoutManager(gridLayoutManager);
+        theModel.addItem("Chicken", "R.drawable.crispy_fried_chicken_exps_tohjj22_6445_dr__02_03_11b");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+
+        theModel.addItem("Milk", "");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+        theModel.addItem("Milk", "");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+        theModel.addItem("Milk", "");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+        theModel.addItem("Milk", "");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+        theModel.addItem("Milk", "");
+        theModel.addItem("Fruit", "");
+        theModel.addItem("Huevo", "");
+
+
+        adapter.setOnItemClickListener(new RecipeSpecificCategoryRecyclerAdapter.MainAdapterListener() {
+            @Override
+            public void onItemClick(int position, CardView cardView)
+            {
+                //String selectedName = groceryList.get(position);
+                //clickedView = (View) layoutManager.findViewByPosition(position);
+                //Toast.makeText(getContext(), Integer.toString(cardView.getId()), Toast.LENGTH_SHORT).show();
+                // Code to use the selected name goes here…
+
+                // todo: fix this when database is working
+                // name of the clicked category, gets sent to new Activity and is later used to let Firebase know which data to populate Activity with
+
+                String categoryName = "Chicken";
+
+                Fragment endFrag = new SpecificRecipeFragment();
+                // FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+
+                //AutoTransition at = new AutoTransition();
+
+                //setSharedElementReturnTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+                //setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(R.anim.stall));
+
+                //endFrag.setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+                //endFrag.setEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+
+                String name = "transition" + position;
+
+                //Bundle bundle = new Bundle();
+                //bundle.putString("category", ViewCompat.getTransitionName(cardView));
+                //endFrag.setArguments(bundle);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+
+                        //.addSharedElement(cardView, "test")
+                        //       animations:    enter            exit          popEnter        popExit
+                        .setCustomAnimations(R.anim.slide_in, R.anim.stall, R.anim.fade_in, R.anim.slide_out)
+                        .addToBackStack("specific recipe fragment")
+                        .replace(R.id.fragContainer, endFrag)
+                        .commit();
+
+                /*
+                Intent intent = new Intent(getActivity(), MyRecipesSingleCategory.class);
+
+                // key / value pair, passes extra info to the new Activity
+                intent.putExtra("category name", categoryName);
+                //TextView tv = view.findViewById(R.id.textView);
+
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        new Pair<>((cardView), ("a")));
+                ActivityOptionsCompat second = activityOptionsCompat;
+
+                ActivityCompat.startActivity(getActivity(), intent, activityOptionsCompat.toBundle());
+                */
+
+
+            }
+        });
+
 
 
 

@@ -54,31 +54,49 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/txtRecipeTitle"
-            android:elevation="2dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="276dp"
-            android:layout_marginLeft="36dp" />
-        <Constraint
             android:id="@+id/fragmentContainerView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            motion:layout_constraintTop_toBottomOf="@+id/imageRecipeImage"
+            motion:layout_constraintTop_toBottomOf="@+id/tabRecipe"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="140dp"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp" />
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="132dp" />
         <Constraint
-            android:id="@+id/vpRecipe"
+            android:id="@+id/tabRecipe"
+            android:elevation="4dp"
+            motion:layout_constraintWidth_percent=".6"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="80dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="312dp"
+            android:layout_marginLeft="80dp" />
+        <Constraint
             android:layout_height="wrap_content"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
+            android:id="@+id/vpRecipe"
+            motion:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="84dp"
             motion:layout_constraintTop_toBottomOf="@+id/tabRecipe" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/imageView2" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="36dp"
+            android:layout_marginStart="36dp"
+            android:elevation="5dp"
+            android:id="@+id/txtRecipeTitle" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -97,36 +115,65 @@
         <Constraint
             android:id="@+id/imageRecipeImage"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="@+id/imageRecipeBackground" />
         <Constraint
             android:id="@+id/imageRecipeBackground"
             android:elevation="1dp"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            motion:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
+            android:id="@+id/txtRecipeTitle"
+            android:visibility="visible"
+            android:layout_marginTop="52dp"
+            android:elevation="5dp"
+            motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
-            android:id="@+id/txtRecipeTitle" />
+            android:layout_marginLeft="36dp"
+            android:layout_marginStart="36dp" />
         <Constraint
             android:id="@+id/txtRecipeTitle"
-            android:elevation="2dp"
+            android:elevation="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:layout_marginTop="52dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="36dp"
-            android:layout_marginLeft="4dp"
-            android:scaleX=".7"
-            android:scaleY=".7"/>
+            android:layout_marginLeft="36dp"
+            android:layout_marginStart="36dp" />
+        <Constraint
+            android:elevation="4dp"
+            motion:layout_constraintWidth_percent=".6"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:id="@+id/tabRecipe"
+            android:layout_marginTop="112dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/vpRecipe"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/tabRecipe"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/fragmentContainerView"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            motion:layout_constraintTop_toBottomOf="@+id/vpRecipe"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="176dp" />
     </ConstraintSet>
+    <ConstraintSet android:id="@+id/SwipeDown" />
 </MotionScene>

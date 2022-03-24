@@ -1,8 +1,11 @@
 package navigationFragments;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,11 +19,14 @@ public class RecipeSpecificCategoryRecyclerAdapter extends RecyclerView.Adapter<
     private List<List<String>> list;
     private MainAdapterListener listener;
 
+
+
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        //public TextView txtListItem;
+        public TextView txtTitle;
         //public TextView txtBrandName;
         //public CheckBox checkCrossOffItem;
+        public ImageView recipeImage;
 
         public MainViewHolder(View view)
         {
@@ -28,6 +34,7 @@ public class RecipeSpecificCategoryRecyclerAdapter extends RecyclerView.Adapter<
             //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+            recipeImage = view.findViewById(R.id.imageRecipe);
             CardView cardView = (CardView) view.findViewById(R.id.mcardList);
 
             view.setOnClickListener(new View.OnClickListener()
@@ -56,7 +63,7 @@ public class RecipeSpecificCategoryRecyclerAdapter extends RecyclerView.Adapter<
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. activity_main_recycler_item_rounded, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. recipe_recycler_recipe_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
@@ -64,9 +71,25 @@ public class RecipeSpecificCategoryRecyclerAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
+
         /*
         String itemName = list.get(position).get(0);
-        String brand = list.get(position).get(1);
+        String itemImage = list.get(position).get(1);
+
+        if (itemName != null)
+        {
+            holder.txtTitle.setText(itemName);
+        }
+
+        if (itemImage != null)
+        {
+            holder.recipeImage.setImageResource();
+        }
+        */
+
+
+
+        /*
         holder.txtListItem.setText(itemName);
 
         // todo: fix/remove this line when user data is being saved on app exit

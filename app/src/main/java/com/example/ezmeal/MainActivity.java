@@ -1,8 +1,11 @@
 package com.example.ezmeal;
 
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -12,11 +15,15 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
         Log.w("TRACK BACKSTACK", "Main Activity created: " + numOfBackstack);
@@ -111,6 +120,8 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
                     Log.w("TRACK BACKSTACK", "back pressed on screen other than default: " + numOfBackstack);
+
+                    // updates actual nav bar view itself to highlight the correct fragment
                     bottomNav.setSelectedItemId(R.id.groupListsFragment);
                 }
 
