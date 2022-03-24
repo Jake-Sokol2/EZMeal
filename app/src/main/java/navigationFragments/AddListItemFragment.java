@@ -1,5 +1,6 @@
 package navigationFragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -129,6 +130,27 @@ public class AddListItemFragment extends BottomSheetDialogFragment
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDismiss(final DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        /*
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof DialogInterface.OnDismissListener) {
+            ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
+        }
+        */
+        FragmentManager fm = getParentFragmentManager();
+
+        Log.w("TRACK BACKSTACK 2.0", "------------------------");
+        int backStackCount = getParentFragmentManager().getBackStackEntryCount();
+        for (int i = 0; i < backStackCount; i++)
+        {
+            Log.w("TRACK BACKSTACK 2.0", "back stack tags     : " + getParentFragmentManager().getBackStackEntryAt(i).getName());
+        }
+        //dismiss();
     }
 
     @Override

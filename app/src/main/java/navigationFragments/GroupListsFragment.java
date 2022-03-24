@@ -186,6 +186,19 @@ public class GroupListsFragment extends Fragment
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
+                //Fragment manager to open new AddListItemFrag
+                FragmentManager fm = getParentFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
+                ft.setReorderingAllowed(true);
+
+                ft.add(addItemFrag, "TAG").addToBackStack("TAG");
+                ft.show(addItemFrag);
+                ft.commit();
+                Log.d("I'm here", "help");
+
+                 */
 
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
@@ -270,7 +283,6 @@ public class GroupListsFragment extends Fragment
 
         return view;
     }
-
 
 
     // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
