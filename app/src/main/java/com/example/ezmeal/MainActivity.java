@@ -18,12 +18,16 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,5 +42,9 @@ public class MainActivity extends AppCompatActivity
         AppBarConfiguration appBarConfig =  new AppBarConfiguration.Builder(R.id.groupListsFragment, R.id.groupRecipesFragment, R.id.myRecipesFragment, R.id.groupSettingsFragment).build();
 
         NavigationUI.setupWithNavController(bottomNav, navController);
+
+
+
+
     }
 }

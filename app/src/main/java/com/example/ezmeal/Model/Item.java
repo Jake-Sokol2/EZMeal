@@ -5,7 +5,7 @@ public class Item {
     private String brand;
     private int itemQuantity;
 
-    Item(String name, String brand) {
+    public Item(String name, String brand) {
         //itemQuantity default is 1
         itemName = name;
         this.brand = brand;
@@ -31,6 +31,12 @@ public class Item {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public int getQuantity(){return itemQuantity;}
+
+    public void setItemQuantity(int itemQuantity){
+        this.itemQuantity = itemQuantity;
     }
 
 
