@@ -159,6 +159,7 @@ public class GroupListsFragment extends Fragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
+
         // Add some data
         // todo: remove this when user's list saves on application close
         adapter.notifyDataSetChanged();
@@ -274,27 +275,27 @@ public class GroupListsFragment extends Fragment
 
     // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
     @Override
-    public void onPause()
+    public void onStop()
     {
-        super.onPause();
+        super.onStop();
 
-        groceryList.clear();
+        theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
-
+/*
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
         Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
         super.onSaveInstanceState(outState);
         //I need to save the grocery list here
         //save recycler view position?
-        outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
+        //outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
         //save recycler view items?
-        outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
+        //outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
 
     }
 
 
-
+*/
 }

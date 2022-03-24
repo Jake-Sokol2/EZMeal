@@ -30,6 +30,16 @@ public class GroceryListModel {
         shoppingList.add(tmp);
     }
 
+    public int listLength()
+    {
+        return shoppingList.size();
+    }
+
+    public void dumpList()
+    {
+        shoppingList.clear();
+    }
+
     public List<List<String>> getGroceryList() {
         return shoppingList;
     }
