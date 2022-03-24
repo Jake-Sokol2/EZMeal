@@ -173,8 +173,8 @@ public class MyRecipesFragment extends Fragment
 
                         //.addSharedElement(cardView, "test")
                         //       animations:    enter            exit          popEnter        popExit
-                        .setCustomAnimations(R.anim.slide_in, R.anim.stall, R.anim.fade_in, R.anim.slide_out)
-                        .addToBackStack("tag")
+                        .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                        .addToBackStack("specific_category")
                         .replace(R.id.fragContainer, endFrag)
                         .commit();
 
