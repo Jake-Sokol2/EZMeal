@@ -169,11 +169,10 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
                 //endFrag.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
-
                         //.addSharedElement(cardView, "test")
                         //       animations:    enter            exit          popEnter        popExit
                         .setCustomAnimations(R.anim.slide_in, R.anim.stall, R.anim.fade_in, R.anim.slide_out)
-                        .addToBackStack("specific recipe fragment")
+                        .addToBackStack("specific_recipe")
                         .replace(R.id.fragContainer, endFrag)
                         .commit();
 

@@ -34,6 +34,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import navigationFragments.GroupListsFragment;
 import navigationFragments.GroupRecipesFragment;
@@ -108,12 +109,26 @@ public class MainActivity extends AppCompatActivity
                 // Handle the back button event
                 //getSupportFragmentManager().popBackStack("myRecipesFragment", 1);
 
+                Log.w("TRACK BACKSTACK 2.0", "------------------------");
+                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                for (int i = 0; i < backStackCount; i++)
+                {
+                    Log.w("TRACK BACKSTACK 2.0", "back stack tags     : " + getSupportFragmentManager().getBackStackEntryAt(i).getName());
+                }
+
+                String temp = String.valueOf(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1));
+                Log.w("TRACK BACKSTACK 2.0 LALALALALALALLALALALALALLALA", temp);
+                Log.w("TRACK BACKSTACK 2.0", "------------------------");
+
                 // if user is on default screen of nav bar (group lists) exit and return to login screen
                 if (bottomNav.getSelectedItemId() == R.id.groupListsFragment)
                 {
                     finish();
                 }
-                // if user is on any other screen, return to default screen (group lists)
+                else if (Objects.equals(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1).getName(), "specific_category") || (Objects.equals(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1).getName(), "specific_recipe")))
+                {
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
                 else
                 {
                     //bottomNav.setSelectedItemId(R.id.groupListsFragment);
