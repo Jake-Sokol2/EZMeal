@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="wrap_content"
+
+    android:text="Name"
+    android:textSize="12sp"
+    android:textStyle="bold"
+
+    android:paddingBottom="7dp"
+    android:paddingTop="7dp"
+    android:id="@+id/txtTabTitle"
+    android:gravity="center"
+
+
+    android:background="@drawable/tab_selector_background"
+    android:textColor="@drawable/tab_selector_text_color">
+
+</TextView>
