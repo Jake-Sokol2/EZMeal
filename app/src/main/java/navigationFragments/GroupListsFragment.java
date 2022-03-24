@@ -165,7 +165,6 @@ public class GroupListsFragment extends Fragment
         adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
-
         // edit list item feature should start here
         adapter.setOnItemClickListener(new MainRecyclerAdapter.MainAdapterListener()
         {

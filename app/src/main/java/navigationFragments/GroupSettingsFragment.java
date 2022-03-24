@@ -1,6 +1,5 @@
 package navigationFragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -10,11 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
-import com.example.ezmeal.Login;
 import com.example.ezmeal.R;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
  * create an instance of this fragment.
  */
 public class GroupSettingsFragment extends Fragment {
-    private FirebaseAuth mAuth;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,21 +72,5 @@ public class GroupSettingsFragment extends Fragment {
         Log.w("TRACK BACKSTACK", "Group Settings opened: " + numOfBackstack);
 
         return view;
-        //return inflater.inflate(R.layout.fragment_group_settings, container, false);
-        View rootView = inflater.inflate(R.layout.fragment_group_settings, container, false);
-        Button btnLogout = (Button) rootView.findViewById(R.id.logoutButton);
-        btnLogout.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                FirebaseAuth.getInstance().signOut();
-                openActivityLogin();
-            }
-        });
-
-        return rootView;
-    }
-
-    public void openActivityLogin(){
-        Intent intent = new Intent(getActivity(), Login.class);
-        startActivity(intent);
     }
 }

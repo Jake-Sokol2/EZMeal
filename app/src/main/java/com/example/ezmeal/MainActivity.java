@@ -31,7 +31,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +44,6 @@ import navigationFragments.MyRecipesSpecificCategoryFragment;
 
 public class MainActivity extends AppCompatActivity
 {
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
