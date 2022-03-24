@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/circle.xml" value="0.223" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/ic_group_lists.xml" value="0.1" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/recycler_image_shadow.xml" value="0.154" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/font/oxygen_light.xml" value="0.5166666666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/font/oxygen_light_bold.xml" value="0.5166666666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/font/sans_serif.xml" value="0.5166666666666667" />
@@ -11,7 +13,7 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w936dp/activity_login.xml" value="0.22131147540983606" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_add_list_item.xml" value="0.30480072463768115" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.29347826086956524" />
-        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main.xml" value="0.2752808988764045" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main_recycler_item.xml" value="0.4479166666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main_recycler_item_brand.xml" value="0.30480072463768115" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_main_recycler_item_rounded.xml" value="0.5" />
@@ -26,6 +28,18 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_group_settings.xml" value="0.4732789855072464" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes.xml" value="0.4732789855072464" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_category.xml" value="0.371875" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_end_layout.xml" value="0.3645833333333333" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_grid.xml" value="0.38722826086956524" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_nutrition_recycler_item.xml" value="1.5" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_recycler_item.xml" value="0.3854166666666667" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_recycler_recipe_item.xml" value="0.3854166666666667" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_specific_category.xml" value="0.3854166666666667" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_specific_recipe.xml" value="0.33" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_directions.xml" value="0.333786231884058" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_instructions.xml" value="0.333786231884058" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_nutrition.xml" value="0.333786231884058" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_specific_category.xml" value="0.32563405797101447" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test.xml" value="0.38722826086956524" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test_activity.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/menu/bottom_nav_menu.xml" value="0.5541666666666667" />
       </map>

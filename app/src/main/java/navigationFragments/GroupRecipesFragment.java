@@ -100,7 +100,7 @@ public class GroupRecipesFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_recipes_specific_recipe, container, false);
+        View view = inflater.inflate(R.layout.fragment_group_recipes, container, false);
 
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         Log.w("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
@@ -113,6 +113,8 @@ public class GroupRecipesFragment extends Fragment
         }
         */
 
+
+        /*
         vpRecipe = view.findViewById(R.id.vpRecipe);
         tabRecipe = view.findViewById(R.id.tabRecipe);
 
@@ -138,7 +140,7 @@ public class GroupRecipesFragment extends Fragment
 
             }
         }).attach();
-
+        */
 
 
 /*

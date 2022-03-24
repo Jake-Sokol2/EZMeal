@@ -10,21 +10,45 @@
 
     >
 
+
+    <ImageView
+        android:id="@+id/imageRecipeTitleShadow"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/recipe_title_shadow"
+        android:elevation="4dp"/>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpRecipe"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabRecipe" />
+        app:layout_constraintTop_toBottomOf="@+id/imageRecipeImage" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabRecipe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="304dp"
+
+
+        android:background="@drawable/tab_background"
+        android:elevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageRecipeImage">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".6"
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="0dp"
+        app:tabMaxWidth="0dp"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="1dp"
+        app:tabPaddingStart="-.5dp"
+        app:tabRippleColor="@null">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -42,7 +66,6 @@
             android:text="Wednesday" />
     </com.google.android.material.tabs.TabLayout>
 
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
 
@@ -59,12 +82,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="276dp"
-        android:elevation="2dp"
+        android:layout_marginTop="52dp"
+        android:elevation="5dp"
         android:text="Fried Chicken"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
