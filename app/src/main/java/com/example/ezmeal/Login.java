@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
@@ -33,6 +32,7 @@ public class Login extends AppCompatActivity {
     // todo: remove btnToMainActivityDev when Login is functional
     private Button btnToMainActivityDev;
     private Button btnToLogin;
+    private Button btnToRegister;
     private FirebaseAuth mAuth;
     private String email = "";
     private String password = "";
@@ -52,19 +52,39 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        btnToLogin = (Button) findViewById((R.id.loginButton));
+        btnToLogin = (Button) findViewById(R.id.loginButton);
         btnToLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 loginActivityStart();
             }
         });
+
+        btnToRegister = (Button) findViewById(R.id.registerButton);
+        btnToRegister.setOnClickListener(new View.OnClickListener(){
+           @Override
+           public void onClick(View view) { openActivityRegister();}
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            openActivityMain();
+        }
     }
 
 
-    public void openActivityMain()
-    {
+    public void openActivityMain() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void openActivityRegister(){
+        Intent intent = new Intent(this, Registration.class);
         startActivity(intent);
     }
 
