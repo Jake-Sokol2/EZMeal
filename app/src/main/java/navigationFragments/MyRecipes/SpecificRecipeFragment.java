@@ -1,33 +1,31 @@
-package navigationFragments;
+package navigationFragments.MyRecipes;
 
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.databinding.ActivityMainBinding;
-import com.example.ezmeal.databinding.FragmentMyRecipesSpecificRecipeBinding;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,10 +103,10 @@ public class SpecificRecipeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_recipes_specific_recipe, container, false);
+        View view = inflater.inflate(R.layout.fragment_specific_recipe, container, false);
 
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "Specific Recipes opened.  Count: " + numOfBackstack);
 
 
         /*
@@ -161,8 +159,8 @@ public class SpecificRecipeFragment extends Fragment
         //binding = FragmentMyRecipesSpecificRecipeBinding.inflate(inflater);
 
         // sets each tab to have a custom view
-        for (int i = 0; i < 3; i++)
-        {
+        //for (int i = 0; i < 3; i++)
+        //{
             //TextView txt = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
             //tabRecipe.getTabAt(i).setCustomView(txt);
 
@@ -185,7 +183,7 @@ public class SpecificRecipeFragment extends Fragment
             //tab.setCustomView(R.layout.tab_name);
 
 
-        }
+        //}
 
 
 /*

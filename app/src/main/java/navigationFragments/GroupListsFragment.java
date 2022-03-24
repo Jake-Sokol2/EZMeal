@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.Model.GroceryListModel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ezmeal.MainRecyclerAdapter;
@@ -149,8 +151,9 @@ public class GroupListsFragment extends Fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
 
+        // back stack logs
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);

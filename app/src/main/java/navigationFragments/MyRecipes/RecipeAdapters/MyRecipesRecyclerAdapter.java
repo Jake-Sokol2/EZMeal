@@ -1,4 +1,4 @@
-package navigationFragments;
+package navigationFragments.MyRecipes.RecipeAdapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +11,16 @@ import com.example.ezmeal.R;
 
 import java.util.List;
 
-public class MyRecipesNutritionRecyclerAdapter extends RecyclerView.Adapter<MyRecipesNutritionRecyclerAdapter.MainViewHolder>
+public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecyclerAdapter.MainViewHolder>
 {
     private List<List<String>> list;
     private MainAdapterListener listener;
 
+
+
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
+        private CardView cardView;
         //public TextView txtListItem;
         //public TextView txtBrandName;
         //public CheckBox checkCrossOffItem;
@@ -28,7 +31,8 @@ public class MyRecipesNutritionRecyclerAdapter extends RecyclerView.Adapter<MyRe
             //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
-            CardView cardView = (CardView) view.findViewById(R.id.mcardList);
+            cardView = (CardView) view.findViewById(R.id.cardCategory);
+
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -48,7 +52,7 @@ public class MyRecipesNutritionRecyclerAdapter extends RecyclerView.Adapter<MyRe
         }
     }
 
-    public MyRecipesNutritionRecyclerAdapter(List<List<String>> list)
+    public MyRecipesRecyclerAdapter(List<List<String>> list)
     {
         this.list = list;
     }
@@ -56,13 +60,15 @@ public class MyRecipesNutritionRecyclerAdapter extends RecyclerView.Adapter<MyRe
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_my_recipes_nutrition_recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. fragment_my_recipe_recycler_category_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
+        holder.cardView.setTransitionName("transition" + position);
+
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
         /*
         String itemName = list.get(position).get(0);

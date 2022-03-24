@@ -1,4 +1,4 @@
-package navigationFragments;
+package navigationFragments.MyRecipes.RecipeAdapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -6,8 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.ezmeal.RecipeDirectionsFragment;
-import com.example.ezmeal.RecipeNutritionFragment;
+import navigationFragments.MyRecipes.RecipeDirectionsFragment;
+import navigationFragments.MyRecipes.RecipeInstructionsFragment;
+import navigationFragments.MyRecipes.RecipeNutritionFragment;
 
 public class RecipeViewPagerAdapter extends FragmentStateAdapter
 {

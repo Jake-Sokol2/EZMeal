@@ -2,29 +2,27 @@ package navigationFragments;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,8 +100,9 @@ public class GroupRecipesFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_recipes, container, false);
 
+        // back stack logs
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
 
         /*
         if (savedInstanceState == null)

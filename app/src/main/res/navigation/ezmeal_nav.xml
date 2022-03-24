@@ -17,9 +17,9 @@
         tools:layout="@layout/fragment_group_recipes" />
     <fragment
         android:id="@+id/myRecipesFragment"
-        android:name="navigationFragments.MyRecipesFragment"
+        android:name="navigationFragments.MyRecipes.MyRecipesFragment"
         android:label="My Recipes"
-        tools:layout="@layout/fragment_my_recipes" />
+        tools:layout="@layout/fragment_my_recipes_category" />
     <fragment
         android:id="@+id/groupSettingsFragment"
         android:name="navigationFragments.GroupSettingsFragment"

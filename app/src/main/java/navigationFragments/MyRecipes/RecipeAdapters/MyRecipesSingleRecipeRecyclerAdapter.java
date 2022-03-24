@@ -1,4 +1,4 @@
-package navigationFragments;
+package navigationFragments.MyRecipes.RecipeAdapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

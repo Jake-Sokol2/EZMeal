@@ -81,6 +81,9 @@ public class Login extends AppCompatActivity {
     public void openActivityMain() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+
+        // kill activity so user cannot return to this screen without clicking logout button
+        finish();
     }
 
     public void openActivityRegister(){

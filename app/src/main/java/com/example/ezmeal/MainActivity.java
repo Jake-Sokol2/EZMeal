@@ -1,46 +1,27 @@
 package com.example.ezmeal;
 
-import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import navigationFragments.GroupListsFragment;
 import navigationFragments.GroupRecipesFragment;
 import navigationFragments.GroupSettingsFragment;
-import navigationFragments.MyRecipesFragment;
-import navigationFragments.MyRecipesSpecificCategoryFragment;
+import navigationFragments.MyRecipes.MyRecipesFragment;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -50,33 +31,31 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "Main Activity created: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "Main Activity created: " + numOfBackstack);
         // bottom navigation bar code
         //loadFragment(new GroupListsFragment());
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragContainer);
+
+        // Old code, do not remove - uncomment these to return to default nav component backstack
         //NavController navController = navHostFragment.getNavController();
         //AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(R.id.groupListsFragment, R.id.groupRecipesFragment, R.id.myRecipesFragment, R.id.groupSettingsFragment).build();
-
-        // determines which fragment will open depending on which bottom navigation tab is selected
-
         //NavigationUI.setupWithNavController(bottomNav, navController);
 
+        // click listener for the bottom navigation bar
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
         {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
                 Fragment frag = null;
-                // tags keep track of the fragments on the backstack so they can be manually popped later
+                // tags keep track of the fragments on the backstack so we can manually pop them later
                 String backStackTag = null;
 
                 if (item.getItemId() == R.id.groupListsFragment)
                 {
-                    // default fragment is always on backstack (nav component rules), so just pop the entire stack after the default fragment
+                    // default fragment isn't even listed on the back stack (nav component rules), so just pop the entire stack from 0 to return to default
                     // whenever user returns to default fragment
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
@@ -103,46 +82,45 @@ public class MainActivity extends AppCompatActivity
         });
 
         // handles the backstack / back button for fragContainer which holds bottom navigation's screens
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true)
+        {
             @Override
-            public void handleOnBackPressed() {
-                // Handle the back button event
-                //getSupportFragmentManager().popBackStack("myRecipesFragment", 1);
-
-                Log.w("TRACK BACKSTACK 2.0", "------------------------");
+            public void handleOnBackPressed()
+            {
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-                for (int i = 0; i < backStackCount; i++)
-                {
-                    Log.w("TRACK BACKSTACK 2.0", "back stack tags     : " + getSupportFragmentManager().getBackStackEntryAt(i).getName());
-                }
-
-                String temp = String.valueOf(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1));
-                Log.w("TRACK BACKSTACK 2.0 LALALALALALALLALALALALALLALA", temp);
-                Log.w("TRACK BACKSTACK 2.0", "------------------------");
-
-                // if user is on default screen of nav bar (group lists) exit and return to login screen
+                // if user is on default screen of nav bar (group lists) exit and return to home screen follow Androids principles of navigation
+                // login screen is skipped because it calls finish() when it opens MainActivity
                 if (bottomNav.getSelectedItemId() == R.id.groupListsFragment)
                 {
                     finish();
                 }
+                // if user is on a specific screen that we specify, return to the previous screen when back is pressed
                 else if (Objects.equals(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1).getName(), "specific_category") || (Objects.equals(getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1).getName(), "specific_recipe")))
                 {
                     getSupportFragmentManager().popBackStackImmediate();
                 }
+                // on initial navigation bar screens, ignore user history and just return to the default fragment (pop entire stack)
                 else
                 {
-                    //bottomNav.setSelectedItemId(R.id.groupListsFragment);
-                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
-                    Log.w("TRACK BACKSTACK", "back pressed on screen other than default: " + numOfBackstack);
+                    getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                     // updates actual nav bar view itself to highlight the correct fragment
                     bottomNav.setSelectedItemId(R.id.groupListsFragment);
                 }
 
+                Log.i("TRACK BACKSTACK 2.0", "------------------------");
+                Log.i("TRACK BACKSTACK 2.0", "Back stack tags (group lists does not appear here, but it is there.  It is always first on back stack): ");
+                backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                StringBuilder tab = new StringBuilder();
+                for (int i = 0; i < backStackCount; i++)
+                {
+                    Log.i("TRACK BACKSTACK 2.0", tab.toString() + i + " - " + getSupportFragmentManager().getBackStackEntryAt(i).getName());
+                    tab.append("\t\t");
+                }
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, callback);
+
 
         //NavigationUI.setupWithNavController(bottomNav, navController);
     }
@@ -151,38 +129,23 @@ public class MainActivity extends AppCompatActivity
     {
         if (frag != null)
         {
-            // pop back stack every time we load a new fragment so stack doesn't fill with duplicate fragments
+            // pop back stack every time we load a new fragment so stack doesn't fill with duplicate fragment tags
             getSupportFragmentManager().popBackStack();
 
-
-            // attempts to pop back to fragment with tag backStackTag on the backstack.  If fragment doesnt exist on stack, returns false
-            // boolean popFrag = getSupportFragmentManager().popBackStackImmediate(backStackTag, 0);
-
-            // if false was returned, fragment didn't exist on stack so create it
-            //if (!popFrag)
-            //{
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragContainer, frag)
-                        .addToBackStack(backStackTag)
-                        .commit();
-            //}
-
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragContainer, frag)
+                    .addToBackStack(backStackTag)
+                    .commit();
         }
 
-
-
-        //FragmentManager fm = getSupportFragmentManager();
-
-        //Log.w("BACKSTACK", "----------");
-        //for(int entry = 0; entry<fm.getBackStackEntryCount(); entry++){
-        //    Log.w("BACKSTACK", "Found fragment at position: " + entry);
-        //}
-        //Log.w("BACKSTACK", "----------");
         String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "popped and fragment replaced: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "popped and fragment replaced: " + numOfBackstack);
 
         return true;
     }
+
+
+
 
 
 

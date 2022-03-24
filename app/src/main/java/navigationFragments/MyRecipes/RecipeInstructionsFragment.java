@@ -1,4 +1,4 @@
-package navigationFragments;
+package navigationFragments.MyRecipes;
 
 import android.os.Bundle;
 

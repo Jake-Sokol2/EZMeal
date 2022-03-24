@@ -1,17 +1,22 @@
 package navigationFragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.ezmeal.Login;
 import com.example.ezmeal.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,9 +73,29 @@ public class GroupSettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_settings, container, false);
 
+
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         Log.w("TRACK BACKSTACK", "Group Settings opened: " + numOfBackstack);
 
-        return view;
+        View rootView = inflater.inflate(R.layout.fragment_group_settings, container, false);
+        Button btnLogout = (Button) rootView.findViewById(R.id.logoutButton);
+        btnLogout.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                FirebaseAuth.getInstance().signOut();
+                openActivityLogin();
+            }
+        });
+
+        return rootView;
+    }
+
+    public void openActivityLogin(){
+        //getParentFragmentManager().popBackStack(getParentFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        Intent intent = new Intent(getActivity(), Login.class);
+        startActivity(intent);
+
+        // kill back stack so user cannot return to main screens without logging in again
+        getActivity().finish();
     }
 }

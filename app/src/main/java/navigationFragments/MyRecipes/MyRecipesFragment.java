@@ -1,4 +1,4 @@
-package navigationFragments;
+package navigationFragments.MyRecipes;
 
 import android.os.Bundle;
 
@@ -7,11 +7,9 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
-import androidx.transition.TransitionInflater;
 
 import android.os.Parcelable;
 import android.util.Log;
@@ -22,11 +20,13 @@ import android.widget.Toast;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.databinding.FragmentMyRecipesAnimatedBinding;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,15 +97,15 @@ public class MyRecipesFragment extends Fragment
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_recipes_grid, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_recipes_category, container, false);
 
+        // back stack logs
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.w("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
+        Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
         adapter = new MyRecipesRecyclerAdapter(theModel.getGroceryList());

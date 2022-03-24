@@ -1,11 +1,10 @@
-package com.example.ezmeal;
+package navigationFragments.MyRecipes;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.ViewCompat;
 
 import android.os.Bundle;
-import android.widget.TextView;
+
+import com.example.ezmeal.R;
 
 public class MyRecipesSingleCategory extends AppCompatActivity {
     //private CardView mCard;
@@ -13,7 +12,7 @@ public class MyRecipesSingleCategory extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_recipes_single_category);
+        setContentView(R.layout.recipes_single_category);
 
         //mCard = findViewById(R.id.cardSingleCategory);
 
@@ -27,8 +26,8 @@ public class MyRecipesSingleCategory extends AppCompatActivity {
             categoryName = extras.getString("category name");
         }
         
-        TextView txt = findViewById(R.id.txtMyRecipeTitle);
-        txt.setText("aaa");
+        //TextView txt = findViewById(R.id.txtMyRecipeTitle);
+        //txt.setText("aaa");
         //loadItem();
     }
 }
