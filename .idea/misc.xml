@@ -52,7 +52,9 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_instructions.xml" value="0.333786231884058" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_nutrition.xml" value="0.333786231884058" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_specific_category.xml" value="0.32563405797101447" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_specific_recipe.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/recipe_recycler_recipe_item.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/recipes_single_category.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/tab_name.xml" value="0.40307971014492755" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/tab_selected_background.xml" value="0.40307971014492755" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test.xml" value="0.38722826086956524" />

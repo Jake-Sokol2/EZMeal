@@ -5,10 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +16,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Objects;
 
-import navigationFragments.GroupRecipesFragment;
+import navigationFragments.FindRecipes.GroupRecipesFragment;
 import navigationFragments.GroupSettingsFragment;
 import navigationFragments.MyRecipes.MyRecipesFragment;
 

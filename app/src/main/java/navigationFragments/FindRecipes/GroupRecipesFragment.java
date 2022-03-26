@@ -1,26 +1,42 @@
-package navigationFragments;
+package navigationFragments.FindRecipes;
 
 import android.os.Bundle;
 
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.google.android.material.tabs.TabLayout;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAdapter;
+import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 
@@ -42,7 +58,7 @@ public class GroupRecipesFragment extends Fragment
     private MyRecipesSingleRecipeRecyclerAdapter adapter;
     List<String> nutritionListInner = new ArrayList<String>();
     private RecyclerView rvNutritionList;
-    private MyRecipesNutritionRecyclerAdapter nutritionAdapter;
+    private FindRecipesAdapter findRecipesAdapter;
 
     private MotionLayout motionLayout;
     private NestedScrollView nestedScrollView;
@@ -104,6 +120,108 @@ public class GroupRecipesFragment extends Fragment
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
 
+
+
+        /*
+        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "bezkoder.json");
+        Log.i("data", jsonFileString);
+
+        Gson gson = new Gson();
+
+        Type listUserType = new TypeToken<List<ParseClass>>() { }.getType();
+        List<ParseClass> users = gson.fromJson(jsonFileString, listUserType);
+
+        for (int i = 0; i < users.size(); i++) {
+            Log.i("data", "> Item " + i + "\n" + users.get(i));
+        }
+
+        String name = users.get(0).getName();
+        TextView txtName = view.findViewById(R.id.txtName);
+        txtName.setText(name);
+        */
+
+        // uncomment to blow the phone's memory to smithereens
+        /*Gson gson = new Gson();
+        // recipes_with_nutritional_info.json
+        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "recipes_with_nutritional_info.json");
+
+        Type listUserType = new TypeToken<List<Example>>() { }.getType();
+        List<Example> users = gson.fromJson(jsonFileString, listUserType);
+
+        //for (int i = 0; i < users.size(); i++) {
+        //    Log.i("data", "> Item " + i + "\n" + users.get(i));
+        // }
+
+        String name = users.get(0).getTitle();
+        TextView txtName = view.findViewById(R.id.txtName);
+        txtName.setText(name);*/
+
+        /*
+        Gson gson = new Gson();
+        // recipes_with_nutritional_info.json
+        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "recipes_with_nutritional_info.json");
+
+        Type listUserType = new TypeToken<List<Example>>() { }.getType();
+
+        InputStream inputStream = null;
+        try
+        {
+            inputStream = new FileInputStream("recipes_with_nutritional_info.json");
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        */
+
+        JsonReader jsonReader;
+        //JsonReader jsonReader = null;
+        InputStreamReader inputStreamReader = null;
+        try
+        {
+
+            inputStreamReader = new InputStreamReader(getActivity().getAssets().open("recipes_with_nutritional_info.json"));
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        jsonReader = new JsonReader(inputStreamReader);
+
+
+        Gson gson = new Gson();
+
+
+
+        //final InputStreamReader isr = new InputStreamReader(inputStream);
+        Type listUserType = new TypeToken<List<Example>>() { }.getType();
+        //Type listUserType2 = new TypeToken<Collection<Example>>(){ }.getType();
+        //Collection<Example> users = gson.fromJson(inputStreamReader, listUserType2);
+
+        List<Example> users = gson.fromJson(inputStreamReader, listUserType);
+        //final Example example = gson.fromJson(inputStreamReader, Example.class);
+        //List<Example> users = gson.fromJson(inputStreamReader, listUserType);
+        try
+        {
+
+            jsonReader.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //for (int i = 0; i < users.size(); i++) {
+        //    Log.i("data", "> Item " + i + "\n" + users.get(i));
+        // }
+
+        //String name = users.get(0).getTitle();
+        //TextView txtName = view.findViewById(R.id.txtName);
+       // txtName.setText(name);
+
+
         /*
         if (savedInstanceState == null)
         {
@@ -142,10 +260,10 @@ public class GroupRecipesFragment extends Fragment
         */
 
 
-/*
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvRecipe);
-        adapter = new MyRecipesSingleRecipeRecyclerAdapter(theModel.getGroceryList());
-        rvGroupList.setAdapter(adapter);
+
+        rvGroupList = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
+        findRecipesAdapter = new FindRecipesAdapter(theModel.getGroceryList());
+        rvGroupList.setAdapter(findRecipesAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
@@ -153,7 +271,7 @@ public class GroupRecipesFragment extends Fragment
         //rvGroupList.setLayoutManager(gridLayoutManager);
 
         theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
+        /*theModel.addItem("Fruit", "fruit brand");
         theModel.addItem("Huevo", "Huevo del super");
 
         theModel.addItem("Milk", "milk brand");
@@ -170,15 +288,17 @@ public class GroupRecipesFragment extends Fragment
         theModel.addItem("Huevo", "Huevo del super");
         theModel.addItem("Milk", "milk brand");
         theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
+        theModel.addItem("Huevo", "Huevo del super");*/
 
-        adapter.notifyDataSetChanged();
+        findRecipesAdapter.notifyDataSetChanged();
 
+        /*
         nestedScrollView = view.findViewById(R.id.nestedScrollView);
         motionLayout = view.findViewById(R.id.motionLayout);
 
         // If scrollview is at the top (not scrolled), allow MotionLayout transition.  Otherwise, disable MotionLayout transition
         // prevents the user from pulling the image up and down while the scrollview is scrolled.  Image should only move when scrollview is at the top
+
         nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -192,6 +312,8 @@ public class GroupRecipesFragment extends Fragment
                 }
             }
         });
+
+         */
 /*
 
 
