@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
+/*
 @RunWith(AndroidJUnit4.class)
 public class databaseJUnitTest {
     private TestDao userDao;
@@ -40,3 +41,4 @@ public class databaseJUnitTest {
         assertThat(byName.get(0), equalTo(user));
     }
 }
+ */
