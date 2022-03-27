@@ -1,5 +1,7 @@
 package navigationFragments.FindRecipes.FindRecipesAdapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +12,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ezmeal.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
 {
     private List<List<String>> list;
+    private List<List<Bitmap>> bitmapList;
     private MainAdapterListener listener;
 
 
@@ -33,8 +39,11 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
             //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
-            recipeImage = view.findViewById(R.id.imageRecipe);
-            CardView cardView = (CardView) view.findViewById(R.id.mcardList);
+
+            recipeImage = view.findViewById(R.id.imgRecipe);
+            txtTitle = view.findViewById(R.id.txtTitleRecipe);
+
+            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -54,9 +63,10 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         }
     }
 
-    public FindRecipesAdapter(List<List<String>> list)
+    public FindRecipesAdapter(List<List<String>> list, List<List<Bitmap>> bitmap)
     {
         this.list = list;
+        this.bitmapList = bitmap;
     }
 
     @Override
@@ -69,6 +79,23 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
+        String recipeTitle = list.get(position).get(0);
+        //String recipeImageUrl = list.get(position).get(1);
+        Bitmap bitmap =  bitmapList.get(position).get(0);
+
+        holder.txtTitle.setText(recipeTitle);
+        holder.recipeImage.setImageBitmap(bitmap);
+
+       // try
+       // {
+            //holder.recipeImage.setImageBitmap(bitmap);
+       // }
+        //catch (IOException e)
+        //{
+        //    e.printStackTrace();
+        //}
+        //Picasso.get().load(recipeImageUrl).into(holder.recipeImage);
+
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
 
         /*

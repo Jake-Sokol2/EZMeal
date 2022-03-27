@@ -51,7 +51,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 {
                     if (listener != null)
                     {
-                        // was getAdapterPosition(), this is deprecated now
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
