@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.google.android.material.tabs.TabLayout;
@@ -32,6 +34,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,6 +43,27 @@ import java.util.List;
 import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,24 +73,18 @@ import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 public class GroupRecipesFragment extends Fragment
 {
 
-    private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
-    private GroceryListModel theModel = new GroceryListModel();
-    private ArrayList<List<String>> nutritionList = new ArrayList<List<String>>();
-    private GroceryListModel nutritionModel = new GroceryListModel();
-
+    private ArrayList<List<String>> recipeList = new ArrayList<List<String>>();
     List<String> list = new ArrayList<String>();
-    private RecyclerView rvGroupList;
-    private MyRecipesSingleRecipeRecyclerAdapter adapter;
-    List<String> nutritionListInner = new ArrayList<String>();
-    private RecyclerView rvNutritionList;
+    private FindRecipesModel findRecipesModel = new FindRecipesModel();
+
+    private RecyclerView rvFindRecipes;
     private FindRecipesAdapter findRecipesAdapter;
 
-    private MotionLayout motionLayout;
-    private NestedScrollView nestedScrollView;
 
-    ViewPager2 vpRecipe;
-    TabLayout tabRecipe;
-    RecipeViewPagerAdapter vpAdapter;
+    public ImageView imageView;
+    public String[] imageList;
+    public Bitmap[] bitmapList;
+    public String[] titleList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -121,25 +140,6 @@ public class GroupRecipesFragment extends Fragment
         Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
 
 
-
-        /*
-        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "bezkoder.json");
-        Log.i("data", jsonFileString);
-
-        Gson gson = new Gson();
-
-        Type listUserType = new TypeToken<List<ParseClass>>() { }.getType();
-        List<ParseClass> users = gson.fromJson(jsonFileString, listUserType);
-
-        for (int i = 0; i < users.size(); i++) {
-            Log.i("data", "> Item " + i + "\n" + users.get(i));
-        }
-
-        String name = users.get(0).getName();
-        TextView txtName = view.findViewById(R.id.txtName);
-        txtName.setText(name);
-        */
-
         // uncomment to blow the phone's memory to smithereens
         /*Gson gson = new Gson();
         // recipes_with_nutritional_info.json
@@ -152,29 +152,11 @@ public class GroupRecipesFragment extends Fragment
         //    Log.i("data", "> Item " + i + "\n" + users.get(i));
         // }
 
-        String name = users.get(0).getTitle();
-        TextView txtName = view.findViewById(R.id.txtName);
-        txtName.setText(name);*/
 
-        /*
-        Gson gson = new Gson();
-        // recipes_with_nutritional_info.json
-        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "recipes_with_nutritional_info.json");
 
-        Type listUserType = new TypeToken<List<Example>>() { }.getType();
+        // WORKING PARSE
 
-        InputStream inputStream = null;
-        try
-        {
-            inputStream = new FileInputStream("recipes_with_nutritional_info.json");
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        */
-
-        JsonReader jsonReader;
+        /*JsonReader jsonReader;
         //JsonReader jsonReader = null;
         InputStreamReader inputStreamReader = null;
         try
@@ -211,7 +193,7 @@ public class GroupRecipesFragment extends Fragment
         catch (IOException e)
         {
             e.printStackTrace();
-        }
+        }*/
 
         //for (int i = 0; i < users.size(); i++) {
         //    Log.i("data", "> Item " + i + "\n" + users.get(i));
@@ -222,286 +204,104 @@ public class GroupRecipesFragment extends Fragment
        // txtName.setText(name);
 
 
-        /*
-        if (savedInstanceState == null)
-        {
-            getParentFragmentManager().beginTransaction().setReorderingAllowed(true).add(R.id.fragmentContainerView, RecipeInstructionsFragment.class, null)
-                    .commit();
-        }
-        */
+        rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
+        findRecipesAdapter = new FindRecipesAdapter(findRecipesModel.getRecipeList(), findRecipesModel.getBitmapList());
+        rvFindRecipes.setAdapter(findRecipesAdapter);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this.getActivity(), 2);
+        rvFindRecipes.setLayoutManager(layoutManager);
 
-
-        /*
-        vpRecipe = view.findViewById(R.id.vpRecipe);
-        tabRecipe = view.findViewById(R.id.tabRecipe);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle());
-        vpRecipe.setAdapter(vpAdapter);
-
-        new TabLayoutMediator(tabRecipe, vpRecipe, new TabLayoutMediator.TabConfigurationStrategy() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                switch(position)
-                {
-                    case 0:
-                        tab.setText("Ingredients");
-                        break;
-                    case 1:
-                        tab.setText("Directions");
-                        break;
-                    case 2:
-                        tab.setText("Nutrition");
-                        break;
-                }
-
-            }
-        }).attach();
-        */
-
-
-
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
-        findRecipesAdapter = new FindRecipesAdapter(theModel.getGroceryList());
-        rvGroupList.setAdapter(findRecipesAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
-        rvGroupList.setLayoutManager(layoutManager);
-
-        //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        //rvGroupList.setLayoutManager(gridLayoutManager);
-
-        theModel.addItem("Milk", "milk brand");
-        /*theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");*/
-
-        findRecipesAdapter.notifyDataSetChanged();
-
-        /*
-        nestedScrollView = view.findViewById(R.id.nestedScrollView);
-        motionLayout = view.findViewById(R.id.motionLayout);
-
-        // If scrollview is at the top (not scrolled), allow MotionLayout transition.  Otherwise, disable MotionLayout transition
-        // prevents the user from pulling the image up and down while the scrollview is scrolled.  Image should only move when scrollview is at the top
-
-        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (nestedScrollView.getScrollY() == 0)
-                {
-                    motionLayout.getTransition(R.id.recipeTransition).setEnable(true);
-                }
-                else
-                {
-                    motionLayout.getTransition(R.id.recipeTransition).setEnable(false);
-                }
-            }
-        });
-
-         */
-/*
-
-
-
-
-
-
-
-
-        /*
-        adapter.setOnItemClickListener(new MyRecipesSingleRecipeRecyclerAdapter() {
-            @Override
-            public void onItemClick(int position, CardView cardView)
-            {
-                //String selectedName = groceryList.get(position);
-                //clickedView = (View) layoutManager.findViewByPosition(position);
-                Toast.makeText(getContext(), Integer.toString(cardView.getId()), Toast.LENGTH_SHORT).show();
-                // Code to use the selected name goes here…
-
-                // todo: fix this when database is working
-                // name of the clicked category, gets sent to new Activity and is later used to let Firebase know which data to populate Activity with
-
-                String categoryName = "Chicken";
-
-                Fragment frag = new MyRecipesSpecificCategoryFragment();
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-
-                Intent intent = new Intent(getActivity(), MyRecipesSingleCategory.class);
-
-                // key / value pair, passes extra info to the new Activity
-                intent.putExtra("category name", categoryName);
-                //TextView tv = view.findViewById(R.id.textView);
-
-                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                        new Pair<>((cardView), ("a")));
-                ActivityOptionsCompat second = activityOptionsCompat;
-
-                ActivityCompat.startActivity(getActivity(), intent, activityOptionsCompat.toBundle());
-
-
-            }
-        });
-
-         */
-
-        // fragment transition code, old
-        /*binding = FragmentMyRecipesAnimatedBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-
-
-
-        cardView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-
-            }
-        });*/
-
-
-        /*
-        rvMyRecipes = (RecyclerView) view.findViewById(R.id.rvGroupLists);
-        adapter = new MainRecyclerAdapter(myRecipeCategory);
-        rvMyRecipes.setAdapter(adapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
-        rvMyRecipes.setLayoutManager(layoutManager);
-
-        // Add some data
-        // todo: remove this when user's list saves on application close
-        myRecipesList = new ArrayList<String>();
-        myRecipesList.add("Gallon of Milk");
-        myRecipesList.add("milk brand");
-        myRecipeCategory.add(myRecipesList);
-
-        myRecipesList = new ArrayList<String>();
-        myRecipesList.add("Fruit");
-        myRecipesList.add("fruit brand");
-        myRecipeCategory.add(myRecipesList);
-
-        myRecipesList = new ArrayList<String>();
-        myRecipesList.add("Eggs");
-        myRecipesList.add("egg brand");
-        myRecipeCategory.add(myRecipesList);
-        adapter.notifyDataSetChanged();
-        */
-
-        // old size expand code
-        /*cardView = (MaterialCardView) view.findViewById(R.id.cardChickenAnimated);
-        ConstraintLayout cl = (ConstraintLayout) view.findViewById(R.id.clChickenAnimated);
-        FrameLayout fl = (FrameLayout) view.findViewById(R.id.frameCategoriesAnimated);
-        TextView txtChicken = (TextView) view.findViewById(R.id.txtChickenAnimated);
-        ImageView imageChicken = (ImageView) view.findViewById(R.id.imageChickenAnimated);
-        ScrollView sv = (ScrollView) view.findViewById(R.id.scrollMyRecipesAnimated);
-        vm = new ViewModelProvider(this).get(MyRecipesFragmentViewModel.class);
-
-        cardView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                // todo: figure out how to save this info every time a category is created.  Its the key to returning to original size + location
-                // FrameLayout.LayoutParams originalLayoutParams = (FrameLayout.LayoutParams) cardView.getLayoutParams();
-                // cardView.setLayoutParams(originalLayoutParams);
-
-                FrameLayout.LayoutParams layoutMargins = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                layoutMargins.setMargins(0,0,0,0);
-                fl.setPadding(0,0,0,0);
-                cardView.setLayoutParams(layoutMargins);
-                //sv.setFillViewport(false);
-
-                // todo: figure out how to find height + width at runtime because apparently MATCH_PARENT doesn't actually MATCH_PARENT
-                WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-
-                Display display = wm.getDefaultDisplay();
-
-                Point size = new Point();
-                display.getRealSize(size);
-
-                FrameLayout.LayoutParams layoutParams = vm.setCardWidthHeight(1, 1);
-                cardView.setLayoutParams(layoutParams);
-                //cardView.setRadius(10f);
-                //FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams();
-                //layoutParams.setMargins(0, 10, 0, 210);
-                //cardView.setLayoutParams(layoutParams);
-
-
-                ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(cl);
-                constraintSet.connect(R.id.txtChickenAnimated, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-                constraintSet.setHorizontalBias(R.id.txtChickenAnimated, .1f);
-                constraintSet.setVerticalBias(R.id.txtChickenAnimated, .03f);
-                txtChicken.setTextSize(40);
-                constraintSet.applyTo(cl);
-                imageChicken.setVisibility(View.GONE);
-
-                //constraintSet = new ConstraintSet();
-                //constraintSet.clone(cl);
-                //constraintSet.connect(R.id.imageChicken, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
-
-
-                //constraintSet.setHorizontalBias(R.id.imageChicken, .5f);
-                //constraintSet.applyTo(cl);
-
-                //constraintSet = new ConstraintSet();
-                //constraintSet.connect(R.id.imageChicken, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
-                //constraintSet.setVerticalBias(R.id.imageChicken, .8f);
-                //constraintSet.applyTo(cl);
-                //cardView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-                cardView.setElevation(10);
-            }
-        });*/
-
-
-
-/*
-        rvNutritionList = (RecyclerView) view.findViewById(R.id.rvNutritionalInfo);
-        nutritionAdapter = new MyRecipesNutritionRecyclerAdapter(nutritionModel.getGroceryList());
-        rvNutritionList.setAdapter(nutritionAdapter);
-        RecyclerView.LayoutManager nutritionLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);  //   , LinearLayoutManager.HORIZONTAL, false
-        rvNutritionList.setLayoutManager(nutritionLayoutManager);
-
-        //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        //rvGroupList.setLayoutManager(gridLayoutManager);
-
-        nutritionModel.addItem("Milk", "milk brand");
-        nutritionModel.addItem("Fruit", "fruit brand");
-        nutritionModel.addItem("Huevo", "Huevo del super");
-
-        nutritionModel.addItem("Milk", "milk brand");
-        nutritionModel.addItem("Fruit", "fruit brand");
-        nutritionModel.addItem("Huevo", "Huevo del super");
-        nutritionModel.addItem("Milk", "milk brand");
-        nutritionModel.addItem("Fruit", "fruit brand");
-        nutritionModel.addItem("Huevo", "Huevo del super");
-        nutritionModel.addItem("Milk", "milk brand");
-        nutritionModel.addItem("Fruit", "fruit brand");
-        nutritionModel.addItem("Huevo", "Huevo del super");
-        nutritionModel.addItem("Milk", "milk brand");
-        nutritionModel.addItem("Fruit", "fruit brand");
-        nutritionModel.addItem("Huevo", "Huevo del super");
-
-
-        nutritionAdapter.notifyDataSetChanged();
-*/
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        AsyncClass ac = new AsyncClass();
+        ac.execute();
+    }
+
+    public class AsyncClass extends AsyncTask<Void, Void, Void> {
+        //private Document doc = Jsoup.connect("https://cookstre.com").get();
+        //String url = "https://firebase.google.com/";
+        String urlText = "https://www.allrecipes.com/recipes/78/breakfast-and-brunch/";
+        Elements divs;
+
+        ProgressDialog progressDialog;
+        private Context ctx;
+        public Bitmap bitmap;
+        public String title;
+        public String imgSrc;
+        public String imgUrl;
+
+        TextView textView;
+        private View view;
+
+        AsyncClass()
+        {
+
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+
+            //textView = findViewById(R.id.textView);
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            //Document get request stuff?
+            try
+            {
+                //Connect to website
+                Document doc = Jsoup.connect(urlText).get();
+
+                // this "Breakfast and Brunch" page has two sets of div classes - one containing the 12 staff picks recipes, the second containing 24 "More Breakfast and Brunch"
+                // recipes at the bottom of the screen.  We get the first of the two divs and ignore the second
+                Element content = doc.getElementsByClass("category-page-list-content category-page-list-content__recipe-card karma-main-column").get(0);
+                divs = content.getElementsByClass("component card card__category");
+
+                imageList = new String[divs.size()];
+                bitmapList = new Bitmap[divs.size()];
+                titleList = new String[divs.size()];
+
+                int i = 0;
+                for(Element e: divs)
+                {
+                    imageList[i] = e.select("img").attr("src");
+                    URL url = new URL(imageList[i]);
+                    bitmapList[i] = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    titleList[i] = e.select("h3").text();
+                    i++;
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+                return null;
+            }
+        // everything in this method is performed on the main thread!
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            super.onPostExecute(aVoid);
+
+            for(int i = 0; i < divs.size(); i++)
+            {
+                findRecipesModel.addItem(titleList[i], bitmapList[i]);
+            }
+            findRecipesAdapter.notifyDataSetChanged();
+
+            progressDialog.dismiss();
+        }
     }
 }
