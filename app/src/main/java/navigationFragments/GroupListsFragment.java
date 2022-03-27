@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +45,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,7 +62,10 @@ public class GroupListsFragment extends Fragment
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
     private MainRecyclerAdapter adapter;
+
+    //Firebase variables
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     private String brand, name;
     private double quantity;
@@ -124,13 +130,22 @@ public class GroupListsFragment extends Fragment
     private EditText itemname, brandname;
     private Button additem;
 
-    private String itemName, brandName;
+    private String itemName, brandName, userName;
 
 
 
-    private void addDataToFirestore(String itemName, String brandName){
+    private void addDataToFirestore(String itemName, String brandName, String userName){
+
+        //Code to make retrieval of items user specific
+        //Get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Get current user instance
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
         CollectionReference dbItems = db.collection("Items");
-        Item item = new Item(itemName, brandName);
+        Item item = new Item(itemName, brandName, userName);
         dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
@@ -224,6 +239,14 @@ public class GroupListsFragment extends Fragment
                 EditText editBrandName = (EditText) bottomSheetDialog.findViewById(R.id.editBrandName);
                 //TextView txtBrandName = (TextView)
 
+                //Code to make retrieval of items user specific
+                //Get FirebaseAuth instance
+                mAuth = FirebaseAuth.getInstance();
+
+                //Get current user instance
+                FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+                String email = mCurrentUser.getEmail();
+
                 btnConfirm.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -241,7 +264,7 @@ public class GroupListsFragment extends Fragment
                         } else if (TextUtils.isEmpty(brandName)) {
                             brandname.setError("Enter brand name");
                         } else {
-                            addDataToFirestore(itemName, brandName);
+                            addDataToFirestore(itemName, brandName, email);
                         }
 
 
@@ -265,8 +288,16 @@ public class GroupListsFragment extends Fragment
 
             }//Add item onClick
         });
-        db = FirebaseFirestore.getInstance();
 
+        //Get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Get current user instance
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
+        //Code to display database items
+        db = FirebaseFirestore.getInstance();
 
         db.collection("Items")
                 .get()
@@ -274,12 +305,17 @@ public class GroupListsFragment extends Fragment
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d("MYDEBUG", document.getId() + " => " + document.getData());
-                            brand = document.getString("brand");
-                            name = document.getString("name");
-                            //quantity = document.getDouble("quantity");
-                            theModel.addItem(name, brand);
-                            adapter.notifyDataSetChanged();
+                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
+                                brand = document.getString("brand");
+                                name = document.getString("name");
+                                //quantity = document.getDouble("quantity");
+                                if (Objects.equals(document.getString("user"), email)) {
+                                    theModel.addItem(name, brand);
+
+                                }
+                                adapter.notifyDataSetChanged();
+
+
                         }
                     } else {
                         Log.w("MYDEBUG", "Error getting documents.", task.getException());
