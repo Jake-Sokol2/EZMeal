@@ -1,24 +1,41 @@
 package navigationFragments.MyRecipes;
 
+import static androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING;
+
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +51,7 @@ import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
  */
 public class SpecificRecipeFragment extends Fragment
 {
+    private FirebaseFirestore db;
 
     private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
     private GroceryListModel theModel = new GroceryListModel();
@@ -108,7 +126,46 @@ public class SpecificRecipeFragment extends Fragment
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         Log.i("TRACK BACKSTACK", "Specific Recipes opened.  Count: " + numOfBackstack);
 
+        Bundle extras = getArguments();
+        String recipeId = extras.getString("id");
+        Log.i("p", "a");
 
+        ImageView imageRecipe = view.findViewById(R.id.imageRecipeImage);
+        TextView txtRecipeTitle = view.findViewById(R.id.txtRecipeTitle);
+
+        db = FirebaseFirestore.getInstance();
+        CollectionReference dbRecipes = db.collection("Recipes");
+
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                Glide.with(getContext()).load(Uri.parse(task.getResult().getString("imageUrl"))).into(imageRecipe);
+                txtRecipeTitle.setText(task.getResult().getString("title"));
+
+                Log.i("test", String.valueOf(task.getResult().getData()));
+                Log.i("test", "pause");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
+
+
+        /*
+        String recipeId = null;
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null)
+        {
+            // retrieve category name from the Intent
+            recipeId = extras.getString("id");
+        }
+         */
         /*
         if (savedInstanceState == null)
         {
@@ -117,6 +174,8 @@ public class SpecificRecipeFragment extends Fragment
         }
         */
 
+        nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
+
         vpRecipe = view.findViewById(R.id.vpRecipe);
         tabRecipe = view.findViewById(R.id.tabRecipe);
 
@@ -124,6 +183,8 @@ public class SpecificRecipeFragment extends Fragment
         vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle());
         vpRecipe.setAdapter(vpAdapter);
 
+        //vpRecipe.setUserInputEnabled(false);
+        vpRecipe.requestDisallowInterceptTouchEvent(true);
 
         TextView txt = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
 
@@ -136,23 +197,42 @@ public class SpecificRecipeFragment extends Fragment
                         //tab.setText("Ingredients");
                         TextView txtIngredients = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtIngredients.setText("Ingredients");
+                        nestedScrollView = view.findViewById(R.id.nestedScrollIngredients);
                         tab.setCustomView(txtIngredients);
                         break;
                     case 1:
                         //tab.setText("Directions");
                         TextView txtDirections = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtDirections.setText("Directions");
+                        nestedScrollView = view.findViewById(R.id.nestedScrollDirections);
                         tab.setCustomView(txtDirections);
                         break;
                     case 2:
                         //tab.setText("Nutrition");
                         TextView txtNutrition = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtNutrition.setText("Nutrition");
+                        nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
                         tab.setCustomView(txtNutrition);
                         break;
                 }
             }
         }).attach();
+
+        // If scrollview is at the top (not scrolled), allow MotionLayout transition.  Otherwise, disable MotionLayout transition
+        // prevents the user from pulling the image up and down while the scrollview is scrolled.  Image should only move when scrollview is at the top
+        /*nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (nestedScrollView.getScrollY() == 0)
+                {
+                    motionLayout.getTransition(R.id.recipeTransition).setEnable(true);
+                }
+                else
+                {
+                    motionLayout.getTransition(R.id.recipeTransition).setEnable(false);
+                }
+            }
+        });*/
 
         //binding = ActivityMainBinding.inflate(this, container, false);
         //binding = DataBindingUtil.setContentView(this, R.layout.fragment_my_recipes_specific_recipe);

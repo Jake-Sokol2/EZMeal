@@ -1,5 +1,7 @@
 package navigationFragments.MyRecipes.RecipeAdapters;
 
+import android.view.MotionEvent;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,11 +24,11 @@ public class RecipeViewPagerAdapter extends FragmentStateAdapter
         switch (position)
         {
             case 1:
-                return new RecipeInstructionsFragment();
-            case 2:
                 return new RecipeDirectionsFragment();
-            default:
+            case 2:
                 return new RecipeNutritionFragment();
+            default:
+                return new RecipeInstructionsFragment();
         }
     }
 

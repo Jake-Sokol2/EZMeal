@@ -1,7 +1,9 @@
 package navigationFragments.FindRecipes.FindRecipesAdapters;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +13,21 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ezmeal.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
 {
-    private List<List<String>> list;
-    private List<List<Bitmap>> bitmapList;
+    private List<String> list;
+    private List<Uri> uriList;
     private MainAdapterListener listener;
-
+    private Uri uri;
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -63,10 +67,10 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         }
     }
 
-    public FindRecipesAdapter(List<List<String>> list, List<List<Bitmap>> bitmap)
+    public FindRecipesAdapter(List<String> list, List<Uri> uriList)
     {
         this.list = list;
-        this.bitmapList = bitmap;
+        this.uriList = uriList;
     }
 
     @Override
@@ -79,13 +83,14 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        String recipeTitle = list.get(position).get(0);
+        String recipeTitle = list.get(position);
+        uri = uriList.get(position);
         //String recipeImageUrl = list.get(position).get(1);
-        Bitmap bitmap =  bitmapList.get(position).get(0);
+        //Bitmap bitmap =  bitmapList.get(position).get(0);
 
+        //holder.recipeImage.setImageBitmap(bitmap);
         holder.txtTitle.setText(recipeTitle);
-        holder.recipeImage.setImageBitmap(bitmap);
-
+        Glide.with(holder.itemView.getContext()).load(uri).into(holder.recipeImage);
        // try
        // {
             //holder.recipeImage.setImageBitmap(bitmap);
@@ -164,7 +169,7 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         return list.size();
     }
 
-    public void setData(List<List<String>> list)
+    public void setData(List<String> list)
     {
         this.list = list;
         notifyDataSetChanged();

@@ -36,6 +36,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
@@ -168,6 +169,7 @@ public class GroupListsFragment extends Fragment
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);
         adapter = new MainRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList.setAdapter(adapter);
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
