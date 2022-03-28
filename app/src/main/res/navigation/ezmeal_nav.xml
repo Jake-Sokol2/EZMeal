@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_group_lists" />
     <fragment
         android:id="@+id/groupRecipesFragment"
-        android:name="navigationFragments.GroupRecipesFragment"
+        android:name="navigationFragments.FindRecipes.GroupRecipesFragment"
         android:label="Group Recipes"
         tools:layout="@layout/fragment_group_recipes" />
     <fragment

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/groupRecipesFragment"
         android:icon="@drawable/ic_group_recipes"
-        android:title="Group Recipes" />
+        android:title="Find Recipes" />
     <item
         android:id="@+id/myRecipesFragment"
         android:icon="@drawable/ic_my_recipes"

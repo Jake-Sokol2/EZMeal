@@ -38,23 +38,28 @@ public class Registration extends AppCompatActivity {
         });
     }
 
-    public void registerActivityStart(){
+    public void registerActivityStart()
+    {
         EditText emailText = findViewById(R.id.emailRegisterTextField);
         email = emailText.getText().toString();
         EditText passwordText = findViewById(R.id.passwordRegisterTextField);
         password = passwordText.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
+                        if (task.isSuccessful())
+                        {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             openActivityMain();
 
-                        } else {
+                        } else
+                        {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(Registration.this, "Authentication failed.",

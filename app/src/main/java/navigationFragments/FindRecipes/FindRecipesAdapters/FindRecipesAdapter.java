@@ -1,49 +1,53 @@
-package com.example.ezmeal;
+package navigationFragments.FindRecipes.FindRecipesAdapters;
 
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.widget.TextViewCompat;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.checkbox.MaterialCheckBox;
+import com.bumptech.glide.Glide;
+import com.example.ezmeal.R;
+import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
-public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder>
+public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
 {
-    private List<List<String>> list;
+    private List<String> list;
+    private List<Uri> uriList;
     private MainAdapterListener listener;
+    private Uri uri;
+
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView txtListItem;
-        public TextView txtBrandName;
-        public CheckBox checkCrossOffItem;
+        public TextView txtTitle;
+        //public TextView txtBrandName;
+        //public CheckBox checkCrossOffItem;
+        public ImageView recipeImage;
 
         public MainViewHolder(View view)
         {
             super(view);
-            txtListItem = (TextView) view.findViewById(R.id.txtListItem);
-            txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
-            checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+            //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
+            //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
+            //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+
+            recipeImage = view.findViewById(R.id.imgRecipe);
+            txtTitle = view.findViewById(R.id.txtTitleRecipe);
+
+            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -51,10 +55,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 {
                     if (listener != null)
                     {
+                        // was getAdapterPosition(), this is deprecated now
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
-                            listener.onItemClick(position, txtListItem);
+                            listener.onItemClick(position, cardView);
                         }
                     }
                 }
@@ -62,24 +67,60 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         }
     }
 
-    public MainRecyclerAdapter(List<List<String>> list)
+    public FindRecipesAdapter(List<String> list, List<Uri> uriList)
     {
         this.list = list;
+        this.uriList = uriList;
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. activity_main_recycler_item_rounded, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. recipe_recycler_recipe_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
+        String recipeTitle = list.get(position);
+        uri = uriList.get(position);
+        //String recipeImageUrl = list.get(position).get(1);
+        //Bitmap bitmap =  bitmapList.get(position).get(0);
+
+        //holder.recipeImage.setImageBitmap(bitmap);
+        holder.txtTitle.setText(recipeTitle);
+        Glide.with(holder.itemView.getContext()).load(uri).into(holder.recipeImage);
+       // try
+       // {
+            //holder.recipeImage.setImageBitmap(bitmap);
+       // }
+        //catch (IOException e)
+        //{
+        //    e.printStackTrace();
+        //}
+        //Picasso.get().load(recipeImageUrl).into(holder.recipeImage);
+
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
+
+        /*
         String itemName = list.get(position).get(0);
-        String brand = list.get(position).get(1);
+        String itemImage = list.get(position).get(1);
+
+        if (itemName != null)
+        {
+            holder.txtTitle.setText(itemName);
+        }
+
+        if (itemImage != null)
+        {
+            holder.recipeImage.setImageResource();
+        }
+        */
+
+
+
+        /*
         holder.txtListItem.setText(itemName);
 
         // todo: fix/remove this line when user data is being saved on app exit
@@ -119,6 +160,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 }
             }
         });
+         */
     }
 
     @Override
@@ -127,7 +169,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         return list.size();
     }
 
-    public void setData(List<List<String>> list)
+    public void setData(List<String> list)
     {
         this.list = list;
         notifyDataSetChanged();
@@ -135,7 +177,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     public interface MainAdapterListener
     {
-        void onItemClick(int position, TextView text);
+        void onItemClick(int position, CardView cardView);
     }
 
     public void setOnItemClickListener(MainAdapterListener listener)
