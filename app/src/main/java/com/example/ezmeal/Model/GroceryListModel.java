@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,6 +21,7 @@ import java.util.List;
 public class GroceryListModel {
     private List<List<String>> shoppingList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public GroceryListModel(){
         shoppingList = new ArrayList<List<String>>();
@@ -54,8 +57,17 @@ public class GroceryListModel {
     }
 
     public void addDataToFirestore(String itemName, String brandName) {
+
+        //Code to make retrieval of items user specific
+        //Get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Get current user instance
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
         CollectionReference dbItems = db.collection("Items");
-        Item item = new Item(itemName, brandName);
+        Item item = new Item(itemName, brandName, email);
         dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
