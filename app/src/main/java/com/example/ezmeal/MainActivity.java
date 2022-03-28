@@ -18,6 +18,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.Objects;
 
 import navigationFragments.FindRecipes.GroupRecipesFragment;
+import navigationFragments.GroupListsFragment;
 import navigationFragments.GroupSettingsFragment;
 import navigationFragments.MyRecipes.MyRecipesFragment;
 import navigationFragments.MyRecipes.SpecificRecipeFragment;
@@ -152,6 +153,11 @@ public class MainActivity extends AppCompatActivity
     }
     */
 
+    public void reloadListFrag()
+    {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.groupListsFragment, new GroupListsFragment()).commit();
+    }
 
 
 

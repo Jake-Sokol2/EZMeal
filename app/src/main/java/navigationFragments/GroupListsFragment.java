@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,7 +59,7 @@ public class GroupListsFragment extends Fragment
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
-    private MainRecyclerAdapter adapter;
+    public MainRecyclerAdapter adapter;
 
     //Firebase variables
     private FirebaseFirestore db;
@@ -65,6 +67,7 @@ public class GroupListsFragment extends Fragment
 
     private String brand, name;
     private double quantity;
+    private View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -160,7 +163,21 @@ public class GroupListsFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
-        View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+        view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+        adapter = new MainRecyclerAdapter(theModel.getGroceryList());
+
+        // back stack logs
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+
+        return view;
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
 
         // back stack logs
         String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
@@ -168,7 +185,7 @@ public class GroupListsFragment extends Fragment
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);
-        adapter = new MainRecyclerAdapter(theModel.getGroceryList());
+        //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
@@ -192,7 +209,7 @@ public class GroupListsFragment extends Fragment
                 // Code to use the selected name goes here…
                 //long tv = adapter.getItemId(position);
 
-               // RecyclerView.ViewHolder vh = adapter.getView;
+                // RecyclerView.ViewHolder vh = adapter.getView;
                 //View v = vh.itemView;
             }
 
@@ -204,7 +221,7 @@ public class GroupListsFragment extends Fragment
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
+
                 //Fragment manager to open new AddListItemFrag
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -214,74 +231,7 @@ public class GroupListsFragment extends Fragment
                 ft.add(addItemFrag, "TAG").addToBackStack("TAG");
                 ft.show(addItemFrag);
                 ft.commit();
-                Log.d("I'm here", "help");
 
-                 */
-
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
-                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
-                //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
-                //FragmentManager foo = getActivity().getSupportFragmentManager();
-                //bottomSheet.show();
-                //openActivityAddListItem();
-
-                //bottomSheetDialog.setContentView(R.layout.fragment_add_list_item)
-
-                bottomSheetDialog.setContentView(bottomSheetView);
-                bottomSheetDialog.show();
-
-                // onClickListeners for the bottom sheet's views
-                Button btnConfirm = (Button) bottomSheetDialog.findViewById(R.id.btnConfirm);
-                EditText editItemName = (EditText) bottomSheetDialog.findViewById(R.id.editItemName);
-                EditText editBrandName = (EditText) bottomSheetDialog.findViewById(R.id.editBrandName);
-                //TextView txtBrandName = (TextView)
-
-                //Code to make retrieval of items user specific
-                //Get FirebaseAuth instance
-                mAuth = FirebaseAuth.getInstance();
-
-                //Get current user instance
-                FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-                String email = mCurrentUser.getEmail();
-
-                btnConfirm.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
-                        adapter.notifyDataSetChanged();
-
-
-                        itemName = editItemName.getText().toString();
-                        brandName = editBrandName.getText().toString();
-
-                        if (TextUtils.isEmpty(itemName)) {
-                            itemname.setError("Enter item name");
-                        } else if (TextUtils.isEmpty(brandName)) {
-                            brandname.setError("Enter brand name");
-                        } else {
-                            addDataToFirestore(itemName, brandName, email);
-                        }
-
-
-                        // Closes the bottom sheet after the User enters an item
-                        bottomSheetDialog.dismiss();
-                    }//end additembutton in add item BottomSheetDialog
-                });//OnclickListener
-
-
-
-                /*
-                    TODO: This block creates new frag, but layout is fucky.
-                     Implement cancel button as well so you can get back to previous screen.
-                */
-/*
-                AddListItemFragment AddItemFrag = new AddListItemFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.group_lists, AddItemFrag);
-                transaction.commit();
-*/
 
             }//Add item onClick
         });
@@ -302,25 +252,28 @@ public class GroupListsFragment extends Fragment
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
-                                brand = document.getString("brand");
-                                name = document.getString("name");
-                                //quantity = document.getDouble("quantity");
-                                if (Objects.equals(document.getString("user"), email)) {
-                                    theModel.addItem(name, brand);
+                            Log.d("MYDEBUG", document.getId() + " => " + document.getData());
+                            brand = document.getString("brand");
+                            name = document.getString("name");
+                            //quantity = document.getDouble("quantity");
+                            if (Objects.equals(document.getString("user"), email)) {
+                                theModel.addItem(name, brand);
 
-                                }
-                                adapter.notifyDataSetChanged();
+                            }
+                            adapter.notifyDataSetChanged();
                         }
                     } else {
                         Log.w("MYDEBUG", "Error getting documents.", task.getException());
                     }
                 }
                 });
-
-        return view;
     }
-
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        adapter.notifyDataSetChanged();
+    }
 
     // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
     @Override
@@ -331,6 +284,12 @@ public class GroupListsFragment extends Fragment
         theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
+
+
+
+
+
+
 /*
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){

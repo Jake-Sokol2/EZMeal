@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
@@ -112,12 +113,8 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     editBrandName.setError("Enter brand name...");
                 }
 
+                theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                 theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
-
-                /*
-                theModel.addItem(editItemName.getText().toString(),
-                    editBrandName.getText().toString());
-                */
 
                 adapter.notifyDataSetChanged();
                 dismiss();
@@ -132,26 +129,6 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         }
     }
 
-    @Override
-    public void onDismiss(final DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
-        /*
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof DialogInterface.OnDismissListener) {
-            ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
-        }
-        */
-        FragmentManager fm = getParentFragmentManager();
-
-        Log.w("TRACK BACKSTACK 2.0", "------------------------");
-        int backStackCount = getParentFragmentManager().getBackStackEntryCount();
-        for (int i = 0; i < backStackCount; i++)
-        {
-            Log.w("TRACK BACKSTACK 2.0", "back stack tags     : " + getParentFragmentManager().getBackStackEntryAt(i).getName());
-        }
-        //dismiss();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
@@ -161,4 +138,6 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         outState.putSerializable("model", (Serializable) toSave);
         super.onSaveInstanceState(outState);
     }
+
+
 }
