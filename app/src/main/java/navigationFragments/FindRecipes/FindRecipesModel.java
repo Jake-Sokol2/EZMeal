@@ -1,10 +1,12 @@
 package navigationFragments.FindRecipes;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.model.UriLoader;
 import com.example.ezmeal.Model.Item;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,27 +19,20 @@ import java.util.List;
 
 public class FindRecipesModel
 {
-    private List<List<String>> recipeList;
-    private List<List<Bitmap>> bitmapList;
+    private List<String> recipeList;
+    private List<Uri> uriList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public FindRecipesModel()
     {
-        recipeList = new ArrayList<List<String>>();
-        bitmapList = new ArrayList<List<Bitmap>>();
+        recipeList = new ArrayList<String>();
+        uriList = new ArrayList<Uri>();
     }
 
-    public void addItem(String recipeTitle, Bitmap bitmapImage)
+    public void addItem(String recipeTitle, Uri uri)
     {
-        List<String> tmp = new ArrayList<String>();
-        tmp.add(recipeTitle);
-        tmp.add("");
-
-        List<Bitmap> tmpBitmap = new ArrayList<Bitmap>();
-        tmpBitmap.add(bitmapImage);
-
-        bitmapList.add(tmpBitmap);
-        recipeList.add(tmp);
+        uriList.add(uri);
+        recipeList.add(recipeTitle);
     }
 
     public int listLength()
@@ -70,17 +65,17 @@ public class FindRecipesModel
     }
      */
 
-    public List<List<String>> getRecipeList()
+    public List<String> getRecipeList()
     {
         return recipeList;
     }
 
-    public List<List<Bitmap>> getBitmapList()
+    public List<Uri> getUriList()
     {
-        return bitmapList;
+        return uriList;
     }
 
-    public void restoreRecipeList(List<List<String>> recipeList)
+    public void restoreRecipeList(List<String> recipeList)
     {
         this.recipeList = recipeList;
     }
