@@ -10,6 +10,17 @@
     >
 
 
+    <Button
+        android:id="@+id/btnAddToMyRecipes"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="356dp"
+        android:layout_marginTop="16dp"
+        android:elevation="6dp"
+        android:text="+"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpRecipe"
         android:layout_width="match_parent"

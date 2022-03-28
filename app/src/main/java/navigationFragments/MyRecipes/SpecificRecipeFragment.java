@@ -4,12 +4,14 @@ import static androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.sax.Element;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,12 +28,17 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
+import com.example.ezmeal.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,6 +47,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import navigationFragments.FindRecipes.Recipe;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
@@ -52,6 +60,7 @@ import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 public class SpecificRecipeFragment extends Fragment
 {
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
     private GroceryListModel theModel = new GroceryListModel();
@@ -67,6 +76,8 @@ public class SpecificRecipeFragment extends Fragment
 
     private MotionLayout motionLayout;
     private NestedScrollView nestedScrollView;
+
+    private Button btnAddToMyRecipes;
 
     //private FragmentMyRecipesSpecificRecipeBinding binding;
 
@@ -156,6 +167,63 @@ public class SpecificRecipeFragment extends Fragment
             }
         });
 
+        btnAddToMyRecipes = view.findViewById(R.id.btnAddToMyRecipes);
+        btnAddToMyRecipes.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // todo: make it so user can't add same recipe twice
+                db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                    {
+                        List<String> categories = (List<String>) task.getResult().get("categories");
+                        List<String> directions = (List<String>) task.getResult().get("directions");
+                        List<String> ingredients = (List<String>) task.getResult().get("ingredients");
+                        List<String> nutrition = (List<String>) task.getResult().get("nutrition");
+                        String imageUrl = task.getResult().getString("imageUrl");
+                        String title = task.getResult().getString("title");
+
+                        mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+                        String email = mCurrentUser.getEmail();
+
+                        UserRecipe savedRecipe = new UserRecipe(categories, directions, ingredients, nutrition, imageUrl, title, email);
+
+                        CollectionReference dbRecipes = db.collection("UserRecipes");
+
+                        dbRecipes.document("FD7Nl08xRvF0GLSKBmB9").collection("SpecificUserCollection").add(savedRecipe)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+                        {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference)
+                            {
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener()
+                        {
+                            @Override
+                            public void onFailure(@NonNull Exception e)
+                            {
+
+                            }
+                        });
+
+                        Log.i("test", String.valueOf(task.getResult().getData()));
+                        Log.i("test", "pause");
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+
+                    }
+                });
+            }
+        });
 
         /*
         String recipeId = null;

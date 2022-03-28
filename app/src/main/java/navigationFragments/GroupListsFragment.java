@@ -311,8 +311,6 @@ public class GroupListsFragment extends Fragment
 
                                 }
                                 adapter.notifyDataSetChanged();
-
-
                         }
                     } else {
                         Log.w("MYDEBUG", "Error getting documents.", task.getException());

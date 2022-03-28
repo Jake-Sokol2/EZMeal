@@ -104,6 +104,15 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="52dp" />
+        <Constraint
+            android:id="@+id/btnAddToMyRecipes"
+            android:elevation="8dp"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="356dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -183,6 +192,22 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="176dp" />
+        <Constraint
+            android:id="@+id/imageRecipeTitleShadow"
+            android:elevation="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/btnAddToMyRecipes"
+            android:elevation="8dp"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="356dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/SwipeDown" />
 </MotionScene>
