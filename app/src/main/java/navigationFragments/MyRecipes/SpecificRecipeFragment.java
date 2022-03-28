@@ -194,7 +194,7 @@ public class SpecificRecipeFragment extends Fragment
 
                         CollectionReference dbRecipes = db.collection("UserRecipes");
 
-                        dbRecipes.document("FD7Nl08xRvF0GLSKBmB9").collection("SpecificUserCollection").add(savedRecipe)
+                        dbRecipes.document("NXymfsA4umqVUO97gXQa").collection("SpecificUserCollection").add(savedRecipe)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
                         {
                             @Override
