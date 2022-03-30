@@ -239,7 +239,6 @@ public class GroupRecipesFragment extends Fragment
                 // pass recipeId to specific recipe page so that it knows which recipe to use
                 bundle.putString("id", recipeId.get(position));
 
-
                 /*endFrag.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()

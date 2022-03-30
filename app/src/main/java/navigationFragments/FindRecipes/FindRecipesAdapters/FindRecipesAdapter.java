@@ -28,14 +28,15 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
     private List<Uri> uriList;
     private MainAdapterListener listener;
     private Uri uri;
-
+    public TextView txtTitle;
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView txtTitle;
+
         //public TextView txtBrandName;
         //public CheckBox checkCrossOffItem;
         public ImageView recipeImage;
+        public TextView txtTitle;
 
         public MainViewHolder(View view)
         {
@@ -44,8 +45,8 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
 
-            recipeImage = view.findViewById(R.id.imgRecipe);
-            txtTitle = view.findViewById(R.id.txtTitleRecipe);
+            recipeImage = view.findViewById(R.id.imgRecipeImage);
+            txtTitle = view.findViewById(R.id.textTitleRecipe);
 
             CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
@@ -76,7 +77,7 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. recipe_recycler_recipe_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_recycler_recipe_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
