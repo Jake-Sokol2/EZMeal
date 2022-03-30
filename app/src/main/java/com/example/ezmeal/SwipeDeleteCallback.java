@@ -8,11 +8,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+
 import android.view.View;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.ezmeal.Model.GroceryListModel;
 
 import javax.annotation.Nonnull;
 
@@ -23,8 +25,9 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private Drawable icon;
     private final ColorDrawable background;
     private MainRecyclerAdapter mAdapter;
+    private GroceryListModel theModel;
 
-    public SwipeDeleteCallback(MainRecyclerAdapter adapter)
+    public SwipeDeleteCallback(MainRecyclerAdapter adapter, GroceryListModel theModel)
     {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         mAdapter = adapter;
@@ -32,14 +35,15 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
         //icon = ContextCompat.getDrawable(mAdapter.getContext(),
         //        R.drawable.ic_delete_white_36);
         background = new ColorDrawable(Color.RED);
+        this.theModel = theModel;
     }
 
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
     {
-        int position = viewHolder.getAbsoluteAdapterPosition();
-        mAdapter.deleteItem(position);
+        theModel.removeItem(viewHolder.getAbsoluteAdapterPosition());
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

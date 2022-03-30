@@ -7,21 +7,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GroceryListModel {
     private List<List<String>> shoppingList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    String itemName;
+    String brandName;
+    String docID;
 
     public GroceryListModel(){
         shoppingList = new ArrayList<List<String>>();
@@ -44,6 +52,38 @@ public class GroceryListModel {
         tmp.add(String.valueOf(itemQuantity));
 
         shoppingList.add(tmp);
+    }
+
+    public void removeItem(int position)
+    {
+        itemName = shoppingList.get(position).get(0);
+        brandName = shoppingList.get(position).get(1);
+
+        shoppingList.remove(position);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+        CollectionReference dbItems = db.collection("Items");
+        dbItems.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("Hoyah", document.getId() + " => " + document.getData());
+                        if(Objects.equals(itemName, document.getString("name")) &&
+                        Objects.equals(document.getString("user"), email))
+                        {
+                            docID = document.getId();
+                            dbItems.document(docID).delete();
+                        } //end if
+                    }// end for loop
+                } //end task successful
+            } //end onComplete
+
+        });
+
     }
 
     public int listLength()

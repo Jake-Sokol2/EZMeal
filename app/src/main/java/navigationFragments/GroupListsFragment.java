@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.R;
+import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -188,10 +189,13 @@ public class GroupListsFragment extends Fragment
         //adapter = new MainRecyclerAdapter(groceryList);
         //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
-        rvGroupList.setAdapter(adapter);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
+        //Attach the ItemTouchHelper
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel));
+        itemTouchHelper.attachToRecyclerView(rvGroupList);
 
         // Add some data
         // todo: remove this when user's list saves on application close
