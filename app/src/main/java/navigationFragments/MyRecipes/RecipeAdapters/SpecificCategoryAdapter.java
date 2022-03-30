@@ -19,9 +19,8 @@ import java.util.List;
 public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCategoryAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<Bitmap> imageList;
+    private List<String> url;
     private MainAdapterListener listener;
-    private Bitmap image;
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -38,8 +37,8 @@ public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCatego
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
 
-            recipeImage = view.findViewById(R.id.imgRecipe);
-            txtTitle = view.findViewById(R.id.txtTitleRecipe);
+            recipeImage = view.findViewById(R.id.imgRecipeImage);
+            txtTitle = view.findViewById(R.id.textTitleRecipe);
 
             CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
@@ -61,10 +60,10 @@ public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCatego
         }
     }
 
-    public SpecificCategoryAdapter(List<String> list, List<Bitmap> imageList)
+    public SpecificCategoryAdapter(List<String> list, List<String> urls)
     {
         this.list = list;
-        this.imageList = imageList;
+        this.url = urls;
     }
 
     @Override
@@ -78,10 +77,10 @@ public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCatego
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
         String recipeTitle = list.get(position);
-        image = imageList.get(position);
+        String urlssss = url.get(position);
 
         holder.txtTitle.setText(recipeTitle);
-        holder.recipeImage.setImageBitmap(image);
+        Glide.with(holder.itemView.getContext()).load(urlssss).into(holder.recipeImage);
     }
 
     @Override
