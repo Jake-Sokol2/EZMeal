@@ -79,82 +79,9 @@ public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCatego
     {
         String recipeTitle = list.get(position);
         image = imageList.get(position);
-        //String recipeImageUrl = list.get(position).get(1);
-        //Bitmap bitmap =  bitmapList.get(position).get(0);
 
-        //holder.recipeImage.setImageBitmap(bitmap);
         holder.txtTitle.setText(recipeTitle);
         holder.recipeImage.setImageBitmap(image);
-       // try
-       // {
-            //holder.recipeImage.setImageBitmap(bitmap);
-       // }
-        //catch (IOException e)
-        //{
-        //    e.printStackTrace();
-        //}
-        //Picasso.get().load(recipeImageUrl).into(holder.recipeImage);
-
-        // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
-
-        /*
-        String itemName = list.get(position).get(0);
-        String itemImage = list.get(position).get(1);
-
-        if (itemName != null)
-        {
-            holder.txtTitle.setText(itemName);
-        }
-
-        if (itemImage != null)
-        {
-            holder.recipeImage.setImageResource();
-        }
-        */
-
-
-
-        /*
-        holder.txtListItem.setText(itemName);
-
-        // todo: fix/remove this line when user data is being saved on app exit
-        holder.txtBrandName.setText(brand);
-
-        // if user doesn't enter a brand, set brand textview to be invisible, disabled, and 0 width/height so that cardview shrinks in size
-        if (Objects.equals(brand, ""))
-        {
-            holder.txtBrandName.setVisibility(View.INVISIBLE);
-            holder.txtBrandName.setEnabled(false);
-            holder.txtBrandName.setHeight(0);
-            holder.txtBrandName.setWidth(0);
-        }
-        else
-        {
-            holder.txtBrandName.setText(brand);
-        }
-
-        // CheckBox on click listener
-        holder.checkCrossOffItem.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                // add strikethrough flag to grocery list item name's paint flags.  When clicked a second time, the strikethrough flag is removed
-                holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
-
-                // when grocery list item is checked
-                boolean isChecked = holder.checkCrossOffItem.isChecked();
-                if (isChecked)
-                {
-                    holder.txtListItem.setTextColor(ContextCompat.getColor(view.getContext(), R.color.group_list_item_crossed_out));
-                }
-                else
-                {
-                    holder.txtListItem.setTextColor(ContextCompat.getColor(view.getContext(), R.color.group_list_item));
-                }
-            }
-        });
-         */
     }
 
     @Override

@@ -34,7 +34,7 @@
             motion:layout_constraintTop_toBottomOf="@+id/imageTheRecipe"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/rvIngredients"
+            android:id="@+id/rvDirectionsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             motion:layout_constraintTop_toBottomOf="@+id/txtNutritionalInfo"
@@ -59,6 +59,6 @@
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             motion:layout_constraintTop_toBottomOf="@+id/txtNutritionalInfo"
-            android:id="@+id/rvIngredients" />
+            android:id="@+id/rvDirectionsList" />
     </ConstraintSet>
 </MotionScene>

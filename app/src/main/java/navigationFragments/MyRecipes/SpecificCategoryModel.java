@@ -37,26 +37,6 @@ public class SpecificCategoryModel
         imageList.clear();
     }
 
-    /*
-    public void addDataToFirestore(String itemName, String brandName) {
-        CollectionReference dbItems = db.collection("Items");
-        Item item = new Item(itemName, brandName);
-        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                //Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
-                Log.i("Item added", "success");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
-                Log.i("Item failed to add.", "failure");
-            }
-        });
-    }
-     */
-
     public List<String> getRecipeList()
     {
         return recipeList;

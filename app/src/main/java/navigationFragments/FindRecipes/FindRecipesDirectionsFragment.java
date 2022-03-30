@@ -1,20 +1,25 @@
-package navigationFragments.MyRecipes;
+package navigationFragments.FindRecipes;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.MyRecipes.RecipeAdapters.DirectionsRecyclerAdapter;
@@ -22,14 +27,15 @@ import navigationFragments.MyRecipes.RecipeModels.DirectionsModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RecipeDirectionsFragment#newInstance} factory method to
+ * Use the {@link FindRecipesDirectionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeDirectionsFragment extends Fragment {
-
+public class FindRecipesDirectionsFragment extends Fragment
+{
     private DirectionsModel directionsModel = new DirectionsModel();
     private RecyclerView rvDirections;
     private DirectionsRecyclerAdapter directionsRecyclerAdapter;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public List<String> directions;
 
@@ -42,7 +48,7 @@ public class RecipeDirectionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RecipeDirectionsFragment() {
+    public FindRecipesDirectionsFragment() {
         // Required empty public constructor
     }
 
@@ -55,8 +61,8 @@ public class RecipeDirectionsFragment extends Fragment {
      * @return A new instance of fragment RecipeDirectionsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipeDirectionsFragment newInstance(String param1, String param2) {
-        RecipeDirectionsFragment fragment = new RecipeDirectionsFragment();
+    public static FindRecipesDirectionsFragment newInstance(String param1, String param2) {
+        FindRecipesDirectionsFragment fragment = new FindRecipesDirectionsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -81,6 +87,7 @@ public class RecipeDirectionsFragment extends Fragment {
 
         Bundle extras = getArguments();
         String recipeId = extras.getString("id");
+        //ArrayList<String> directions = extras.getStringArrayList("directions");
 
         rvDirections = (RecyclerView) view.findViewById(R.id.rvDirection);
         directionsRecyclerAdapter = new DirectionsRecyclerAdapter(directionsModel.getDirectionList());
@@ -90,7 +97,31 @@ public class RecipeDirectionsFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvDirections.getContext(), DividerItemDecoration.VERTICAL);
         rvDirections.addItemDecoration(dividerItemDecoration);
 
-        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                directions = (ArrayList<String>) task.getResult().get("directions");
+
+                for (int i = 0; i < directions.size(); i++)
+                {
+                    if (directions.get(i) != null)
+                    {
+                        directionsModel.addItem(directions.get(i));
+                    }
+                    else
+                    {
+                        i = directions.size();
+                    }
+                }
+
+                directionsRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        /*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         directions = sqlDb.testDao().getDirections(recipeId);
@@ -105,8 +136,8 @@ public class RecipeDirectionsFragment extends Fragment {
             {
                 i = directions.size();
             }
-        }
-        directionsRecyclerAdapter.notifyDataSetChanged();
+        }*/
+
 
         return view;
     }

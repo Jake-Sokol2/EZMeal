@@ -1,7 +1,14 @@
-package navigationFragments.MyRecipes;
+package navigationFragments.FindRecipes;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -10,12 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
+import com.bumptech.glide.Glide;
 import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
@@ -29,7 +31,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.MyRecipes.RecipeAdapters.IngredientsRecyclerAdapter;
@@ -37,10 +44,10 @@ import navigationFragments.MyRecipes.RecipeModels.IngredientsModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RecipeIngredientsFragment#newInstance} factory method to
+ * Use the {@link FindRecipesIngredientsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeIngredientsFragment extends Fragment{
+public class FindRecipesIngredientsFragment extends Fragment{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,6 +63,7 @@ public class RecipeIngredientsFragment extends Fragment{
 
     public List<String> ingredients;
     public boolean itemAdded = false;
+    public ArrayList<String> ingredientsArray;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -64,7 +72,7 @@ public class RecipeIngredientsFragment extends Fragment{
     private String mParam1;
     private String mParam2;
 
-    public RecipeIngredientsFragment() {
+    public FindRecipesIngredientsFragment() {
         // Required empty public constructor
     }
 
@@ -77,8 +85,8 @@ public class RecipeIngredientsFragment extends Fragment{
      * @return A new instance of fragment RecipeInstructionsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipeIngredientsFragment newInstance(String param1, String param2) {
-        RecipeIngredientsFragment fragment = new RecipeIngredientsFragment();
+    public static FindRecipesIngredientsFragment newInstance(String param1, String param2) {
+        FindRecipesIngredientsFragment fragment = new FindRecipesIngredientsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -110,9 +118,39 @@ public class RecipeIngredientsFragment extends Fragment{
         rvIngredients.addItemDecoration(dividerItemDecoration);
 
         Bundle extras = getArguments();
+
         String recipeId = extras.getString("id");
 
-        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                ingredients = (ArrayList<String>) task.getResult().get("ingredients");
+
+                for (int i = 0; i < ingredients.size(); i++)
+                {
+                    if (ingredients.get(i) != null)
+                    {
+                        ingredientsModel.addItem(ingredients.get(i));
+                    }
+                    else
+                    {
+                        i = ingredients.size();
+                    }
+                }
+
+                ingredientsRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
+
+        //ingredientsArray = extras.getStringArrayList("ingredients");
+
+
+
+
+
+        /*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         ingredients = sqlDb.testDao().getIngredients(recipeId);
@@ -128,9 +166,14 @@ public class RecipeIngredientsFragment extends Fragment{
                 i = ingredients.size();
             }
         }
-        ingredientsRecyclerAdapter.notifyDataSetChanged();
+        ingredientsRecyclerAdapter.notifyDataSetChanged();*/
 
         // add all ingredients for this recipe to the user's Item collection in Firestore
+
+
+        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
         btnAddToList = view.findViewById(R.id.btnAddToList);
         btnAddToList.setOnClickListener(new View.OnClickListener()
         {
@@ -170,7 +213,6 @@ public class RecipeIngredientsFragment extends Fragment{
                                                 public void onSuccess(DocumentReference documentReference) {
                                                     // keep track that an item was added so we can tell the user with a toast later
                                                     itemAdded = true;
-
                                                 }
                                             });
                                         }

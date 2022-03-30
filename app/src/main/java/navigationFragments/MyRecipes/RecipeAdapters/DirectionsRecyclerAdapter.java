@@ -12,7 +12,7 @@ import com.example.ezmeal.R;
 
 import java.util.List;
 
-public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<IngredientsRecyclerAdapter.MainViewHolder>
+public class DirectionsRecyclerAdapter extends RecyclerView.Adapter<DirectionsRecyclerAdapter.MainViewHolder>
 {
     private List<String> list;
     private MainAdapterListener listener;
@@ -22,14 +22,14 @@ public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<Ingredients
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
         private CardView cardView;
-        private TextView txtIngredient;
+        private TextView txtDirection;
 
         public MainViewHolder(View view)
         {
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtIngredient = (TextView) view.findViewById(R.id.txtIngredient);
+            txtDirection = (TextView) view.findViewById(R.id.txtDirections);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -37,7 +37,6 @@ public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<Ingredients
                 {
                     if (listener != null)
                     {
-                        // was getAdapterPosition(), this is deprecated now
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
@@ -49,7 +48,7 @@ public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<Ingredients
         }
     }
 
-    public IngredientsRecyclerAdapter(List<String> list)
+    public DirectionsRecyclerAdapter(List<String> list)
     {
         this.list = list;
     }
@@ -57,14 +56,14 @@ public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<Ingredients
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. ingredients_recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.directions_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        holder.txtIngredient.setText(list.get(position));
+        holder.txtDirection.setText(list.get(position));
     }
 
     @Override

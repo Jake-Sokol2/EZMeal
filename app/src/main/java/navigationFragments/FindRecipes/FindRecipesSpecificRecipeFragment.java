@@ -21,6 +21,7 @@ import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.RoomDatabase.CategoryEntity;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.example.ezmeal.Model.GroceryListModel;
@@ -42,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesViewPagerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
@@ -68,17 +70,24 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
     private RecyclerView rvNutritionList;
     private MyRecipesNutritionRecyclerAdapter nutritionAdapter;
 
+    ArrayList<String> categories;
+    ArrayList<String> directions;
+    ArrayList<String> nutrition;
+    ArrayList<String> ingredients;
+    String imageUrl;
+    String title;
+
+    EZMealDatabase sqlDb;
+
     private MotionLayout motionLayout;
     private NestedScrollView nestedScrollView;
 
     private Button btnAddToMyRecipes;
     public String recipeId;
 
-    //private FragmentMyRecipesSpecificRecipeBinding binding;
-
     ViewPager2 vpRecipe;
     TabLayout tabRecipe;
-    RecipeViewPagerAdapter vpAdapter;
+    FindRecipesViewPagerAdapter vpAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -150,44 +159,74 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                 Glide.with(getContext()).load(Uri.parse(task.getResult().getString("imageUrl"))).into(imageRecipe);
                 txtRecipeTitle.setText(task.getResult().getString("title"));
 
+                categories = (ArrayList<String>) task.getResult().get("categories");
+                directions = (ArrayList<String>) task.getResult().get("directions");
+                ingredients = (ArrayList<String>) task.getResult().get("ingredients");
+                nutrition = (ArrayList<String>) task.getResult().get("nutrition");
+                imageUrl = task.getResult().getString("imageUrl");
+                title = task.getResult().getString("title");
+
                 Log.i("test", String.valueOf(task.getResult().getData()));
                 Log.i("test", "pause");
             }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
         });
 
+
+        FragmentManager fragmentManager = getChildFragmentManager();
+
+        // Parameters:
+        //@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<String> directions,
+        // ArrayList<String> nutrition, ArrayList<String> ingredients, String recipeId
+
+        vpRecipe = view.findViewById(R.id.vpRecipe);
+        tabRecipe = view.findViewById(R.id.tabRecipe);
+
+        // todo: find out what this actually does... and if we need it or not
+        vpRecipe.requestDisallowInterceptTouchEvent(true);
+
+        vpAdapter = new FindRecipesViewPagerAdapter(fragmentManager, getLifecycle(), directions, nutrition, ingredients, recipeId);
+        vpRecipe.setAdapter(vpAdapter);
+
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
         btnAddToMyRecipes = view.findViewById(R.id.btnAddToMyRecipes);
+
+        // if recipe already exists in user's My Recipes, hide the add recipe button
+        if(sqlDb.testDao().isRecipeExists(recipeId))
+        {
+            btnAddToMyRecipes.setEnabled(false);
+            btnAddToMyRecipes.setVisibility(View.GONE);
+        }
+
+
         btnAddToMyRecipes.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                CollectionReference dbItems = db.collection("Items");
+                //Item item = new Item(ingredients.get(i), null, email);
+
+                // prevent user from adding same list of ingredients twice
+                //.whereEqualTo(ingredients.get(i), null).get().addOnCompleteListener(
+
+
                 // todo: make it so user can't add same recipe twice
                 db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
                     {
-                        ArrayList<String> categories = (ArrayList<String>) task.getResult().get("categories");
-                        ArrayList<String> directions = (ArrayList<String>) task.getResult().get("directions");
-                        ArrayList<String> ingredients = (ArrayList<String>) task.getResult().get("ingredients");
-                        ArrayList<String> nutrition = (ArrayList<String>) task.getResult().get("nutrition");
-                        String imageUrl = task.getResult().getString("imageUrl");
-                        String title = task.getResult().getString("title");
-
                         // find largest list between categories, directions, ingredients, and nutrition
                         int maxSize = Collections.max(Arrays.asList(categories.size(), directions.size(), ingredients.size(), nutrition.size()));
 
-                        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+                        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-                        sqlDb.testDao().BOOM();
-                        sqlDb.testDao().BOOOOOOOM();
+                        // uncomment to nuke the users database
+                        //sqlDb.testDao().BOOM();
+                        //sqlDb.testDao().BOOOOOOOM();
 
                         Recipe newRecipe = new Recipe(imageUrl, title, recipeId);
                         sqlDb.testDao().insert(newRecipe);
@@ -242,12 +281,6 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                             sqlDb.testDao().insertItem(item);
                         }
 
-/*                        int i = 0;
-                        while(i < categories.size() || i < directions.size() || i < ingredients.size() || i < nutrition.size())
-                        {
-
-                        }*/
-
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
                         //String email = mCurrentUser.getEmail();
@@ -287,94 +320,6 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
 
                             }
                         });*/
-
-
-
-
-                      String recipeIdString = "recipe 1";
-                        String recipeIdString2 = "recipe 2";
-
-                        /*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-                        sqlDb.testDao().BOOM();
-
-                        Recipe newRecipe = new Recipe(imageUrl, title, recipeId);
-
-                        sqlDb.testDao().insert(newRecipe);*/
-                        //sqlDb.testDao().insertAllItems(recipeId, categories, ingredients, nutrition, directions);
-
-                        /*Recipe recipeMe = new Recipe("cookies.webp", "title", recipeIdString);
-                        Recipe recipeSomeone = new Recipe("spaghet.webp", "title2", recipeIdString2);
-
-                        sqlDb.testDao().insert(recipeMe);
-                        sqlDb.testDao().insert(recipeSomeone);
-                        // String recipeId, String category, String nutrition, String direction, String ingredient
-
-                        CategoryEntity item1 = new CategoryEntity(recipeIdString, "cat1", "n1", "d1", "i1");
-                        CategoryEntity item2 = new CategoryEntity(recipeIdString, "cat2", "n1", "d1", "i1");
-                        CategoryEntity item3 = new CategoryEntity(recipeIdString, null, "n1", "d1", "i1");
-                        CategoryEntity item4 = new CategoryEntity(recipeIdString, null, "n1", "d1", "i1");
-                        CategoryEntity item5 = new CategoryEntity(recipeIdString, null, "n1", "d1", null);
-
-                        CategoryEntity item11 = new CategoryEntity(recipeIdString2, "cat11", "n11", "d11", "i11");
-                        CategoryEntity item12 = new CategoryEntity(recipeIdString2, "cat22", "n11", "d11", "i11");
-                        CategoryEntity item13 = new CategoryEntity(recipeIdString2, null, "n11", "d11", "i11");
-                        CategoryEntity item14 = new CategoryEntity(recipeIdString2, null, "n11", "d11", "i11");
-                        CategoryEntity item15 = new CategoryEntity(recipeIdString2, null, "n11", "d11", null);
-
-                        sqlDb.testDao().insertItem(item1);
-                        sqlDb.testDao().insertItem(item2);
-                        sqlDb.testDao().insertItem(item3);
-                        sqlDb.testDao().insertItem(item4);
-                        sqlDb.testDao().insertItem(item5);
-                        sqlDb.testDao().insertItem(item11);
-                        sqlDb.testDao().insertItem(item12);
-                        sqlDb.testDao().insertItem(item13);
-                        sqlDb.testDao().insertItem(item14);
-                        sqlDb.testDao().insertItem(item15);
-
-                        List<Recipe> recipeList = sqlDb.testDao().getAll();*/
-
-                        //sqlDb.testDao().BOOM();
-
-                        Log.i("a","a");
-
-                        /*
-                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("recipes", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(savedRecipe);
-                        editor.putString(recipeId, json);
-
-                        editor.apply();
-                        */
-
-
-
-
-
-
-
-
-                        /*dbRecipes.document(mCurrentUser.getUid()).collection("SpecificUserCollection").add(savedRecipe)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-                        {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference)
-                            {
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener()
-                        {
-                            @Override
-                            public void onFailure(@NonNull Exception e)
-                            {
-
-                            }
-                        });*/
-
-                        Log.i("test", String.valueOf(task.getResult().getData()));
-                        Log.i("test", "pause");
                     }
                 }).addOnFailureListener(new OnFailureListener()
                 {
@@ -405,16 +350,6 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         */
 
         nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
-
-        vpRecipe = view.findViewById(R.id.vpRecipe);
-        tabRecipe = view.findViewById(R.id.tabRecipe);
-
-        FragmentManager fragmentManager = getChildFragmentManager();
-        vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle());
-        vpRecipe.setAdapter(vpAdapter);
-
-        //vpRecipe.setUserInputEnabled(false);
-        vpRecipe.requestDisallowInterceptTouchEvent(true);
 
         TextView txt = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
 

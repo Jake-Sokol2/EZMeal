@@ -1,5 +1,7 @@
 package navigationFragments.MyRecipes;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,11 +18,16 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Query;
 import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.CategoryEntity;
@@ -72,8 +79,9 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
     private MotionLayout motionLayout;
     private NestedScrollView nestedScrollView;
 
-    private Button btnAddToMyRecipes;
+    private Button btnDeleteFromMyRecipes;
     public String recipeId;
+    private boolean confirmChoice;
 
     //private FragmentMyRecipesSpecificRecipeBinding binding;
 
@@ -153,215 +161,49 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
         txtRecipeTitle.setText(recipeCategoryTuple.getTitle());
         Glide.with(getContext()).load(Uri.parse(recipeCategoryTuple.getPathToImage())).into(imageRecipe);
 
-        //SendDataToViewPager2 sendData = (SendDataToViewPager2) getActivity().getSupportFragmentManager().findFragmentById(R.)
-        //imageUrl = sqlDb.testDao().getImage(recipeId);
 
+        confirmChoice = false;
 
-
-
-
-        Log.i("a","a");
-        /*db = FirebaseFirestore.getInstance();
-        CollectionReference dbRecipes = db.collection("Recipes");
-
-        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                Glide.with(getContext()).load(Uri.parse(task.getResult().getString("imageUrl"))).into(imageRecipe);
-                txtRecipeTitle.setText(task.getResult().getString("title"));
-
-                Log.i("test", String.valueOf(task.getResult().getData()));
-                Log.i("test", "pause");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });*/
-
-        btnAddToMyRecipes = view.findViewById(R.id.btnAddToMyRecipes);
-        btnAddToMyRecipes.setOnClickListener(new View.OnClickListener()
+        btnDeleteFromMyRecipes = view.findViewById(R.id.btnDeleteFromMyRecipes);
+        btnDeleteFromMyRecipes.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                // todo: make it so user can't add same recipe twice
-                /*db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+
+                builder.setTitle("Remove " + recipeCategoryTuple.getTitle()).setMessage("Are you sure you want to delete this recipe?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                    public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        *//*ArrayList<String> categories = (ArrayList<String>) task.getResult().get("categories");
-                        ArrayList<String> directions = (ArrayList<String>) task.getResult().get("directions");
-                        ArrayList<String> ingredients = (ArrayList<String>) task.getResult().get("ingredients");
-                        ArrayList<String> nutrition = (ArrayList<String>) task.getResult().get("nutrition");
-                        String imageUrl = task.getResult().getString("imageUrl");
-                        String title = task.getResult().getString("title");*//*
+                        confirmChoice = true;
+                        dialogInterface.dismiss();
 
-
-
-
-                        mAuth = FirebaseAuth.getInstance();
-                        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-                        //String email = mCurrentUser.getEmail();
-
-                        //UserRecipe savedRecipe = new UserRecipe(categories, directions, ingredients, nutrition, imageUrl, title, recipeId);
-
-
-                        //CollectionReference dbRecipes = db.collection("UserRecipes");
-
-                        //ArrayList<UserRecipe> userRecipeList = new ArrayList<UserRecipe>();
-                        //userRecipeList.add(savedRecipe);
-
-
-                        //getContext().deleteDatabase("EZMealDatabase");
-
-                        *//*db.collection("Recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                        // if user clicked yes in confirm deletion dialog, delete the recipe and navigate up to the previous screen
+                        if (confirmChoice)
                         {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task)
-                            {
-                                for (QueryDocumentSnapshot document : task.getResult())
-                                {
-                                    Log.i("retrieve", document.getId() + "=> " + document.getData());
-                                    String title = document.getString("title");
-                                    Uri uri = Uri.parse(document.getString("imageUrl"));
-
-                                    //findRecipesModel.addItem(title, uri);
-                                    //findRecipesAdapter.notifyDataSetChanged();
-                                    //recipeId.add(document.getId());
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener()
-                        {
-                            @Override
-                            public void onFailure(@NonNull Exception e)
-                            {
-
-                            }
-                        });*//*
-
-
-
-
-                      String recipeIdString = "recipe 1";
-                        String recipeIdString2 = "recipe 2";
-
-                        *//*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-                        sqlDb.testDao().BOOM();
-
-                        Recipe newRecipe = new Recipe(imageUrl, title, recipeId);
-
-                        sqlDb.testDao().insert(newRecipe);*//*
-                        //sqlDb.testDao().insertAllItems(recipeId, categories, ingredients, nutrition, directions);
-
-                        *//*Recipe recipeMe = new Recipe("cookies.webp", "title", recipeIdString);
-                        Recipe recipeSomeone = new Recipe("spaghet.webp", "title2", recipeIdString2);
-
-                        sqlDb.testDao().insert(recipeMe);
-                        sqlDb.testDao().insert(recipeSomeone);
-                        // String recipeId, String category, String nutrition, String direction, String ingredient
-
-                        CategoryEntity item1 = new CategoryEntity(recipeIdString, "cat1", "n1", "d1", "i1");
-                        CategoryEntity item2 = new CategoryEntity(recipeIdString, "cat2", "n1", "d1", "i1");
-                        CategoryEntity item3 = new CategoryEntity(recipeIdString, null, "n1", "d1", "i1");
-                        CategoryEntity item4 = new CategoryEntity(recipeIdString, null, "n1", "d1", "i1");
-                        CategoryEntity item5 = new CategoryEntity(recipeIdString, null, "n1", "d1", null);
-
-                        CategoryEntity item11 = new CategoryEntity(recipeIdString2, "cat11", "n11", "d11", "i11");
-                        CategoryEntity item12 = new CategoryEntity(recipeIdString2, "cat22", "n11", "d11", "i11");
-                        CategoryEntity item13 = new CategoryEntity(recipeIdString2, null, "n11", "d11", "i11");
-                        CategoryEntity item14 = new CategoryEntity(recipeIdString2, null, "n11", "d11", "i11");
-                        CategoryEntity item15 = new CategoryEntity(recipeIdString2, null, "n11", "d11", null);
-
-                        sqlDb.testDao().insertItem(item1);
-                        sqlDb.testDao().insertItem(item2);
-                        sqlDb.testDao().insertItem(item3);
-                        sqlDb.testDao().insertItem(item4);
-                        sqlDb.testDao().insertItem(item5);
-                        sqlDb.testDao().insertItem(item11);
-                        sqlDb.testDao().insertItem(item12);
-                        sqlDb.testDao().insertItem(item13);
-                        sqlDb.testDao().insertItem(item14);
-                        sqlDb.testDao().insertItem(item15);
-
-                        List<Recipe> recipeList = sqlDb.testDao().getAll();*//*
-
-                        //sqlDb.testDao().BOOM();
-
-                        Log.i("a","a");
-
-                        *//*
-                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("recipes", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(savedRecipe);
-                        editor.putString(recipeId, json);
-
-                        editor.apply();
-                        *//*
-
-
-
-
-
-
-
-
-             *//*dbRecipes.document(mCurrentUser.getUid()).collection("SpecificUserCollection").add(savedRecipe)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-                        {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference)
-                            {
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener()
-                        {
-                            @Override
-                            public void onFailure(@NonNull Exception e)
-                            {
-
-                            }
-                        });*//*
-
-                        Log.i("test", String.valueOf(task.getResult().getData()));
-                        Log.i("test", "pause");*/
-
-        /*            }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-
+                            sqlDb.testDao().deleteSingleRecipeFromItem(recipeId);
+                            sqlDb.testDao().deleteSingleRecipeFromRecipe(recipeId);
+                            Navigation.findNavController(getActivity(), R.id.fragContainer).navigateUp();
+                        }
                     }
-                });*/
+                }).setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
-
-        /*
-        String recipeId = null;
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null)
-        {
-            // retrieve category name from the Intent
-            recipeId = extras.getString("id");
-        }
-         */
-        /*
-        if (savedInstanceState == null)
-        {
-            getParentFragmentManager().beginTransaction().setReorderingAllowed(true).add(R.id.fragmentContainerView, RecipeInstructionsFragment.class, null)
-                    .commit();
-        }
-        */
 
         nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
 
@@ -372,7 +214,6 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
         vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle());
         vpRecipe.setAdapter(vpAdapter);
 
-        //vpRecipe.setUserInputEnabled(false);
         vpRecipe.requestDisallowInterceptTouchEvent(true);
 
         TextView txt = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
@@ -383,26 +224,29 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                 switch(position)
                 {
                     case 0:
-                        //tab.setText("Ingredients");
+                    {
                         TextView txtIngredients = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtIngredients.setText("Ingredients");
                         nestedScrollView = view.findViewById(R.id.nestedScrollIngredients);
                         tab.setCustomView(txtIngredients);
                         break;
+                    }
                     case 1:
-                        //tab.setText("Directions");
+                    {
                         TextView txtDirections = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtDirections.setText("Directions");
                         nestedScrollView = view.findViewById(R.id.nestedScrollDirections);
                         tab.setCustomView(txtDirections);
                         break;
+                    }
                     case 2:
-                        //tab.setText("Nutrition");
+                    {
                         TextView txtNutrition = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
                         txtNutrition.setText("Nutrition");
                         nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
                         tab.setCustomView(txtNutrition);
                         break;
+                    }
                 }
             }
         }).attach();

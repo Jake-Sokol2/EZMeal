@@ -42,16 +42,31 @@ public interface TestDao {
     @Query("SELECT COUNT(recipeId) FROM Recipe")
     LiveData<Integer> getDataCount();
 
-    @Query("SELECT pathToImage, title FROM Recipe WHERE recipeId LIKE :rid")
+    @Query("SELECT pathToImage, title FROM Recipe WHERE recipeId = :rid")
     public RecipeCategoryTuple getSpecificCategoryItems(String rid);
 
     @RawQuery
     public String getImage2(SupportSQLiteQuery query);
 
-    @Query("SELECT pathToImage FROM recipe WHERE recipeId LIKE :rid")
+    @Query("SELECT pathToImage FROM recipe WHERE recipeId = :rid")
     public String getImage(String rid);
 
-    @Query("SELECT ingredient FROM CategoryEntity WHERE recipeId LIKE :rid")
+    @Query("SELECT ingredient FROM CategoryEntity WHERE recipeId = :rid")
     public List<String> getIngredients(String rid);
+
+    @Query("SELECT direction FROM CategoryEntity WHERE recipeId = :rid")
+    public List<String> getDirections(String rid);
+
+    @Query("SELECT nutrition FROM CategoryEntity WHERE recipeId = :rid")
+    public List<String> getNutrition(String rid);
+
+    @Query("DELETE FROM CategoryEntity WHERE recipeId = :rid")
+    public void deleteSingleRecipeFromItem(String rid);
+
+    @Query("DELETE FROM Recipe WHERE recipeId = :rid")
+    public void deleteSingleRecipeFromRecipe(String rid);
+
+    @Query("SELECT EXISTS(SELECT * FROM Recipe WHERE recipeId = :rid)")
+    public boolean isRecipeExists(String rid);
 }
 

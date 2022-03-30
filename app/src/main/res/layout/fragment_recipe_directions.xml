@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nestedScrollDirections"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="navigationFragments.MyRecipes.RecipeDirectionsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,18 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="match_parent"
-            android:layout_height="1100dp"
-            android:text="directions"
-            app:layout_constraintTop_toBottomOf="@+id/rvIngredients"
-            tools:layout_editor_absoluteX="28dp" />
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvIngredients"
+            android:id="@+id/rvDirection"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="492dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

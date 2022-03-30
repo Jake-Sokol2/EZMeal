@@ -11,11 +11,11 @@
 
 
     <Button
-        android:id="@+id/btnAddToMyRecipes"
+        android:id="@+id/btnDeleteFromMyRecipes"
         android:layout_width="39dp"
         android:layout_height="39dp"
         android:layout_marginStart="356dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:elevation="6dp"
         android:text="-"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,17 +75,6 @@
             android:layout_height="wrap_content"
             android:text="Wednesday" />
     </com.google.android.material.tabs.TabLayout>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="176dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vpRecipe" />
 
     <TextView
         android:id="@+id/txtRecipeTitle"
