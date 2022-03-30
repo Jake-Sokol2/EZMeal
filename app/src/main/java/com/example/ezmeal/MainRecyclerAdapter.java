@@ -142,4 +142,5 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     {
         this.listener = listener;
     }
+
 }

@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
@@ -150,4 +151,6 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         outState.putSerializable("model", (Serializable) toSave);
         super.onSaveInstanceState(outState);
     }
+
+
 }

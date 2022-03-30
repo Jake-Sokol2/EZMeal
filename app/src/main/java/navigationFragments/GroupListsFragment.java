@@ -8,6 +8,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +30,7 @@ import android.widget.Toast;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.R;
+import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,6 +75,7 @@ public class GroupListsFragment extends Fragment
     private String brand, name;
     private double quantity;
     public String email;
+    private View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -142,7 +147,6 @@ public class GroupListsFragment extends Fragment
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
 
-
         //Get current user instance
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
@@ -167,19 +171,39 @@ public class GroupListsFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
-        View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+        view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+        adapter = new MainRecyclerAdapter(theModel.getGroceryList());
 
         // back stack logs
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
 
+        return view;
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        // back stack logs
+        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);
         adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
+        //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList.setAdapter(adapter);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
+        //Attach the ItemTouchHelper
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel));
+        itemTouchHelper.attachToRecyclerView(rvGroupList);
 
         // Add some data
         // todo: remove this when user's list saves on application close
@@ -198,13 +222,14 @@ public class GroupListsFragment extends Fragment
                 // Code to use the selected name goes here…
                 //long tv = adapter.getItemId(position);
 
-               // RecyclerView.ViewHolder vh = adapter.getView;
+                // RecyclerView.ViewHolder vh = adapter.getView;
                 //View v = vh.itemView;
             }
 
 
 
         });
+
 
         Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
@@ -342,6 +367,7 @@ public class GroupListsFragment extends Fragment
                             //quantity = document.getDouble("quantity");
                             if (Objects.equals(document.getString("user"), email)) {
                                 theModel.addItem(name, brand);
+
                             }
                             adapter.notifyDataSetChanged();
                         }
@@ -352,6 +378,28 @@ public class GroupListsFragment extends Fragment
                 });
 
     }
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        adapter.notifyDataSetChanged();
+    }
+
+    // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        theModel.dumpList();
+        rvGroupList.getAdapter().notifyDataSetChanged();
+    }
+
+
+
+
+
+
 
 /*
     @Override
