@@ -319,7 +319,12 @@ public class MyRecipesFragment extends Fragment
     }
 
 
-
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        myRecipesModel.dumpList();
+    }
 
 /*    @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
