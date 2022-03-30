@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/motionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/fragment_my_recipes_specific_recipe_scene"
+    android:background="#ffffff"
+    >
+
+
+    <Button
+        android:id="@+id/btnDeleteFromMyRecipes"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="356dp"
+        android:layout_marginTop="28dp"
+        android:elevation="6dp"
+        android:text="-"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageRecipeImage" />
+
+    <ImageView
+        android:id="@+id/imageRecipeTitleShadow"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/recipe_title_shadow"
+        android:elevation="4dp"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabRecipe"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="304dp"
+
+
+        android:background="@drawable/tab_background"
+        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".6"
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="0dp"
+        app:tabMaxWidth="0dp"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="1dp"
+        app:tabPaddingStart="-.5dp"
+        app:tabRippleColor="@null">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monday" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tuesday" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wednesday" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <TextView
+        android:id="@+id/txtRecipeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="52dp"
+        android:elevation="5dp"
+        android:text="Fried Chicken"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageRecipeImage"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@drawable/recycler_image_shadow"
+        android:scaleType="centerCrop"
+        app:layout_constraintHeight_percent=".9"
+        app:layout_constraintStart_toStartOf="@+id/imageRecipeBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/crispy_fried_chicken_exps_tohjj22_6445_dr__02_03_11b" />
+
+    <ImageView
+        android:id="@+id/imageRecipeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@drawable/recycler_image_shadow"
+        android:elevation="1dp"
+        app:layout_constraintHeight_percent=".9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

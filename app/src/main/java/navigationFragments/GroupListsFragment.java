@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,14 +65,16 @@ public class GroupListsFragment extends Fragment
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
-    public MainRecyclerAdapter adapter;
+    private MainRecyclerAdapter adapter;
 
     //Firebase variables
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    public FirebaseUser mCurrentUser;
 
     private String brand, name;
     private double quantity;
+    public String email;
     private View view;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -182,8 +188,6 @@ public class GroupListsFragment extends Fragment
         super.onResume();
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);
@@ -274,12 +278,7 @@ public class GroupListsFragment extends Fragment
                 }
                 });
     }
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        adapter.notifyDataSetChanged();
-    }
+
 
     // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
     @Override
@@ -290,6 +289,15 @@ public class GroupListsFragment extends Fragment
         theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        adapter.notifyDataSetChanged();
+    }
+
 
 
 

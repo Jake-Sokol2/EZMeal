@@ -2,31 +2,30 @@ package navigationFragments.MyRecipes;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 import androidx.transition.AutoTransition;
 
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
+import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeModels.MyRecipesModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,11 +34,11 @@ import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
  */
 public class MyRecipesFragment extends Fragment
 {
-    private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
-    private GroceryListModel theModel = new GroceryListModel();
+    //private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
+    private MyRecipesModel myRecipesModel = new MyRecipesModel();
 
     List<String> list = new ArrayList<String>();
-    private RecyclerView rvGroupList;
+    private RecyclerView rvCategories;
     private MyRecipesRecyclerAdapter adapter;
     // old size expand code
     /*private List<List<String>> myRecipeCategory = new ArrayList<List<String>>();
@@ -104,39 +103,36 @@ public class MyRecipesFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_my_recipes_category, container, false);
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
 
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
-        adapter = new MyRecipesRecyclerAdapter(theModel.getGroceryList());
-        rvGroupList.setAdapter(adapter);
+        rvCategories = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
+        adapter = new MyRecipesRecyclerAdapter(myRecipesModel.getCategoryList(), myRecipesModel.getUrl());
+        rvCategories.setAdapter(adapter);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         //rvGroupList.setLayoutManager(layoutManager);
 
         //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
 
-        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvGroupList.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvCategories.setLayoutManager(linearLayoutManager);
 
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
+        //theModel.addItem("Milk", "milk brand");
 
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
+        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        List<String> cat = sqlDb.testDao().getCategories();
+        List<String> urls = sqlDb.testDao().getCatUrl();
+        for (int i = 0; i < cat.size(); i++)
+        {
+            if (cat.get(i) != null)
+            {
+                myRecipesModel.addItem(cat.get(i), urls.get(i));
+            }
+        }
+
+        adapter.notifyDataSetChanged();
 
         adapter.setOnItemClickListener(new MyRecipesRecyclerAdapter.MainAdapterListener() {
             @Override
@@ -152,7 +148,7 @@ public class MyRecipesFragment extends Fragment
 
                 String categoryName = "Chicken";
 
-                Fragment endFrag = new MyRecipesSpecificCategoryFragment();
+                //Fragment endFrag = new MyRecipesSpecificCategoryFragment();
                 // FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
 
                 AutoTransition at = new AutoTransition();
@@ -166,7 +162,17 @@ public class MyRecipesFragment extends Fragment
                 String name = "transition" + position;
 
                 Bundle bundle = new Bundle();
-                bundle.putString("category", ViewCompat.getTransitionName(cardView));
+                bundle.putString("id", "test");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_myRecipesFragment_to_myRecipesSpecificCategoryFragment, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.fade_out)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+
+
+                /*
                 endFrag.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
@@ -177,6 +183,7 @@ public class MyRecipesFragment extends Fragment
                         .addToBackStack("specific_category")
                         .replace(R.id.fragContainer, endFrag)
                         .commit();
+                 */
 
                 /*
                 Intent intent = new Intent(getActivity(), MyRecipesSingleCategory.class);
@@ -314,7 +321,7 @@ public class MyRecipesFragment extends Fragment
 
 
 
-    @Override
+/*    @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
         Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
         super.onSaveInstanceState(outState);
@@ -326,5 +333,5 @@ public class MyRecipesFragment extends Fragment
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
 
 
-    }
+    }*/
 }

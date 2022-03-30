@@ -35,7 +35,7 @@
             motion:layout_constraintTop_toBottomOf="@+id/imageRecipe"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/rvInstruction"
+            android:id="@+id/rvDirectionsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             motion:layout_constraintTop_toBottomOf="@+id/textView8"
@@ -53,15 +53,6 @@
             android:layout_height="0dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
-        <Constraint
-            android:id="@+id/fragmentContainerView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            motion:layout_constraintTop_toBottomOf="@+id/tabRecipe"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="132dp" />
         <Constraint
             android:id="@+id/tabRecipe"
             android:elevation="4dp"
@@ -106,13 +97,13 @@
             android:layout_marginTop="52dp" />
         <Constraint
             android:id="@+id/btnAddToMyRecipes"
-            android:elevation="8dp"
+            android:elevation="6dp"
             android:layout_width="39dp"
             android:layout_height="39dp"
             android:layout_marginStart="356dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="28dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -184,15 +175,6 @@
             motion:layout_constraintTop_toBottomOf="@id/imageRecipeImage"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/fragmentContainerView"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            motion:layout_constraintTop_toBottomOf="@id/imageRecipeImage"
-            motion:layout_constraintHorizontal_bias="0.0"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="176dp" />
-        <Constraint
             android:id="@+id/imageRecipeTitleShadow"
             android:elevation="4dp"
             android:layout_width="match_parent"
@@ -201,13 +183,13 @@
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:id="@+id/btnAddToMyRecipes"
-            android:elevation="8dp"
+            android:elevation="6dp"
             android:layout_width="39dp"
             android:layout_height="39dp"
             android:layout_marginStart="356dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="28dp" />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/SwipeDown" />
 </MotionScene>

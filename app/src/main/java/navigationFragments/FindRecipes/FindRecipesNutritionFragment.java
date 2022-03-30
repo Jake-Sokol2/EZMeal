@@ -1,38 +1,41 @@
-package navigationFragments.MyRecipes;
+package navigationFragments.FindRecipes;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import navigationFragments.MyRecipes.RecipeAdapters.DirectionsRecyclerAdapter;
-import navigationFragments.MyRecipes.RecipeAdapters.IngredientsRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.NutritionRecyclerAdapter;
-import navigationFragments.MyRecipes.RecipeModels.IngredientsModel;
 import navigationFragments.MyRecipes.RecipeModels.NutritionModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RecipeNutritionFragment#newInstance} factory method to
+ * Use the {@link FindRecipesNutritionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeNutritionFragment extends Fragment {
+public class FindRecipesNutritionFragment extends Fragment {
 
     private NutritionModel nutritionModel = new NutritionModel();
     private RecyclerView rvNutrition;
     private NutritionRecyclerAdapter nutritionRecyclerAdapter;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public List<String> nutrition;
 
@@ -45,7 +48,7 @@ public class RecipeNutritionFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RecipeNutritionFragment() {
+    public FindRecipesNutritionFragment() {
         // Required empty public constructor
     }
 
@@ -58,8 +61,8 @@ public class RecipeNutritionFragment extends Fragment {
      * @return A new instance of fragment RecipeNutritionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipeNutritionFragment newInstance(String param1, String param2) {
-        RecipeNutritionFragment fragment = new RecipeNutritionFragment();
+    public static FindRecipesNutritionFragment newInstance(String param1, String param2) {
+        FindRecipesNutritionFragment fragment = new FindRecipesNutritionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -96,20 +99,30 @@ public class RecipeNutritionFragment extends Fragment {
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        nutrition = sqlDb.testDao().getNutrition(recipeId);
-
-        for (int i = 0; i < nutrition.size(); i++)
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
-            if (nutrition.get(i) != null)
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                nutritionModel.addItem(nutrition.get(i));
+                nutrition = (ArrayList<String>) task.getResult().get("nutrition");
+
+                for (int i = 0; i < nutrition.size(); i++)
+                {
+                    if (nutrition.get(i) != null)
+                    {
+                        nutritionModel.addItem(nutrition.get(i));
+                    }
+                    else
+                    {
+                        i = nutrition.size();
+                    }
+                }
+
+                nutritionRecyclerAdapter.notifyDataSetChanged();
             }
-            else
-            {
-                i = nutrition.size();
-            }
-        }
-        nutritionRecyclerAdapter.notifyDataSetChanged();
+        });
+
+
 
         return view;
     }

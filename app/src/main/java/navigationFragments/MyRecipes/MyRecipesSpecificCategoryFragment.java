@@ -1,25 +1,47 @@
 package navigationFragments.MyRecipes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
+import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeSpecificCategoryRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeAdapters.SpecificCategoryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,12 +50,16 @@ import navigationFragments.MyRecipes.RecipeAdapters.RecipeSpecificCategoryRecycl
  */
 public class MyRecipesSpecificCategoryFragment extends Fragment {
 
-    private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
-    private GroceryListModel theModel = new GroceryListModel();
+    private ArrayList<List<String>> recipeList = new ArrayList<List<String>>();
+    private SpecificCategoryModel specificCategoryModel = new SpecificCategoryModel();
+
+    public BottomNavigationView bottomNav;
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
-    private RecipeSpecificCategoryRecyclerAdapter adapter;
+    private SpecificCategoryAdapter adapter;
+
+    private List<String> recipeId;
 
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
@@ -90,12 +116,14 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.recipes_single_category, container, false);
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "Specific Category opened.  Count: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Specific Category opened.  Count: " + numOfBackstack);
 
         //mCard = view.findViewById(R.id.cardSingleCategory);
         //ViewCompat.setTransitionName(mCard, "test");
         //postponeEnterTransition(2, TimeUnit.SECONDS);
+        bottomNav =  (BottomNavigationView) getActivity().findViewById(R.id.bottomNavigationView);
+        //bottomNav.setSelectedItemId(R.id.groupListsFragment);
 
         String categoryName = null;
         Bundle extras = getActivity().getIntent().getExtras();
@@ -105,38 +133,88 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
             categoryName = extras.getString("category name");
         }
 
+        //((BottomNavigationView) view.findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.groupRecipesFragment);
+
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipes);
-        adapter = new RecipeSpecificCategoryRecyclerAdapter(theModel.getGroceryList());
+        adapter = new SpecificCategoryAdapter(specificCategoryModel.getRecipeList(), specificCategoryModel.getImageList());
         rvGroupList.setAdapter(adapter);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         //rvGroupList.setLayoutManager(layoutManager);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-
-        // LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvGroupList.setLayoutManager(gridLayoutManager);
-        theModel.addItem("Chicken", "R.drawable.crispy_fried_chicken_exps_tohjj22_6445_dr__02_03_11b");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
 
-        theModel.addItem("Milk", "");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
-        theModel.addItem("Milk", "");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
-        theModel.addItem("Milk", "");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
-        theModel.addItem("Milk", "");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
-        theModel.addItem("Milk", "");
-        theModel.addItem("Fruit", "");
-        theModel.addItem("Huevo", "");
+        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        //List<RecipeCategoryTuple> recipes = sqlDb.testDao().getSpecificCategoryItems();
+        //for(int i = 0; i < 2; i++)
+        //{
+/*        String image = "cookies.webp";
+        int id = getResources().getIdentifier("com.example.ezmeal:drawable/" + image, null, null);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
+        specificCategoryModel.addItem("test", bitmap);
+        image = "spaghet.webp";
+        id = getResources().getIdentifier("com.example.ezmeal:drawable/" + image, null, null);
+        bitmap = BitmapFactory.decodeResource(getResources(), id);
+        specificCategoryModel.addItem("test", bitmap);*/
+            //specificCategoryModel.addItem();
+        //}
+
+        //specificCategoryModel.addItem("Chicken", "R.drawable.crispy_fried_chicken_exps_tohjj22_6445_dr__02_03_11b");
+
+        //SharedPreferences sharedPreferences = getActivity().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        //Gson gson = new Gson();
+        //String json = sharedPreferences.getString("ghTwqzYq3mmp9apaZUZm", null);
+        //Type type = new TypeToken<UserRecipe>(){}.getType();
+        //UserRecipe recipe = gson.fromJson(sharedPreferences.getString("ghTwqzYq3mmp9apaZUZm", ""), UserRecipe);
+        //UserRecipe userRecipe = gson.fromJson(json, UserRecipe);
+
+        //String json = sharedPreferences.getString("ghTwqzYq3mmp9apaZUZm", null);
+        //UserRecipe userRecipe = gson.fromJson(json, UserRecipe.class);
+
+/*        InputStream inputStream = null;
+        AssetManager assetManager = getActivity().getAssets();
+        try
+        {
+*//*            inputStream = assetManager.open("co.webp");
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);
+            specificCategoryModel.addItem("test", bitmap);*//*
+            adapter.notifyDataSetChanged();
+            inputStream.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }*/
+
+        Bitmap bit = null;
+
+        specificCategoryModel.addItem("some title", bit);
 
 
-        adapter.setOnItemClickListener(new RecipeSpecificCategoryRecyclerAdapter.MainAdapterListener() {
+        //specificCategoryModel.addItem(userRecipe.getTitle(), Uri.parse(userRecipe.getImageUrl()));
+
+        //recipeId = new ArrayList<String>();
+
+        //recipeId.add("ghTwqzYq3mmp9apaZUZm");
+
+        adapter.setOnItemClickListener(new SpecificCategoryAdapter.MainAdapterListener()
+        {
             @Override
             public void onItemClick(int position, CardView cardView)
             {
@@ -150,7 +228,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
 
                 String categoryName = "Chicken";
 
-                Fragment endFrag = new SpecificRecipeFragment();
+
                 // FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
 
                 //AutoTransition at = new AutoTransition();
@@ -163,9 +241,21 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
 
                 String name = "transition" + position;
 
-                //Bundle bundle = new Bundle();
-                //bundle.putString("category", ViewCompat.getTransitionName(cardView));
-                //endFrag.setArguments(bundle);
+                Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_myRecipesSpecificCategoryFragment_to_myRecipesSpecificRecipeFragment, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+
+
+                /*
+                Fragment endFrag = new SpecificRecipeFragment();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         //.addSharedElement(cardView, "test")
@@ -174,7 +264,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
                         .addToBackStack("specific_recipe")
                         .replace(R.id.fragContainer, endFrag)
                         .commit();
-
+                 */
                 /*
                 Intent intent = new Intent(getActivity(), MyRecipesSingleCategory.class);
 
@@ -188,10 +278,9 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
 
                 ActivityCompat.startActivity(getActivity(), intent, activityOptionsCompat.toBundle());
                 */
-
-
             }
         });
+
 
 
 

@@ -1,5 +1,7 @@
 package navigationFragments.MyRecipes.RecipeAdapters;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,28 +16,32 @@ import com.example.ezmeal.R;
 
 import java.util.List;
 
-public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecyclerAdapter.MainViewHolder>
+public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCategoryAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<String> url;
+    private List<Bitmap> imageList;
     private MainAdapterListener listener;
-
+    private Bitmap image;
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        private CardView cardView;
-        private TextView txtDirection;
-        private TextView txtTitleRecipe;
-        private ImageView imgRecipe;
+        public TextView txtTitle;
+        //public TextView txtBrandName;
+        //public CheckBox checkCrossOffItem;
+        public ImageView recipeImage;
 
         public MainViewHolder(View view)
         {
             super(view);
+            //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
+            //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
+            //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
 
-            cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtTitleRecipe = (TextView) view.findViewById(R.id.txtTitleRecipe);
-            imgRecipe = (ImageView) view.findViewById(R.id.imgRecipe);
+            recipeImage = view.findViewById(R.id.imgRecipe);
+            txtTitle = view.findViewById(R.id.txtTitleRecipe);
+
+            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -43,6 +49,7 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
                 {
                     if (listener != null)
                     {
+                        // was getAdapterPosition(), this is deprecated now
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
@@ -54,27 +61,27 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
         }
     }
 
-    public MyRecipesRecyclerAdapter(List<String> list, List<String> url)
+    public SpecificCategoryAdapter(List<String> list, List<Bitmap> imageList)
     {
         this.list = list;
-        this.url = url;
+        this.imageList = imageList;
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_my_recipe_recycler_category_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. recipe_recycler_recipe_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        holder.txtTitleRecipe.setText(list.get(position));
+        String recipeTitle = list.get(position);
+        image = imageList.get(position);
 
-        String urllll = url.get(position);
-        Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
-
+        holder.txtTitle.setText(recipeTitle);
+        holder.recipeImage.setImageBitmap(image);
     }
 
     @Override

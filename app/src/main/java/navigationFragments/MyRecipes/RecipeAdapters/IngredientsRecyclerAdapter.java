@@ -3,21 +3,18 @@ package navigationFragments.MyRecipes.RecipeAdapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.ezmeal.R;
 
 import java.util.List;
 
-public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecyclerAdapter.MainViewHolder>
+public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<IngredientsRecyclerAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<String> url;
     private MainAdapterListener listener;
 
 
@@ -25,17 +22,14 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
         private CardView cardView;
-        private TextView txtDirection;
-        private TextView txtTitleRecipe;
-        private ImageView imgRecipe;
+        private TextView txtIngredient;
 
         public MainViewHolder(View view)
         {
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtTitleRecipe = (TextView) view.findViewById(R.id.txtTitleRecipe);
-            imgRecipe = (ImageView) view.findViewById(R.id.imgRecipe);
+            txtIngredient = (TextView) view.findViewById(R.id.txtIngredient);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -43,6 +37,7 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
                 {
                     if (listener != null)
                     {
+                        // was getAdapterPosition(), this is deprecated now
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
@@ -54,27 +49,22 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
         }
     }
 
-    public MyRecipesRecyclerAdapter(List<String> list, List<String> url)
+    public IngredientsRecyclerAdapter(List<String> list)
     {
         this.list = list;
-        this.url = url;
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_my_recipe_recycler_category_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. ingredients_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        holder.txtTitleRecipe.setText(list.get(position));
-
-        String urllll = url.get(position);
-        Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
-
+        holder.txtIngredient.setText(list.get(position));
     }
 
     @Override

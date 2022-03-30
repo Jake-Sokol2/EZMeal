@@ -13,17 +13,42 @@
     <fragment
         android:id="@+id/groupRecipesFragment"
         android:name="navigationFragments.FindRecipes.GroupRecipesFragment"
+
         android:label="Group Recipes"
-        tools:layout="@layout/fragment_group_recipes" />
+        tools:layout="@layout/fragment_group_recipes" >
+        <action
+            android:id="@+id/action_groupRecipesFragment_to_specificRecipeFragment"
+            app:destination="@id/specificRecipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myRecipesFragment"
         android:name="navigationFragments.MyRecipes.MyRecipesFragment"
         android:label="My Recipes"
-        tools:layout="@layout/fragment_my_recipes_category" />
+        tools:layout="@layout/fragment_my_recipes_category" >
+        <action
+            android:id="@+id/action_myRecipesFragment_to_myRecipesSpecificCategoryFragment"
+            app:destination="@id/myRecipesSpecificCategoryFragment" />
+    </fragment>
     <fragment
         android:id="@+id/groupSettingsFragment"
         android:name="navigationFragments.GroupSettingsFragment"
         android:label="Group Settings"
         tools:layout="@layout/fragment_group_settings" />
+    <fragment
+        android:id="@+id/specificRecipeFragment"
+        android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeFragment"
+        android:label="SpecificRecipeFragment" />
+    <fragment
+        android:id="@+id/myRecipesSpecificCategoryFragment"
+        android:name="navigationFragments.MyRecipes.MyRecipesSpecificCategoryFragment"
+        android:label="MyRecipesSpecificCategoryFragment" >
+        <action
+            android:id="@+id/action_myRecipesSpecificCategoryFragment_to_myRecipesSpecificRecipeFragment"
+            app:destination="@id/myRecipesSpecificRecipeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myRecipesSpecificRecipeFragment"
+        android:name="navigationFragments.MyRecipes.MyRecipesSpecificRecipeFragment"
+        android:label="MyRecipesSpecificRecipeFragment" />
 
 </navigation>

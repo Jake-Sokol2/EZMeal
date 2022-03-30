@@ -8,21 +8,21 @@ public class UserRecipe
     private List<String> categories;
     private List<String> directions;
     private List<String> ingredients;
-
     private List<String> nutrition;
     private String imageUrl;
     private String title;
-    private String email;
+    private String recipeId;
+
 
     public UserRecipe(List<String> categories, List<String> directions, List<String> ingredients,
-                      List<String> nutrition, String imageUrl, String title, String email)
+                      List<String> nutrition, String imageUrl, String title, String recipeId)
     {
-         this.categories = categories;
-         this.directions = directions;
-         this.nutrition = nutrition;
-         this.imageUrl = imageUrl;
-         this.title = title;
-         this.email = email;
+        this.categories = categories;
+        this.directions = directions;
+        this.nutrition = nutrition;
+        this.imageUrl = imageUrl;
+        this.title = title;
+        this.recipeId = recipeId;
     }
 
     public List<String> getCategories()
@@ -30,7 +30,7 @@ public class UserRecipe
         return categories;
     }
 
-    public void setCategories(ArrayList<String> categories)
+    public void setCategories(List<String> categories)
     {
         this.categories = categories;
     }
@@ -40,7 +40,7 @@ public class UserRecipe
         return directions;
     }
 
-    public void setDirections(ArrayList<String> directions)
+    public void setDirections(List<String> directions)
     {
         this.directions = directions;
     }
@@ -50,7 +50,7 @@ public class UserRecipe
         return ingredients;
     }
 
-    public void setIngredients(ArrayList<String> ingredients)
+    public void setIngredients(List<String> ingredients)
     {
         this.ingredients = ingredients;
     }
@@ -60,7 +60,7 @@ public class UserRecipe
         return nutrition;
     }
 
-    public void setNutrition(ArrayList<String> nutrition)
+    public void setNutrition(List<String> nutrition)
     {
         this.nutrition = nutrition;
     }
@@ -85,13 +85,13 @@ public class UserRecipe
         this.title = title;
     }
 
-    public String getEmail()
+    public String getRecipeId()
     {
-        return email;
+        return recipeId;
     }
 
-    public void setEmail(String email)
+    public void setRecipeId(String recipeId)
     {
-        this.email = email;
+        this.recipeId = recipeId;
     }
 }

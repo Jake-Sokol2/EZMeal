@@ -120,7 +120,6 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                 dismiss();
                 break;
 
-
             case R.id.btnCancel:
                 dismiss();
 
@@ -129,6 +128,20 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         }
     }
 
+    @Override
+    public void onDismiss(final DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        /*
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof DialogInterface.OnDismissListener) {
+            ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
+        }
+        */
+        FragmentManager fm = getParentFragmentManager();
+
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
