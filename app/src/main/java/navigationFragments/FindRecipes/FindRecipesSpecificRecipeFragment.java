@@ -144,7 +144,7 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         Bundle extras = getArguments();
         recipeId = extras.getString("id");
         Log.i("p", "a");
-
+        recipeId = "29z8BGDjftpfAtVHqSlm";
         ImageView imageRecipe = view.findViewById(R.id.imageRecipeImage);
         TextView txtRecipeTitle = view.findViewById(R.id.txtRecipeTitle);
 

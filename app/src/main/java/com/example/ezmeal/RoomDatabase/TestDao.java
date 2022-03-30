@@ -68,5 +68,15 @@ public interface TestDao {
 
     @Query("SELECT EXISTS(SELECT * FROM Recipe WHERE recipeId = :rid)")
     public boolean isRecipeExists(String rid);
+
+    @Query("SELECT DISTINCT category FROM CategoryEntity WHERE category NOT NULL")
+    public List<String> getCategories();
+
+    //@Query("SELECT Recipe.recipeID, Recipe.pathToImage, Recipe.title FROM Recipe join CategoryEntity on Recipe.recipeId = CategoryEntity.recipeId")
+
+    //@Query("SELECT ")
+
+    @Query("SELECT DISTINCT pathToImage FROM CategoryEntity JOIN Recipe on CategoryEntity.recipeId = Recipe.recipeID")
+    List<String> getCatUrl();
 }
 

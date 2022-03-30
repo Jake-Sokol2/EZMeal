@@ -19,7 +19,6 @@ import navigationFragments.FindRecipes.GroupRecipesFragment;
 import navigationFragments.GroupListsFragment;
 import navigationFragments.GroupSettingsFragment;
 import navigationFragments.MyRecipes.MyRecipesFragment;
-import navigationFragments.MyRecipes.SpecificRecipeFragment;
 
 public class MainActivity extends AppCompatActivity
 {

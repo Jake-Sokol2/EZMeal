@@ -2,34 +2,30 @@ package navigationFragments.MyRecipes;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 import androidx.transition.AutoTransition;
 
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
+import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeModels.MyRecipesModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,11 +34,11 @@ import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
  */
 public class MyRecipesFragment extends Fragment
 {
-    private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
-    private GroceryListModel theModel = new GroceryListModel();
+    //private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
+    private MyRecipesModel myRecipesModel = new MyRecipesModel();
 
     List<String> list = new ArrayList<String>();
-    private RecyclerView rvGroupList;
+    private RecyclerView rvCategories;
     private MyRecipesRecyclerAdapter adapter;
     // old size expand code
     /*private List<List<String>> myRecipeCategory = new ArrayList<List<String>>();
@@ -110,36 +106,33 @@ public class MyRecipesFragment extends Fragment
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
 
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
-        adapter = new MyRecipesRecyclerAdapter(theModel.getGroceryList());
-        rvGroupList.setAdapter(adapter);
+        rvCategories = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
+        adapter = new MyRecipesRecyclerAdapter(myRecipesModel.getCategoryList(), myRecipesModel.getUrl());
+        rvCategories.setAdapter(adapter);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         //rvGroupList.setLayoutManager(layoutManager);
 
         //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
 
-        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvGroupList.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvCategories.setLayoutManager(linearLayoutManager);
 
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
+        //theModel.addItem("Milk", "milk brand");
 
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
-        theModel.addItem("Milk", "milk brand");
-        theModel.addItem("Fruit", "fruit brand");
-        theModel.addItem("Huevo", "Huevo del super");
+        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        List<String> cat = sqlDb.testDao().getCategories();
+        List<String> urls = sqlDb.testDao().getCatUrl();
+        for (int i = 0; i < cat.size(); i++)
+        {
+            if (cat.get(i) != null)
+            {
+                myRecipesModel.addItem(cat.get(i), urls.get(i));
+            }
+        }
+
+        adapter.notifyDataSetChanged();
 
         adapter.setOnItemClickListener(new MyRecipesRecyclerAdapter.MainAdapterListener() {
             @Override
