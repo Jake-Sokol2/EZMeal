@@ -138,13 +138,9 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_specific_recipe, container, false);
 
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Specific Recipes opened.  Count: " + numOfBackstack);
-
         Bundle extras = getArguments();
         recipeId = extras.getString("id");
-        Log.i("p", "a");
-        recipeId = "29z8BGDjftpfAtVHqSlm";
+
         ImageView imageRecipe = view.findViewById(R.id.imageRecipeImage);
         TextView txtRecipeTitle = view.findViewById(R.id.txtRecipeTitle);
 
@@ -165,9 +161,6 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                 nutrition = (ArrayList<String>) task.getResult().get("nutrition");
                 imageUrl = task.getResult().getString("imageUrl");
                 title = task.getResult().getString("title");
-
-                Log.i("test", String.valueOf(task.getResult().getData()));
-                Log.i("test", "pause");
             }
         });
 

@@ -49,6 +49,7 @@ public class MyRecipesFragment extends Fragment
     public MyRecipesFragmentViewModel vm;
     */
 
+    public List<String> cat;
     private View cardView;
     //private FragmentMyRecipesAnimatedBinding binding;
 
@@ -122,7 +123,7 @@ public class MyRecipesFragment extends Fragment
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        List<String> cat = sqlDb.testDao().getCategories();
+        cat = sqlDb.testDao().getCategories();
         List<String> urls = sqlDb.testDao().getCatUrl();
         for (int i = 0; i < cat.size(); i++)
         {
@@ -162,13 +163,14 @@ public class MyRecipesFragment extends Fragment
                 String name = "transition" + position;
 
                 Bundle bundle = new Bundle();
-                bundle.putString("id", "test");
+                bundle.putString("category", cat.get(position));
 
                 NavController navController = Navigation.findNavController(view);
                 navController.navigate(R.id.action_myRecipesFragment_to_myRecipesSpecificCategoryFragment, bundle, new NavOptions.Builder()
                         .setEnterAnim(R.anim.slide_in)
                         .setExitAnim(R.anim.fade_out)
                         .setPopExitAnim(R.anim.slide_out)
+                        .setPopEnterAnim(R.anim.fade_in)
                         .build());
 
 
@@ -319,7 +321,12 @@ public class MyRecipesFragment extends Fragment
     }
 
 
-
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        myRecipesModel.dumpList();
+    }
 
 /*    @Override
     public void onSaveInstanceState(@NonNull Bundle outState){

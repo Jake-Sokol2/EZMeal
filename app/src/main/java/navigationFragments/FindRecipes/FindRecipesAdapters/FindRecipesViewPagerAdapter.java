@@ -46,8 +46,8 @@ public class FindRecipesViewPagerAdapter extends FragmentStateAdapter
 
         Fragment frag;
         Bundle bundleRecipeId = new Bundle();
-        Gson gson = new Gson();
-        String json;
+        /*Gson gson = new Gson();
+        String json;*/
 
         // determines which fragment is created depending on which tab is selected
         // pass the recipeId in so the fragment knows what to query firebase for the image, and pass in the existing
@@ -57,30 +57,29 @@ public class FindRecipesViewPagerAdapter extends FragmentStateAdapter
             case 1:
                 frag = new FindRecipesDirectionsFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundleRecipeId.putString("id", recipeId);
                 //theModel.restoreGroceryList((List<List<String>>)savedInstanceState.getSerializable(RV_DATA));
                 //outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
-                json = gson.toJson(directions);
-                bundleRecipeId.putSerializable("directions", (Serializable) directions);
+                /*json = gson.toJson(directions);
+                bundleRecipeId.putSerializable("directions", (Serializable) directions);*/
                 frag.setArguments(bundleRecipeId);
 
                 return frag;
             case 2:
                 frag = new FindRecipesNutritionFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundleRecipeId.putString("id", recipeId);
                 //bundleRecipeId.putStringArrayList("nutrition", nutrition);
-                bundleRecipeId.putSerializable("nutrition", (Serializable) nutrition);
+                //bundleRecipeId.putSerializable("nutrition", (Serializable) nutrition);
                 frag.setArguments(bundleRecipeId);
 
                 return frag;
             default:
                 frag = new FindRecipesIngredientsFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
-                bundleRecipeId.putString("aa", "aa");
-                json = gson.toJson(ingredients);
-                bundleRecipeId.putString("test", json);
+                bundleRecipeId.putString("id", recipeId);
+                /*json = gson.toJson(ingredients);
+                bundleRecipeId.putString("test", json);*/
                 //bundleRecipeId.putSerializable("ingredients", ingredients);
                 frag.setArguments(bundleRecipeId);
 

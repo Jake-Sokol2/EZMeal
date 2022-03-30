@@ -14,8 +14,11 @@ import navigationFragments.MyRecipes.RecipeNutritionFragment;
 
 public class RecipeViewPagerAdapter extends FragmentStateAdapter
 {
-    public RecipeViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    String recipeId;
+
+    public RecipeViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String recipeId) {
         super(fragmentManager, lifecycle);
+        this.recipeId = recipeId;
     }
 
     @NonNull
@@ -30,21 +33,21 @@ public class RecipeViewPagerAdapter extends FragmentStateAdapter
             case 1:
                 frag = new RecipeDirectionsFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundleRecipeId.putString("id", recipeId);
                 frag.setArguments(bundleRecipeId);
 
                 return frag;
             case 2:
                 frag = new RecipeNutritionFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundleRecipeId.putString("id", recipeId);
                 frag.setArguments(bundleRecipeId);
 
                 return frag;
             default:
                 frag = new RecipeIngredientsFragment();
 
-                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundleRecipeId.putString("id", recipeId);
                 frag.setArguments(bundleRecipeId);
 
                 return frag;

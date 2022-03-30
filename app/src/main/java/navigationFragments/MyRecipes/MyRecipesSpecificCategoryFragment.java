@@ -24,11 +24,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
+import com.example.ezmeal.RoomDatabase.recipePathTitle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.common.reflect.TypeToken;
@@ -60,6 +62,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
     private SpecificCategoryAdapter adapter;
 
     private List<String> recipeId;
+    private TextView txtTitle;
 
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
@@ -123,20 +126,22 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         //ViewCompat.setTransitionName(mCard, "test");
         //postponeEnterTransition(2, TimeUnit.SECONDS);
         bottomNav =  (BottomNavigationView) getActivity().findViewById(R.id.bottomNavigationView);
+        txtTitle = (TextView) view.findViewById(R.id.txtmyRecipesTitle);
         //bottomNav.setSelectedItemId(R.id.groupListsFragment);
 
         String categoryName = null;
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras = getArguments();
         if (extras != null)
         {
             // retrieve category name from the Intent
-            categoryName = extras.getString("category name");
+            categoryName = extras.getString("category");
+            txtTitle.setText(categoryName);
         }
 
         //((BottomNavigationView) view.findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.groupRecipesFragment);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipes);
-        adapter = new SpecificCategoryAdapter(specificCategoryModel.getRecipeList(), specificCategoryModel.getImageList());
+        adapter = new SpecificCategoryAdapter(specificCategoryModel.getRecipeList(), specificCategoryModel.getUrlList());
         rvGroupList.setAdapter(adapter);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         //rvGroupList.setLayoutManager(layoutManager);
@@ -145,6 +150,17 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         rvGroupList.setLayoutManager(gridLayoutManager);
 
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        List<recipePathTitle> items = sqlDb.testDao().getCategoryRecipes(categoryName);
+
+        recipeId = new ArrayList<String>();
+        for(int i = 0; i < items.size(); i++)
+        {
+            specificCategoryModel.addItem(items.get(i).getTitle(), items.get(i).getPathToImage());
+            recipeId.add(items.get(i).getRecipeId());
+        }
+
+        adapter.notifyDataSetChanged();
 
         //List<RecipeCategoryTuple> recipes = sqlDb.testDao().getSpecificCategoryItems();
         //for(int i = 0; i < 2; i++)
@@ -202,9 +218,9 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        Bitmap bit = null;
+        //Bitmap bit = null;
 
-        specificCategoryModel.addItem("some title", bit);
+        //specificCategoryModel.addItem("some title", bit);
 
 
         //specificCategoryModel.addItem(userRecipe.getTitle(), Uri.parse(userRecipe.getImageUrl()));
@@ -244,7 +260,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
                 Bundle bundle = new Bundle();
 
                 // pass recipeId to specific recipe page so that it knows which recipe to use
-                bundle.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundle.putString("id", recipeId.get(position));
 
                 NavController navController = Navigation.findNavController(view);
                 navController.navigate(R.id.action_myRecipesSpecificCategoryFragment_to_myRecipesSpecificRecipeFragment, bundle, new NavOptions.Builder()
@@ -290,5 +306,12 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         //loadItem();
 
         return view;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        specificCategoryModel.dumpList();
     }
 }

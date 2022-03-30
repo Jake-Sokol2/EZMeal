@@ -15,8 +15,9 @@
         android:layout_width="39dp"
         android:layout_height="39dp"
         android:layout_marginStart="356dp"
-        android:layout_marginTop="28dp"
-        android:elevation="6dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#2dba73"
+        android:elevation="10dp"
         android:text="-"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -78,11 +79,11 @@
 
     <TextView
         android:id="@+id/txtRecipeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="310dp"
+        android:layout_height="109dp"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="52dp"
-        android:elevation="5dp"
+        android:layout_marginTop="36dp"
+        android:elevation="10dp"
         android:text="Fried Chicken"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
@@ -100,7 +101,7 @@
         app:layout_constraintHeight_percent=".9"
         app:layout_constraintStart_toStartOf="@+id/imageRecipeBackground"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/crispy_fried_chicken_exps_tohjj22_6445_dr__02_03_11b" />
+        />
 
     <ImageView
         android:id="@+id/imageRecipeBackground"

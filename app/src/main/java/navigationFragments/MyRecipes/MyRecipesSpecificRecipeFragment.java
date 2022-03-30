@@ -211,7 +211,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
         tabRecipe = view.findViewById(R.id.tabRecipe);
 
         FragmentManager fragmentManager = getChildFragmentManager();
-        vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle());
+        vpAdapter = new RecipeViewPagerAdapter(fragmentManager, getLifecycle(), recipeId);
         vpRecipe.setAdapter(vpAdapter);
 
         vpRecipe.requestDisallowInterceptTouchEvent(true);

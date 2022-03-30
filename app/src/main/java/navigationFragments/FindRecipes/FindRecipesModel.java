@@ -43,6 +43,7 @@ public class FindRecipesModel
     public void dumpList()
     {
         recipeList.clear();
+        uriList.clear();
     }
 
     /*
