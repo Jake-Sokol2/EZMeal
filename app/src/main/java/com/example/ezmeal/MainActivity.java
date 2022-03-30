@@ -1,48 +1,72 @@
 package com.example.ezmeal;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.Objects;
-
-import navigationFragments.FindRecipes.GroupRecipesFragment;
-import navigationFragments.GroupSettingsFragment;
-import navigationFragments.MyRecipes.MyRecipesFragment;
-import navigationFragments.MyRecipes.SpecificRecipeFragment;
 
 public class MainActivity extends AppCompatActivity
 {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "Main Activity created: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Main Activity created: " + numOfBackstack);
         // bottom navigation bar code
         //loadFragment(new GroupListsFragment());
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragContainer);
 
         // Old code, do not remove - uncomment these to return to default nav component backstack
-        //NavController navController = navHostFragment.getNavController();
-        //AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(R.id.groupListsFragment, R.id.groupRecipesFragment, R.id.myRecipesFragment, R.id.groupSettingsFragment).build();
-        //NavigationUI.setupWithNavController(bottomNav, navController);
+        NavController navController = navHostFragment.getNavController();
+        AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(R.id.groupListsFragment, R.id.groupRecipesFragment, R.id.myRecipesFragment, R.id.groupSettingsFragment).build();
+        NavigationUI.setupWithNavController(bottomNav, navController);
+
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                NavigationUI.onNavDestinationSelected(item, navController);
+                return true;
+            }
+        });
+       /* bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                NavigationUI.onNavDestinationSelected(item,navController);
+                navController.popBackStack(item.getItemId(),false);
+                return true;
+            }
+        });*/
+
+        // for resetting selected tab backstack? seperate from my backstack code
+/*        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                if (item.getItemId() == R.id.groupRecipesFragment)
+                {
+                    bottomNav.setSelectedItemId(R.id.groupRecipesFragment);
+                }
+                return false;
+            }});*/
 
         // click listener for the bottom navigation bar
+        /*
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
         {
             @Override
@@ -129,12 +153,36 @@ public class MainActivity extends AppCompatActivity
         if (frag != null)
         {
             // pop back stack every time we load a new fragment so stack doesn't fill with duplicate fragment tags
-            getSupportFragmentManager().popBackStack();
+            //getSupportFragmentManager().popBackStack();
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragContainer, frag)
-                    .addToBackStack(backStackTag)
-                    .commit();
+            int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+
+            if (backStackCount >= 1)
+            {
+                //int tag = getSupportFragmentManager().getBackStackEntryAt(backStackCount - 1).getId();
+                Fragment frag2 = getSupportFragmentManager().findFragmentById(R.id.fragContainer);
+
+                //getSupportFragmentManager().beginTransaction()
+                //        .remove(frag2).add(R.id.fragContainer, frag).addToBackStack(backStackTag).commit();
+               getSupportFragmentManager().beginTransaction()
+                       .remove(frag2).commit();
+               //getSupportFragmentManager().popBackStackImmediate();
+
+               getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer, frag).addToBackStack(null).commit();
+
+
+                //getSupportFragmentManager().beginTransaction().add(R.id.fragContainer, frag).addToBackStack(backStackTag).commit();
+
+
+            }
+            else
+            {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragContainer, frag)
+                        .addToBackStack(backStackTag)
+                        .commit();
+            }
+
         }
 
         String numOfBackstack = String.valueOf(getSupportFragmentManager().getBackStackEntryCount());
@@ -142,6 +190,8 @@ public class MainActivity extends AppCompatActivity
 
         return true;
     }
+    */
+
 
     /*
     @Override
@@ -152,10 +202,5 @@ public class MainActivity extends AppCompatActivity
     }
     */
 
-
-
-
-
-
-
+    }
 }

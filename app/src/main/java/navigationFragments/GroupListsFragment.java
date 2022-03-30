@@ -4,6 +4,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,9 +66,11 @@ public class GroupListsFragment extends Fragment
     //Firebase variables
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    public FirebaseUser mCurrentUser;
 
     private String brand, name;
     private double quantity;
+    public String email;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -136,6 +142,7 @@ public class GroupListsFragment extends Fragment
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
 
+
         //Get current user instance
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
@@ -163,13 +170,12 @@ public class GroupListsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_group_lists, container, false);
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
         //adapter = new MainRecyclerAdapter(groceryList);
         adapter = new MainRecyclerAdapter(theModel.getGroceryList());
-        rvGroupList.setAdapter(adapter);
         rvGroupList.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
@@ -204,8 +210,9 @@ public class GroupListsFragment extends Fragment
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
+
                 //Fragment manager to open new AddListItemFrag
+
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
@@ -216,9 +223,15 @@ public class GroupListsFragment extends Fragment
                 ft.commit();
                 Log.d("I'm here", "help");
 
-                 */
 
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
+                //NavController navController = Navigation.findNavController(view);
+                //navController.navigate(R.id.action_groupListsFragment_to_addListItemFragment);
+
+
+
+
+
+                /*BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);//com.google.android.material.R.style.Theme_Design_BottomSheetDialog);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_list_item, (LinearLayout) view.findViewById(R.id.bottomSheetAddList));
                 //BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
                 //FragmentManager foo = getActivity().getSupportFragmentManager();
@@ -266,9 +279,9 @@ public class GroupListsFragment extends Fragment
 
 
                         // Closes the bottom sheet after the User enters an item
-                        bottomSheetDialog.dismiss();
-                    }//end additembutton in add item BottomSheetDialog
-                });//OnclickListener
+                        bottomSheetDialog.dismiss();*/
+                    //}//end additembutton in add item BottomSheetDialog
+                };//OnclickListener
 
 
 
@@ -283,40 +296,20 @@ public class GroupListsFragment extends Fragment
                 transaction.commit();
 */
 
-            }//Add item onClick
+            //}//Add item onClick
         });
 
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
 
         //Get current user instance
-        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-        String email = mCurrentUser.getEmail();
+        mCurrentUser = mAuth.getCurrentUser();
+        email = mCurrentUser.getEmail();
 
         //Code to display database items
         db = FirebaseFirestore.getInstance();
 
-        db.collection("Items")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {@Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
-                                brand = document.getString("brand");
-                                name = document.getString("name");
-                                //quantity = document.getDouble("quantity");
-                                if (Objects.equals(document.getString("user"), email)) {
-                                    theModel.addItem(name, brand);
 
-                                }
-                                adapter.notifyDataSetChanged();
-                        }
-                    } else {
-                        Log.w("MYDEBUG", "Error getting documents.", task.getException());
-                    }
-                }
-                });
 
         return view;
     }
@@ -331,6 +324,35 @@ public class GroupListsFragment extends Fragment
         theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        db.collection("Items")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {@Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d("MYDEBUG", document.getId() + " => " + document.getData());
+                            brand = document.getString("brand");
+                            name = document.getString("name");
+                            //quantity = document.getDouble("quantity");
+                            if (Objects.equals(document.getString("user"), email)) {
+                                theModel.addItem(name, brand);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.w("MYDEBUG", "Error getting documents.", task.getException());
+                    }
+                }
+                });
+
+    }
+
 /*
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){

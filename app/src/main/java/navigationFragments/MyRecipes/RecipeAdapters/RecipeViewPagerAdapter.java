@@ -1,6 +1,6 @@
 package navigationFragments.MyRecipes.RecipeAdapters;
 
-import android.view.MotionEvent;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -9,7 +9,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import navigationFragments.MyRecipes.RecipeDirectionsFragment;
-import navigationFragments.MyRecipes.RecipeInstructionsFragment;
+import navigationFragments.MyRecipes.RecipeIngredientsFragment;
 import navigationFragments.MyRecipes.RecipeNutritionFragment;
 
 public class RecipeViewPagerAdapter extends FragmentStateAdapter
@@ -21,14 +21,33 @@ public class RecipeViewPagerAdapter extends FragmentStateAdapter
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+
+        Fragment frag;
+        Bundle bundleRecipeId = new Bundle();
+
         switch (position)
         {
             case 1:
-                return new RecipeDirectionsFragment();
+                frag = new RecipeDirectionsFragment();
+
+                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                frag.setArguments(bundleRecipeId);
+
+                return frag;
             case 2:
-                return new RecipeNutritionFragment();
+                frag = new RecipeNutritionFragment();
+
+                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                frag.setArguments(bundleRecipeId);
+
+                return frag;
             default:
-                return new RecipeInstructionsFragment();
+                frag = new RecipeIngredientsFragment();
+
+                bundleRecipeId.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                frag.setArguments(bundleRecipeId);
+
+                return frag;
         }
     }
 

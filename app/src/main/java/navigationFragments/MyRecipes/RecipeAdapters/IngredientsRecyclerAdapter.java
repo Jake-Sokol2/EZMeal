@@ -1,41 +1,31 @@
-package navigationFragments.FindRecipes.FindRecipesAdapters;
+package navigationFragments.MyRecipes.RecipeAdapters;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.ezmeal.R;
-//import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
-public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
+public class IngredientsRecyclerAdapter extends RecyclerView.Adapter<IngredientsRecyclerAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<Uri> uriList;
     private MainAdapterListener listener;
-    private Uri uri;
+
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView txtTitle;
+        private CardView cardView;
+        private TextView txtIngredient;
+        //public TextView txtListItem;
         //public TextView txtBrandName;
         //public CheckBox checkCrossOffItem;
-        public ImageView recipeImage;
 
         public MainViewHolder(View view)
         {
@@ -43,11 +33,8 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
             //txtListItem = (TextView) view.findViewById(R.id.txtListItem);
             //txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             //checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
-
-            recipeImage = view.findViewById(R.id.imgRecipe);
-            txtTitle = view.findViewById(R.id.txtTitleRecipe);
-
-            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
+            cardView = (CardView) view.findViewById(R.id.cardCategory);
+            txtIngredient = (TextView) view.findViewById(R.id.txtIngredient);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -67,60 +54,26 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         }
     }
 
-    public FindRecipesAdapter(List<String> list, List<Uri> uriList)
+    public IngredientsRecyclerAdapter(List<String> list)
     {
         this.list = list;
-        this.uriList = uriList;
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. recipe_recycler_recipe_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. ingredients_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        String recipeTitle = list.get(position);
-        uri = uriList.get(position);
-        //String recipeImageUrl = list.get(position).get(1);
-        //Bitmap bitmap =  bitmapList.get(position).get(0);
-
-        //holder.recipeImage.setImageBitmap(bitmap);
-        holder.txtTitle.setText(recipeTitle);
-        Glide.with(holder.itemView.getContext()).load(uri).into(holder.recipeImage);
-       // try
-       // {
-            //holder.recipeImage.setImageBitmap(bitmap);
-       // }
-        //catch (IOException e)
-        //{
-        //    e.printStackTrace();
-        //}
-        //Picasso.get().load(recipeImageUrl).into(holder.recipeImage);
-
+        holder.txtIngredient.setText(list.get(position));
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
-
         /*
         String itemName = list.get(position).get(0);
-        String itemImage = list.get(position).get(1);
-
-        if (itemName != null)
-        {
-            holder.txtTitle.setText(itemName);
-        }
-
-        if (itemImage != null)
-        {
-            holder.recipeImage.setImageResource();
-        }
-        */
-
-
-
-        /*
+        String brand = list.get(position).get(1);
         holder.txtListItem.setText(itemName);
 
         // todo: fix/remove this line when user data is being saved on app exit

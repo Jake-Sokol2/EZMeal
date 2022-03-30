@@ -5,89 +5,39 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.motion.widget.MotionLayout;
-import androidx.core.view.ViewCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
-import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.ezmeal.MainActivity;
-import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesAdapter;
-import navigationFragments.MyRecipes.MyRecipesSpecificCategoryFragment;
-import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesRecyclerAdapter;
-import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
-import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
-import navigationFragments.MyRecipes.SpecificRecipeFragment;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
-
-import org.jsoup.Jsoup;
-import org.jsoup.helper.Validate;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -163,8 +113,8 @@ public class GroupRecipesFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_group_recipes, container, false);
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
 
 
         // uncomment to blow the phone's memory to smithereens
@@ -233,7 +183,7 @@ public class GroupRecipesFragment extends Fragment
         rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
         findRecipesAdapter = new FindRecipesAdapter(findRecipesModel.getRecipeList(), findRecipesModel.getUriList());
         rvFindRecipes.setAdapter(findRecipesAdapter);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this.getActivity(), 2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this.getActivity(), 2, RecyclerView.VERTICAL, false);
         rvFindRecipes.setLayoutManager(layoutManager);
 
         db = FirebaseFirestore.getInstance();
@@ -280,13 +230,17 @@ public class GroupRecipesFragment extends Fragment
 
                 String id = "a";
 
-                Fragment endFrag = new SpecificRecipeFragment();
+                //Fragment endFrag = new SpecificRecipeFragment();
 
                 String name = "transition" + position;
 
                 Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
                 bundle.putString("id", recipeId.get(position));
-                endFrag.setArguments(bundle);
+
+
+                /*endFrag.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
 
@@ -295,7 +249,14 @@ public class GroupRecipesFragment extends Fragment
                         .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                         .addToBackStack("specific_recipe")
                         .replace(R.id.fragContainer, endFrag)
-                        .commit();
+                        .commit();*/
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupRecipesFragment_to_specificRecipeFragment, bundle, new NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in)
+                            .setExitAnim(R.anim.fade_out)
+                            .setPopExitAnim(R.anim.slide_out)
+                            .build());
             }
         });
 

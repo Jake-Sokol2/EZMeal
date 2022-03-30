@@ -1,8 +1,6 @@
-package navigationFragments.FindRecipes.FindRecipesAdapters;
+package navigationFragments.MyRecipes.RecipeAdapters;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.R;
-//import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
-public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
+public class SpecificCategoryAdapter extends RecyclerView.Adapter<SpecificCategoryAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<Uri> uriList;
+    private List<Bitmap> imageList;
     private MainAdapterListener listener;
-    private Uri uri;
+    private Bitmap image;
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -67,10 +61,10 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         }
     }
 
-    public FindRecipesAdapter(List<String> list, List<Uri> uriList)
+    public SpecificCategoryAdapter(List<String> list, List<Bitmap> imageList)
     {
         this.list = list;
-        this.uriList = uriList;
+        this.imageList = imageList;
     }
 
     @Override
@@ -84,13 +78,13 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
         String recipeTitle = list.get(position);
-        uri = uriList.get(position);
+        image = imageList.get(position);
         //String recipeImageUrl = list.get(position).get(1);
         //Bitmap bitmap =  bitmapList.get(position).get(0);
 
         //holder.recipeImage.setImageBitmap(bitmap);
         holder.txtTitle.setText(recipeTitle);
-        Glide.with(holder.itemView.getContext()).load(uri).into(holder.recipeImage);
+        holder.recipeImage.setImageBitmap(image);
        // try
        // {
             //holder.recipeImage.setImageBitmap(bitmap);

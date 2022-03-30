@@ -17,11 +17,11 @@
             android:layout_width="match_parent"
             android:layout_height="1100dp"
             android:text="directions"
-            app:layout_constraintTop_toBottomOf="@+id/rvInstruction"
+            app:layout_constraintTop_toBottomOf="@+id/rvIngredients"
             tools:layout_editor_absoluteX="28dp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvInstruction"
+            android:id="@+id/rvIngredients"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"

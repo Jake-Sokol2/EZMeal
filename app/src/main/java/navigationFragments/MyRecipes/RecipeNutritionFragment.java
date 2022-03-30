@@ -3,6 +3,7 @@ package navigationFragments.MyRecipes;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,19 @@ import android.view.ViewGroup;
 
 import com.example.ezmeal.R;
 
+import navigationFragments.MyRecipes.RecipeAdapters.IngredientsRecyclerAdapter;
+import navigationFragments.MyRecipes.RecipeModels.IngredientsModel;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link RecipeNutritionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class RecipeNutritionFragment extends Fragment {
+
+    private IngredientsModel ingredientsModel = new IngredientsModel();
+    private RecyclerView rvIngredients;
+    private IngredientsRecyclerAdapter ingredientsRecyclerAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +69,11 @@ public class RecipeNutritionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipe_nutrition, container, false);
+        View view = inflater.inflate(R.layout.fragment_recipe_nutrition, container, false);
+
+        Bundle extras = getArguments();
+        String recipeId = extras.getString("id");
+
+        return view;
     }
 }

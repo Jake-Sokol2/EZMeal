@@ -1,4 +1,4 @@
-package navigationFragments.MyRecipes;
+package navigationFragments.FindRecipes;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,12 +21,11 @@ import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
-import com.example.ezmeal.Model.GroceryListModel;
-import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.CategoryEntity;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.Model.GroceryListModel;
+import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.Recipe;
-import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -49,10 +48,10 @@ import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyRecipesSpecificRecipeFragment#newInstance} factory method to
+ * Use the {@link FindRecipesSpecificRecipeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyRecipesSpecificRecipeFragment extends Fragment
+public class FindRecipesSpecificRecipeFragment extends Fragment
 {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -93,7 +92,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
-    public MyRecipesSpecificRecipeFragment() {
+    public FindRecipesSpecificRecipeFragment() {
         // Required empty public constructor
     }
 
@@ -106,8 +105,8 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
      * @return A new instance of fragment GroupRecipesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyRecipesSpecificRecipeFragment newInstance(String param1, String param2) {
-        MyRecipesSpecificRecipeFragment fragment = new MyRecipesSpecificRecipeFragment();
+    public static FindRecipesSpecificRecipeFragment newInstance(String param1, String param2) {
+        FindRecipesSpecificRecipeFragment fragment = new FindRecipesSpecificRecipeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -128,40 +127,19 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_recipes_specific_recipe, container, false);
+        View view = inflater.inflate(R.layout.fragment_specific_recipe, container, false);
 
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.i("TRACK BACKSTACK", "Specific Recipes opened.  Count: " + numOfBackstack);
 
         Bundle extras = getArguments();
         recipeId = extras.getString("id");
+        Log.i("p", "a");
 
         ImageView imageRecipe = view.findViewById(R.id.imageRecipeImage);
         TextView txtRecipeTitle = view.findViewById(R.id.txtRecipeTitle);
 
-        String queryString = "";
-        String imageUrl = "";
-
-        boolean containsCondition = false;
-
-        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        RecipeCategoryTuple recipeCategoryTuple = sqlDb.testDao().getSpecificCategoryItems(recipeId);
-
-        // insert text and image from Room database query into the ImageView
-        txtRecipeTitle.setText(recipeCategoryTuple.getTitle());
-        Glide.with(getContext()).load(Uri.parse(recipeCategoryTuple.getPathToImage())).into(imageRecipe);
-
-        //SendDataToViewPager2 sendData = (SendDataToViewPager2) getActivity().getSupportFragmentManager().findFragmentById(R.)
-        //imageUrl = sqlDb.testDao().getImage(recipeId);
-
-
-
-
-
-        Log.i("a","a");
-        /*db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         CollectionReference dbRecipes = db.collection("Recipes");
 
         db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
@@ -182,7 +160,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
             {
 
             }
-        });*/
+        });
 
         btnAddToMyRecipes = view.findViewById(R.id.btnAddToMyRecipes);
         btnAddToMyRecipes.setOnClickListener(new View.OnClickListener()
@@ -191,20 +169,84 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
             public void onClick(View view)
             {
                 // todo: make it so user can't add same recipe twice
-                /*db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
                     {
-                        *//*ArrayList<String> categories = (ArrayList<String>) task.getResult().get("categories");
+                        ArrayList<String> categories = (ArrayList<String>) task.getResult().get("categories");
                         ArrayList<String> directions = (ArrayList<String>) task.getResult().get("directions");
                         ArrayList<String> ingredients = (ArrayList<String>) task.getResult().get("ingredients");
                         ArrayList<String> nutrition = (ArrayList<String>) task.getResult().get("nutrition");
                         String imageUrl = task.getResult().getString("imageUrl");
-                        String title = task.getResult().getString("title");*//*
+                        String title = task.getResult().getString("title");
 
+                        // find largest list between categories, directions, ingredients, and nutrition
+                        int maxSize = Collections.max(Arrays.asList(categories.size(), directions.size(), ingredients.size(), nutrition.size()));
 
+                        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
+                        sqlDb.testDao().BOOM();
+                        sqlDb.testDao().BOOOOOOOM();
+
+                        Recipe newRecipe = new Recipe(imageUrl, title, recipeId);
+                        sqlDb.testDao().insert(newRecipe);
+
+                        // loop through and create a CategoryEntity instance for every category/direction/etc.  If you exceed one lists size, fill its entry with null
+                        // this is really hacky, not sure if there's a better way to insert these lists given they are all of different sizes and doing it all in one loop
+                            // would result in out of bound errors
+                        for(int x = 0; x < maxSize; x++)
+                        {
+                            String cat;
+                            String dir;
+                            String ing;
+                            String nut;
+
+                            if (x < categories.size())
+                            {
+                               cat = categories.get(x);
+                            }
+                            else
+                            {
+                                cat = null;
+                            }
+
+                            if (x < directions.size())
+                            {
+                                dir = directions.get(x);
+                            }
+                            else
+                            {
+                                dir = null;
+                            }
+
+                            if (x < ingredients.size())
+                            {
+                                ing = ingredients.get(x);
+                            }
+                            else
+                            {
+                                ing = null;
+                            }
+
+                            if (x < nutrition.size())
+                            {
+                                nut = nutrition.get(x);
+                            }
+                            else
+                            {
+                                nut = null;
+                            }
+
+                            CategoryEntity item = new CategoryEntity(recipeId, cat, nut, dir, ing);
+                            sqlDb.testDao().insertItem(item);
+                        }
+
+/*                        int i = 0;
+                        while(i < categories.size() || i < directions.size() || i < ingredients.size() || i < nutrition.size())
+                        {
+
+                        }*/
 
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
@@ -221,7 +263,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
 
                         //getContext().deleteDatabase("EZMealDatabase");
 
-                        *//*db.collection("Recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                        /*db.collection("Recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                         {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -244,7 +286,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                             {
 
                             }
-                        });*//*
+                        });*/
 
 
 
@@ -252,16 +294,16 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                       String recipeIdString = "recipe 1";
                         String recipeIdString2 = "recipe 2";
 
-                        *//*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+                        /*EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
                         sqlDb.testDao().BOOM();
 
                         Recipe newRecipe = new Recipe(imageUrl, title, recipeId);
 
-                        sqlDb.testDao().insert(newRecipe);*//*
+                        sqlDb.testDao().insert(newRecipe);*/
                         //sqlDb.testDao().insertAllItems(recipeId, categories, ingredients, nutrition, directions);
 
-                        *//*Recipe recipeMe = new Recipe("cookies.webp", "title", recipeIdString);
+                        /*Recipe recipeMe = new Recipe("cookies.webp", "title", recipeIdString);
                         Recipe recipeSomeone = new Recipe("spaghet.webp", "title2", recipeIdString2);
 
                         sqlDb.testDao().insert(recipeMe);
@@ -291,13 +333,13 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                         sqlDb.testDao().insertItem(item14);
                         sqlDb.testDao().insertItem(item15);
 
-                        List<Recipe> recipeList = sqlDb.testDao().getAll();*//*
+                        List<Recipe> recipeList = sqlDb.testDao().getAll();*/
 
                         //sqlDb.testDao().BOOM();
 
                         Log.i("a","a");
 
-                        *//*
+                        /*
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("recipes", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         Gson gson = new Gson();
@@ -305,7 +347,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                         editor.putString(recipeId, json);
 
                         editor.apply();
-                        *//*
+                        */
 
 
 
@@ -314,7 +356,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
 
 
 
-             *//*dbRecipes.document(mCurrentUser.getUid()).collection("SpecificUserCollection").add(savedRecipe)
+                        /*dbRecipes.document(mCurrentUser.getUid()).collection("SpecificUserCollection").add(savedRecipe)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
                         {
                             @Override
@@ -329,12 +371,11 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                             {
 
                             }
-                        });*//*
+                        });*/
 
                         Log.i("test", String.valueOf(task.getResult().getData()));
-                        Log.i("test", "pause");*/
-
-        /*            }
+                        Log.i("test", "pause");
+                    }
                 }).addOnFailureListener(new OnFailureListener()
                 {
                     @Override
@@ -342,7 +383,7 @@ public class MyRecipesSpecificRecipeFragment extends Fragment
                     {
 
                     }
-                });*/
+                });
             }
         });
 

@@ -112,6 +112,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     editBrandName.setError("Enter brand name...");
                 }
 
+                theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                 theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
                 /*
@@ -144,12 +145,16 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         */
         FragmentManager fm = getParentFragmentManager();
 
+        adapter.notifyDataSetChanged();
+
+        /*
         Log.w("TRACK BACKSTACK 2.0", "------------------------");
         int backStackCount = getParentFragmentManager().getBackStackEntryCount();
         for (int i = 0; i < backStackCount; i++)
         {
             Log.w("TRACK BACKSTACK 2.0", "back stack tags     : " + getParentFragmentManager().getBackStackEntryAt(i).getName());
         }
+         */
         //dismiss();
     }
 

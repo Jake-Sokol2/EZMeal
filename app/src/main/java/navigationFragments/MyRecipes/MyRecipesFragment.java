@@ -7,6 +7,9 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
@@ -104,8 +107,8 @@ public class MyRecipesFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_my_recipes_category, container, false);
 
         // back stack logs
-        String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "My Recipes opened: " + numOfBackstack);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipeCategories);
         adapter = new MyRecipesRecyclerAdapter(theModel.getGroceryList());
@@ -152,7 +155,7 @@ public class MyRecipesFragment extends Fragment
 
                 String categoryName = "Chicken";
 
-                Fragment endFrag = new MyRecipesSpecificCategoryFragment();
+                //Fragment endFrag = new MyRecipesSpecificCategoryFragment();
                 // FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
 
                 AutoTransition at = new AutoTransition();
@@ -166,7 +169,17 @@ public class MyRecipesFragment extends Fragment
                 String name = "transition" + position;
 
                 Bundle bundle = new Bundle();
-                bundle.putString("category", ViewCompat.getTransitionName(cardView));
+                bundle.putString("id", "test");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_myRecipesFragment_to_myRecipesSpecificCategoryFragment, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.fade_out)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+
+
+                /*
                 endFrag.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
@@ -177,6 +190,7 @@ public class MyRecipesFragment extends Fragment
                         .addToBackStack("specific_category")
                         .replace(R.id.fragContainer, endFrag)
                         .commit();
+                 */
 
                 /*
                 Intent intent = new Intent(getActivity(), MyRecipesSingleCategory.class);
@@ -314,7 +328,7 @@ public class MyRecipesFragment extends Fragment
 
 
 
-    @Override
+/*    @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
         Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
         super.onSaveInstanceState(outState);
@@ -326,5 +340,5 @@ public class MyRecipesFragment extends Fragment
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
 
 
-    }
+    }*/
 }

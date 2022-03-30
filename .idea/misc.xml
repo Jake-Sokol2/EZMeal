@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.309" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/circle.xml" value="0.223" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/cookie_background.xml" value="0.3025" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/custom_tab_layout.xml" value="0.329" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/ic_group_lists.xml" value="0.1" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/ic_group_settings.xml" value="0.309" />
@@ -20,6 +21,7 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/font/oxygen_light_bold.xml" value="0.5166666666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/font/sans_serif.xml" value="0.5166666666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.20147255689424365" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w1240dp/fragment_my_recipes_specific_recipe.xml" value="0.1817269076305221" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout-w936dp/activity_login.xml" value="0.22131147540983606" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_add_list_item.xml" value="0.30480072463768115" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.29347826086956524" />
@@ -47,12 +49,14 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_recycler_item.xml" value="0.3854166666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_recycler_recipe_item.xml" value="0.3854166666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_specific_category.xml" value="0.3854166666666667" />
-        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_specific_recipe.xml" value="0.5" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_my_recipes_specific_recipe.xml" value="0.25" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_directions.xml" value="0.333786231884058" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_ingredients.xml" value="0.39266304347826086" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_instructions.xml" value="0.333786231884058" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_nutrition.xml" value="0.333786231884058" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_recipe_specific_category.xml" value="0.32563405797101447" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_specific_recipe.xml" value="0.2695035460992908" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/ingredients_recycler_item.xml" value="0.3546875" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/recipe_recycler_recipe_item.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/recipes_single_category.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/tab_name.xml" value="0.40307971014492755" />
@@ -60,6 +64,7 @@
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test.xml" value="0.38722826086956524" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/test_activity.xml" value="0.2695035460992908" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/menu/bottom_nav_menu.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/mipmap-anydpi-v26/cookie.xml" value="0.3025" />
       </map>
     </option>
   </component>
