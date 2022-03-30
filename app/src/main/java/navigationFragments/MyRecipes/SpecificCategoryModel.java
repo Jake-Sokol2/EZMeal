@@ -11,18 +11,18 @@ import java.util.List;
 public class SpecificCategoryModel
 {
     private List<String> recipeList;
-    private List<Bitmap> imageList;
+    private List<String> urlList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public SpecificCategoryModel()
     {
         recipeList = new ArrayList<String>();
-        imageList = new ArrayList<Bitmap>();
+        urlList = new ArrayList<String>();
     }
 
-    public void addItem(String recipeTitle, Bitmap pathToImage)
+    public void addItem(String recipeTitle, String url)
     {
-        imageList.add(pathToImage);
+        urlList.add(url);
         recipeList.add(recipeTitle);
     }
 
@@ -34,7 +34,7 @@ public class SpecificCategoryModel
     public void dumpList()
     {
         recipeList.clear();
-        imageList.clear();
+        urlList.clear();
     }
 
     public List<String> getRecipeList()
@@ -42,9 +42,9 @@ public class SpecificCategoryModel
         return recipeList;
     }
 
-    public List<Bitmap> getImageList()
+    public List<String> getUrlList()
     {
-        return imageList;
+        return urlList;
     }
 
     public void restoreRecipeList(List<String> recipeList)
@@ -54,6 +54,6 @@ public class SpecificCategoryModel
 
     public void restoreImageList(List<Bitmap> imageList)
     {
-        this.imageList = imageList;
+        this.urlList = urlList;
     }
 }

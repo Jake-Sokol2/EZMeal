@@ -29,6 +29,7 @@ import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
+import com.example.ezmeal.RoomDatabase.recipePathTitle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.common.reflect.TypeToken;
@@ -130,13 +131,13 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         if (extras != null)
         {
             // retrieve category name from the Intent
-            categoryName = extras.getString("category name");
+            categoryName = extras.getString("category");
         }
 
         //((BottomNavigationView) view.findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.groupRecipesFragment);
 
         rvGroupList = (RecyclerView) view.findViewById(R.id.rvMyRecipes);
-        adapter = new SpecificCategoryAdapter(specificCategoryModel.getRecipeList(), specificCategoryModel.getImageList());
+        adapter = new SpecificCategoryAdapter(specificCategoryModel.getRecipeList(), specificCategoryModel.getUrlList());
         rvGroupList.setAdapter(adapter);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         //rvGroupList.setLayoutManager(layoutManager);
@@ -145,6 +146,15 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         rvGroupList.setLayoutManager(gridLayoutManager);
 
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        List<recipePathTitle> items = sqlDb.testDao().getCategoryRecipes(categoryName);
+
+        for(int i = 0; i < items.size(); i++)
+        {
+            specificCategoryModel.addItem(items.get(i).getTitle(), items.get(i).getPathToImage());
+        }
+
+        adapter.notifyDataSetChanged();
 
         //List<RecipeCategoryTuple> recipes = sqlDb.testDao().getSpecificCategoryItems();
         //for(int i = 0; i < 2; i++)
@@ -202,9 +212,9 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        Bitmap bit = null;
+        //Bitmap bit = null;
 
-        specificCategoryModel.addItem("some title", bit);
+        //specificCategoryModel.addItem("some title", bit);
 
 
         //specificCategoryModel.addItem(userRecipe.getTitle(), Uri.parse(userRecipe.getImageUrl()));

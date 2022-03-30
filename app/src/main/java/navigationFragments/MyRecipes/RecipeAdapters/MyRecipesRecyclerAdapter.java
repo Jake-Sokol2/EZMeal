@@ -28,6 +28,7 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
         private TextView txtDirection;
         private TextView txtTitleRecipe;
         private ImageView imgRecipe;
+        private ImageView imgBackground;
 
         public MainViewHolder(View view)
         {
@@ -36,6 +37,7 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
             cardView = (CardView) view.findViewById(R.id.cardCategory);
             txtTitleRecipe = (TextView) view.findViewById(R.id.txtTitleRecipe);
             imgRecipe = (ImageView) view.findViewById(R.id.imgRecipe);
+            imgBackground = (ImageView) view.findViewById(R.id.imageCategoryBackground);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -74,6 +76,8 @@ public class MyRecipesRecyclerAdapter extends RecyclerView.Adapter<MyRecipesRecy
 
         String urllll = url.get(position);
         Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
+        Glide.with(holder.itemView.getContext()).load(R.drawable.recycler_image_shadow).into(holder.imgBackground);
+
 
     }
 
