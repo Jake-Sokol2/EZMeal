@@ -78,5 +78,7 @@ public interface TestDao {
 
     @Query("SELECT DISTINCT pathToImage FROM CategoryEntity JOIN Recipe on CategoryEntity.recipeId = Recipe.recipeID")
     List<String> getCatUrl();
+
+
 }
 

@@ -31,6 +31,7 @@ public class MyRecipesModel
     public void dumpList()
     {
         categoryList.clear();
+        url.clear();
     }
 
     public List<String> getCategoryList()
