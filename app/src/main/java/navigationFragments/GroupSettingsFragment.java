@@ -105,7 +105,7 @@ public class GroupSettingsFragment extends Fragment {
         int id = getContext().getResources().getIdentifier("drawable/cookies", null, getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);*/
 
-        ImageView img = view.findViewById(R.id.imageSomething);
+
         //img.setImageBitmap(bitmap);
 
         //Glide.with(getContext()).load(getResources().getIdentifier("cookies", "drawable", getActivity().getPackageName())).into(img);
@@ -149,7 +149,6 @@ public class GroupSettingsFragment extends Fragment {
             AssetManager assetManager = getContext().getAssets();
             InputStream inputStream = getContext().getAssets().open("cookies2.jpg");
             Drawable d = Drawable.createFromStream(inputStream, null);
-            img.setImageDrawable(d);
             inputStream.close();
         }
         catch (IOException e)

@@ -16,12 +16,14 @@
         app:cardCornerRadius="10dp"
 
         app:cardElevation="4dp"
+        app:checkedIconTint="@color/EzGreen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
-        app:strokeColor="@color/purple_200"
+        app:rippleColor="@color/EzGreen"
+        app:strokeColor="@color/EzGreen"
         app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
