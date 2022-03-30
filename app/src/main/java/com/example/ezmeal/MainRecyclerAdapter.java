@@ -142,4 +142,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     {
         this.listener = listener;
     }
+
+    public void deleteItem(int position)
+    {
+        //TODO Implement this
+    }
 }
