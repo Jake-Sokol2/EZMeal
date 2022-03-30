@@ -49,7 +49,7 @@ public class MyRecipesFragment extends Fragment
     public MyRecipesFragmentViewModel vm;
     */
 
-    List<String> cat;
+    public List<String> cat;
     private View cardView;
     //private FragmentMyRecipesAnimatedBinding binding;
 
@@ -170,6 +170,7 @@ public class MyRecipesFragment extends Fragment
                         .setEnterAnim(R.anim.slide_in)
                         .setExitAnim(R.anim.fade_out)
                         .setPopExitAnim(R.anim.slide_out)
+                        .setPopEnterAnim(R.anim.fade_in)
                         .build());
 
 

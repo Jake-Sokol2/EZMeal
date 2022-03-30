@@ -22,6 +22,7 @@ import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -174,6 +175,7 @@ public class FindRecipesIngredientsFragment extends Fragment{
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
+        // add all ingredients for this recipe to the user's Item collection in Firestore
         btnAddToList = view.findViewById(R.id.btnAddToList);
         btnAddToList.setOnClickListener(new View.OnClickListener()
         {
@@ -196,12 +198,40 @@ public class FindRecipesIngredientsFragment extends Fragment{
                         Item item = new Item(ingredients.get(i), null, email);
 
                         // prevent user from adding same list of ingredients twice
-                        dbItems.whereEqualTo(ingredients.get(i), null).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                        dbItems.whereEqualTo("name", ingredients.get(i)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                         {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task)
                             {
-                                if (task.isSuccessful())
+                                if (task.getResult().isEmpty())
+                                {
+                                    dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            // keep track that an item was added so we can tell the user with a toast later
+                                            itemAdded = true;
+                                            Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener()
+                                    {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                    });
+
+                                    // if any items were actually added, tell the user
+                                    if (itemAdded)
+                                    {
+                                        Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+
+
+                                /*if (task.isSuccessful())
                                 {
                                     for (DocumentSnapshot document : task.getResult())
                                     {
@@ -213,6 +243,14 @@ public class FindRecipesIngredientsFragment extends Fragment{
                                                 public void onSuccess(DocumentReference documentReference) {
                                                     // keep track that an item was added so we can tell the user with a toast later
                                                     itemAdded = true;
+
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener()
+                                            {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e)
+                                                {
+                                                    e.printStackTrace();
                                                 }
                                             });
                                         }
@@ -224,8 +262,21 @@ public class FindRecipesIngredientsFragment extends Fragment{
                                         Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
                                     }
                                 }
+                                else
+                                {
+                                    Log.i("q", "task not successful");
+                                }*/
+                            }
+
+                        }).addOnFailureListener(new OnFailureListener()
+                        {
+                            @Override
+                            public void onFailure(@NonNull Exception e)
+                            {
+                                Log.i("q", "get failed");
                             }
                         });
+
                     }
                     else
                     {

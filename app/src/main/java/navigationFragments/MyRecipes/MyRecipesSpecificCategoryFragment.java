@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
@@ -61,6 +62,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
     private SpecificCategoryAdapter adapter;
 
     private List<String> recipeId;
+    private TextView txtTitle;
 
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
@@ -124,14 +126,16 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         //ViewCompat.setTransitionName(mCard, "test");
         //postponeEnterTransition(2, TimeUnit.SECONDS);
         bottomNav =  (BottomNavigationView) getActivity().findViewById(R.id.bottomNavigationView);
+        txtTitle = (TextView) view.findViewById(R.id.txtmyRecipesTitle);
         //bottomNav.setSelectedItemId(R.id.groupListsFragment);
 
         String categoryName = null;
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras = getArguments();
         if (extras != null)
         {
             // retrieve category name from the Intent
             categoryName = extras.getString("category");
+            txtTitle.setText(categoryName);
         }
 
         //((BottomNavigationView) view.findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.groupRecipesFragment);
@@ -149,9 +153,11 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
 
         List<recipePathTitle> items = sqlDb.testDao().getCategoryRecipes(categoryName);
 
+        recipeId = new ArrayList<String>();
         for(int i = 0; i < items.size(); i++)
         {
             specificCategoryModel.addItem(items.get(i).getTitle(), items.get(i).getPathToImage());
+            recipeId.add(items.get(i).getRecipeId());
         }
 
         adapter.notifyDataSetChanged();
@@ -254,7 +260,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
                 Bundle bundle = new Bundle();
 
                 // pass recipeId to specific recipe page so that it knows which recipe to use
-                bundle.putString("id", "H5kLWWkJd1ctsVBWUEb0");
+                bundle.putString("id", recipeId.get(position));
 
                 NavController navController = Navigation.findNavController(view);
                 navController.navigate(R.id.action_myRecipesSpecificCategoryFragment_to_myRecipesSpecificRecipeFragment, bundle, new NavOptions.Builder()
@@ -300,5 +306,12 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
         //loadItem();
 
         return view;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        specificCategoryModel.dumpList();
     }
 }
