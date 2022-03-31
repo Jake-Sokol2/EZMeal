@@ -9,13 +9,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFindRecipesCategory"
-        android:layout_width="match_parent"
-        android:layout_height="529dp"
-        android:layout_marginTop="92dp"
+        android:layout_width="459dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="536dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
 
     <TextView
         android:id="@+id/txtFindRecipesTitle"
@@ -28,5 +28,26 @@
         android:textSize="35sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHorizontalSelector"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtFindRecipesTitle" />
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView4"
+        android:name="navigationFragments.FindRecipes.FindRecipesCategoryFragment"
+        android:layout_width="match_parent"
+        android:layout_height="443dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

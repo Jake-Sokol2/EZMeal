@@ -25,9 +25,9 @@ import java.util.List;
 public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.MainViewHolder>
 {
     private List<String> list;
-    private List<Uri> uriList;
+    private List<String> uriList;
     private MainAdapterListener listener;
-    private Uri uri;
+    private String uri;
     public TextView txtTitle;
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -60,7 +60,7 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION)
                         {
-                            listener.onItemClick(position, cardView);
+                            listener.onItemClick(position);
                         }
                     }
                 }
@@ -68,7 +68,7 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
         }
     }
 
-    public FindRecipesAdapter(List<String> list, List<Uri> uriList)
+    public FindRecipesAdapter(List<String> list, List<String> uriList)
     {
         this.list = list;
         this.uriList = uriList;
@@ -178,7 +178,7 @@ public class FindRecipesAdapter extends RecyclerView.Adapter<FindRecipesAdapter.
 
     public interface MainAdapterListener
     {
-        void onItemClick(int position, CardView cardView);
+        void onItemClick(int position);
     }
 
     public void setOnItemClickListener(MainAdapterListener listener)

@@ -36,7 +36,7 @@
         tools:layout="@layout/fragment_group_settings" />
     <fragment
         android:id="@+id/specificRecipeFragment"
-        android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeFragment"
+        android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeActivity"
         android:label="SpecificRecipeFragment" />
     <fragment
         android:id="@+id/myRecipesSpecificCategoryFragment"

@@ -1,17 +1,9 @@
 package navigationFragments.MyRecipes;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -19,30 +11,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ezmeal.Model.GroceryListModel;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
-import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
 import com.example.ezmeal.RoomDatabase.recipePathTitle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import navigationFragments.MyRecipes.RecipeAdapters.RecipeSpecificCategoryRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.SpecificCategoryAdapter;
 
 /**
@@ -116,7 +97,7 @@ public class MyRecipesSpecificCategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.recipes_single_category, container, false);
+        View view = inflater.inflate(R.layout.activity_find_recipes_specific_recipe, container, false);
 
         // back stack logs
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());

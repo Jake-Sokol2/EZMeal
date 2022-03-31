@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EZMeal">
         <activity
+            android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeActivity"
+            android:exported="true"
+            android:noHistory="true"/>
+        <activity
             android:name=".Login"
             android:exported="true"
             >
