@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -21,6 +23,7 @@ import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.ezmeal.Login;
 import com.example.ezmeal.Model.Item;
 import com.example.ezmeal.RoomDatabase.CategoryEntity;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
@@ -48,12 +51,7 @@ import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesNutritionRecyclerAd
 import navigationFragments.MyRecipes.RecipeAdapters.MyRecipesSingleRecipeRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeAdapters.RecipeViewPagerAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FindRecipesSpecificRecipeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FindRecipesSpecificRecipeFragment extends Fragment
+public class FindRecipesSpecificRecipeActivity extends AppCompatActivity
 {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -97,52 +95,24 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @Override
+    public void onResume()
+    {
+        super.onResume();
 
-    public FindRecipesSpecificRecipeFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GroupRecipesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FindRecipesSpecificRecipeFragment newInstance(String param1, String param2) {
-        FindRecipesSpecificRecipeFragment fragment = new FindRecipesSpecificRecipeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.fragment_specific_recipe);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_specific_recipe, container, false);
-
-        Bundle extras = getArguments();
+        Bundle extras = getIntent().getExtras();
         recipeId = extras.getString("id");
 
-        ImageView imageRecipe = view.findViewById(R.id.imageRecipeImage);
-        TextView txtRecipeTitle = view.findViewById(R.id.txtRecipeTitle);
+        ImageView imageRecipe = findViewById(R.id.imageRecipeImage);
+        TextView txtRecipeTitle = findViewById(R.id.txtRecipeTitle);
 
         db = FirebaseFirestore.getInstance();
         CollectionReference dbRecipes = db.collection("Recipes");
@@ -152,7 +122,7 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                Glide.with(getContext()).load(Uri.parse(task.getResult().getString("imageUrl"))).into(imageRecipe);
+                Glide.with(getApplicationContext()).load(Uri.parse(task.getResult().getString("imageUrl"))).into(imageRecipe);
                 txtRecipeTitle.setText(task.getResult().getString("title"));
 
                 categories = (ArrayList<String>) task.getResult().get("categories");
@@ -165,14 +135,14 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         });
 
 
-        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Parameters:
         //@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<String> directions,
         // ArrayList<String> nutrition, ArrayList<String> ingredients, String recipeId
 
-        vpRecipe = view.findViewById(R.id.vpRecipe);
-        tabRecipe = view.findViewById(R.id.tabRecipe);
+        vpRecipe = findViewById(R.id.vpRecipe);
+        tabRecipe = findViewById(R.id.tabRecipe);
 
         // todo: find out what this actually does... and if we need it or not
         vpRecipe.requestDisallowInterceptTouchEvent(true);
@@ -180,10 +150,10 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         vpAdapter = new FindRecipesViewPagerAdapter(fragmentManager, getLifecycle(), directions, nutrition, ingredients, recipeId);
         vpRecipe.setAdapter(vpAdapter);
 
-        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+        sqlDb = Room.databaseBuilder(getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        btnAddToMyRecipes = view.findViewById(R.id.btnAddToMyRecipes);
+        btnAddToMyRecipes = findViewById(R.id.btnAddToMyRecipes);
 
         // if recipe already exists in user's My Recipes, hide the add recipe button
         if(sqlDb.testDao().isRecipeExists(recipeId))
@@ -214,7 +184,7 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                         // find largest list between categories, directions, ingredients, and nutrition
                         int maxSize = Collections.max(Arrays.asList(categories.size(), directions.size(), ingredients.size(), nutrition.size()));
 
-                        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                        EZMealDatabase sqlDb = Room.databaseBuilder(getApplicationContext(), EZMealDatabase.class, "user")
                                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
                         // uncomment to nuke the users database
@@ -226,7 +196,7 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
 
                         // loop through and create a CategoryEntity instance for every category/direction/etc.  If you exceed one lists size, fill its entry with null
                         // this is really hacky, not sure if there's a better way to insert these lists given they are all of different sizes and doing it all in one loop
-                            // would result in out of bound errors
+                        // would result in out of bound errors
                         for(int x = 0; x < maxSize; x++)
                         {
                             String cat;
@@ -236,7 +206,7 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
 
                             if (x < categories.size())
                             {
-                               cat = categories.get(x);
+                                cat = categories.get(x);
                             }
                             else
                             {
@@ -273,6 +243,8 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                             CategoryEntity item = new CategoryEntity(recipeId, cat, nut, dir, ing);
                             sqlDb.testDao().insertItem(item);
                         }
+
+                        Toast.makeText(getApplicationContext(), "Recipe added!", Toast.LENGTH_SHORT).show();
 
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
@@ -342,9 +314,9 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         }
         */
 
-        nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
+        nestedScrollView = findViewById(R.id.nestedScrollNutrition);
 
-        TextView txt = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
+        TextView txt = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_name, null);
 
         new TabLayoutMediator(tabRecipe, vpRecipe, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
@@ -353,32 +325,41 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                 {
                     case 0:
                         //tab.setText("Ingredients");
-                        TextView txtIngredients = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
+                        TextView txtIngredients = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_name, null);
                         txtIngredients.setText("Ingredients");
-                        nestedScrollView = view.findViewById(R.id.nestedScrollIngredients);
+                        nestedScrollView = findViewById(R.id.nestedScrollIngredients);
                         tab.setCustomView(txtIngredients);
                         break;
                     case 1:
                         //tab.setText("Directions");
-                        TextView txtDirections = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
+                        TextView txtDirections = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_name, null);
                         txtDirections.setText("Directions");
-                        nestedScrollView = view.findViewById(R.id.nestedScrollDirections);
+                        nestedScrollView = findViewById(R.id.nestedScrollDirections);
                         tab.setCustomView(txtDirections);
                         break;
                     case 2:
                         //tab.setText("Nutrition");
-                        TextView txtNutrition = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.tab_name, null);
+                        TextView txtNutrition = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_name, null);
                         txtNutrition.setText("Nutrition");
-                        nestedScrollView = view.findViewById(R.id.nestedScrollNutrition);
+                        nestedScrollView = findViewById(R.id.nestedScrollNutrition);
                         tab.setCustomView(txtNutrition);
                         break;
                 }
             }
         }).attach();
 
+    }
+    /*@Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_specific_recipe, container, false);
+
+
+
         // If scrollview is at the top (not scrolled), allow MotionLayout transition.  Otherwise, disable MotionLayout transition
         // prevents the user from pulling the image up and down while the scrollview is scrolled.  Image should only move when scrollview is at the top
-        /*nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        *//*nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 if (nestedScrollView.getScrollY() == 0)
@@ -390,12 +371,12 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
                     motionLayout.getTransition(R.id.recipeTransition).setEnable(false);
                 }
             }
-        });*/
+        });*//*
 
         return view;
-    }
+    }*/
 
-    public class InsertAsynchTask extends AsyncTask<Void, Void, Void>
+/*    public class InsertAsynchTask extends AsyncTask<Void, Void, Void>
     {
 
         @Override
@@ -403,5 +384,5 @@ public class FindRecipesSpecificRecipeFragment extends Fragment
         {
             return null;
         }
-    }
+    }*/
 }

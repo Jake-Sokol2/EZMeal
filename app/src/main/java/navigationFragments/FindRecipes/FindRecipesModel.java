@@ -20,19 +20,29 @@ import java.util.List;
 public class FindRecipesModel
 {
     private List<String> recipeList;
-    private List<Uri> uriList;
+    private List<String> uriList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public FindRecipesModel()
     {
         recipeList = new ArrayList<String>();
-        uriList = new ArrayList<Uri>();
+        uriList = new ArrayList<String>();
     }
 
-    public void addItem(String recipeTitle, Uri uri)
+    public void addItem(String recipeTitle, String uri)
     {
         uriList.add(uri);
         recipeList.add(recipeTitle);
+    }
+
+    public void setRecipeList(List<String> recipeList)
+    {
+        this.recipeList = recipeList;
+    }
+
+    public void setUriListEnabled(int position)
+    {
+        this.uriList = uriList;
     }
 
     public int listLength()
@@ -71,7 +81,7 @@ public class FindRecipesModel
         return recipeList;
     }
 
-    public List<Uri> getUriList()
+    public List<String> getUriList()
     {
         return uriList;
     }

@@ -6,10 +6,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesAdapter;
+import navigationFragments.FindRecipes.FindRecipesAdapters.FindRecipesHorizontalRecyclerAdapter;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;
@@ -52,12 +55,17 @@ public class GroupRecipesFragment extends Fragment
     private ArrayList<List<String>> recipeList = new ArrayList<List<String>>();
     List<String> list = new ArrayList<String>();
     private FindRecipesModel findRecipesModel = new FindRecipesModel();
+    private FindRecipesHorizontalModel findRecipesHorizontalModel = new FindRecipesHorizontalModel();
 
     private RecyclerView rvFindRecipes;
+    private RecyclerView rvHorizontal;
     private FindRecipesAdapter findRecipesAdapter;
+    private FindRecipesHorizontalRecyclerAdapter horizontalAdapter;
 
-    private List<String> recipeId;
+    private List<String> recipeId = new ArrayList<String>();
+    public List<String> categories = new ArrayList<String>();
 
+    private int currentSelectedCategoryPosition = 0;
     public ImageView imageView;
     public String[] imageList;
     public Bitmap[] bitmapList;
@@ -180,32 +188,47 @@ public class GroupRecipesFragment extends Fragment
         //TextView txtName = view.findViewById(R.id.txtName);
        // txtName.setText(name);
 
-        rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
-        findRecipesAdapter = new FindRecipesAdapter(findRecipesModel.getRecipeList(), findRecipesModel.getUriList());
-        rvFindRecipes.setAdapter(findRecipesAdapter);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this.getActivity(), 2, RecyclerView.VERTICAL, false);
-        rvFindRecipes.setLayoutManager(layoutManager);
+        //categories.add("Breakfast");
+        //categories.add("Brunch");
+
+        //Bundle categoryBundle = new Bundle();
+
+        //categoryBundle.putString("cat", categories.get(0));
+        //bundleRecipeId.putString("id", recipeId);
+        categories.add("Featured");
+        findRecipesHorizontalModel.addItem(categories.get(0), true);
+
+        FragmentManager categoryFragManager = getChildFragmentManager();
+        //getSupportFragmentManager().beginTransaction().add(R.id.fragContainer, frag).addToBackStack(backStackTag).commit();
+        Fragment frag = new FindRecipesCategoryFragment();
+        //frag.setArguments(categoryBundle);
+        categoryFragManager.beginTransaction().replace(R.id.fragmentContainerView4, frag).commit();
+
+        rvHorizontal = (RecyclerView) view.findViewById(R.id.rvHorizontalSelector);
+        horizontalAdapter = new FindRecipesHorizontalRecyclerAdapter(findRecipesHorizontalModel.getCategoryList(), findRecipesHorizontalModel.getIsSelectedList());
+        rvHorizontal.setAdapter(horizontalAdapter);
+        RecyclerView.LayoutManager horizontalLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        rvHorizontal.setLayoutManager(horizontalLayoutManager);
 
         db = FirebaseFirestore.getInstance();
         CollectionReference dbRecipes = db.collection("Recipes");
 
-
-        db.collection("Recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("RecipeCategoryList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
             {
-                recipeId = new ArrayList<String>();
                 for (QueryDocumentSnapshot document : task.getResult())
                 {
-                    Log.i("retrieve", document.getId() + "=> " + document.getData());
-                    String title = document.getString("title");
-                    Uri uri = Uri.parse(document.getString("imageUrl"));
-
-                    findRecipesModel.addItem(title, uri);
-                    findRecipesAdapter.notifyDataSetChanged();
-                    recipeId.add(document.getId());
+                    //Log.i("retrieve", document.getId() + "=> " + document.getData());
+                    //String title = document.getString("title");
+                    //String imageUrl = document.getString("imageUrl");
+                    categories.add(document.getString("category"));
+                    findRecipesHorizontalModel.addItem(document.getString("category"), false);
+                    //recipeId.add(document.getId());
                 }
+
+                horizontalAdapter.notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener()
         {
@@ -216,58 +239,64 @@ public class GroupRecipesFragment extends Fragment
             }
         });
 
+        //findRecipesHorizontalModel.addItem("abc");
+        //findRecipesHorizontalModel.addItem("ddd");
+        //findRecipesHorizontalModel.addItem("some category");
+        //rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
+        //findRecipesAdapter = new FindRecipesAdapter(findRecipesModel.getRecipeList(), findRecipesModel.getUriList());
+        /*rvFindRecipes.setAdapter(findRecipesAdapter);
+        RecyclerView.LayoutManager verticalLayoutManager = new GridLayoutManager(this.getActivity(), 2, RecyclerView.VERTICAL, false);
+        rvFindRecipes.setLayoutManager(verticalLayoutManager);*/
 
-        findRecipesAdapter.setOnItemClickListener(new FindRecipesAdapter.MainAdapterListener()
+        //db = FirebaseFirestore.getInstance();
+        //CollectionReference dbRecipes = db.collection("Recipes");
+
+
+
+        horizontalAdapter.setOnItemClickListener(new FindRecipesHorizontalRecyclerAdapter.MainAdapterListener()
         {
             @Override
-            public void onItemClick(int position, CardView cardView)
+            public void onItemClick(int position)
             {
-                //Toast.makeText(getContext(), Integer.toString(cardView.getId()), Toast.LENGTH_SHORT).show();
-                // Code to use the selected name goes here…
 
-                // todo: fix this when database is working
-                // name of the clicked category, gets sent to new Activity and is later used to let Firebase know which data to populate Activity with
+                Fragment fragCategoryClick = new FindRecipesCategoryFragment();
 
-                String id = "a";
+                // position 0 is "featured" section, which is not stored as a category in the database and would cause a crash if passed in as one
+                // only pass a bundle if the user selects a card other than featured
+                if (position != 0)
+                {
+                    findRecipesHorizontalModel.setNotSelected(currentSelectedCategoryPosition);
+                    findRecipesHorizontalModel.setSelected(position);
+                    currentSelectedCategoryPosition = position;
+                    horizontalAdapter.notifyDataSetChanged();
 
-                //Fragment endFrag = new SpecificRecipeFragment();
+                    Bundle categoryBundleClick = new Bundle();
+                    categoryBundleClick.putString("cat", categories.get(position));
+                    fragCategoryClick.setArguments(categoryBundleClick);
+                }
+                else
+                // featured was clicked, set last category to unclicked (visually) and set featured to clicked
+                {
+                    findRecipesHorizontalModel.setNotSelected(currentSelectedCategoryPosition);
+                    findRecipesHorizontalModel.setSelected(0);
+                    currentSelectedCategoryPosition = 0;
+                    horizontalAdapter.notifyDataSetChanged();
+                }
 
-                String name = "transition" + position;
-
-                Bundle bundle = new Bundle();
-
-                // pass recipeId to specific recipe page so that it knows which recipe to use
-                bundle.putString("id", recipeId.get(position));
-
-                /*endFrag.setArguments(bundle);
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-
-                        //.addSharedElement(cardView, "test")
-                        //       animations:    enter            exit          popEnter        popExit
-                        .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-                        .addToBackStack("specific_recipe")
-                        .replace(R.id.fragContainer, endFrag)
-                        .commit();*/
-
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_groupRecipesFragment_to_specificRecipeFragment, bundle, new NavOptions.Builder()
-                            .setEnterAnim(R.anim.slide_in)
-                            .setExitAnim(R.anim.fade_out)
-                            .setPopExitAnim(R.anim.slide_out)
-                            .build());
+                getChildFragmentManager().popBackStack();
+                getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
             }
         });
 
         return view;
     }
 
-    @Override
+/*    @Override
     public void onStop()
     {
         super.onStop();
-        findRecipesModel.dumpList();
-    }
+        findRecipesHorizontalModel.dumpList();
+    }*/
 
 
 
