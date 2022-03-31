@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class Login extends AppCompatActivity {
 
@@ -122,20 +123,26 @@ public class Login extends AppCompatActivity {
         EditText passwordText = findViewById(R.id.passwordTextField);
         password = passwordText.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {@Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    // Was the sign in successful?
-                    if (task.isSuccessful()) {
-                        // Put successful log in code here...
-                        Toast.makeText(Login.this, "Login success.", Toast.LENGTH_SHORT).show();
-                        openActivityMain();
-                    } else {
-                        // Put unsuccessful log in code here
-                        Toast.makeText(Login.this, "Login failed.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                });
+
+        if (!Objects.equals(email, "") && !Objects.equals(password, "")) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            // Was the sign in successful?
+                            if (task.isSuccessful()) {
+                                // Put successful log in code here...
+                                Toast.makeText(Login.this, "Login success.", Toast.LENGTH_SHORT).show();
+                                openActivityMain();
+                            } else {
+                                // Put unsuccessful log in code here
+                                Toast.makeText(Login.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        } else{
+            Toast.makeText(Login.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

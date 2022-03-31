@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="312dp"
         android:layout_marginEnd="101dp"
         android:drawableLeft="@drawable/ic_baseline_person_24"
         android:drawablePadding="20dp"
@@ -20,7 +20,7 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="101dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="60dp"
         android:drawableLeft="@drawable/ic_baseline_lock_24"
         android:drawablePadding="20dp"
         android:ems="10"
@@ -40,7 +40,7 @@
 
         app:layout_constraintBottom_toTopOf="@+id/registerFinalButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -61,8 +61,8 @@
         android:id="@+id/imageView3"
         android:layout_width="192dp"
         android:layout_height="288dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginBottom="156dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginBottom="144dp"
         app:layout_constraintBottom_toTopOf="@+id/registerFinalButton"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/transparentlogo" />
