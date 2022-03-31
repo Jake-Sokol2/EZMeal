@@ -29,7 +29,7 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     public SwipeDeleteCallback(MainRecyclerAdapter adapter, GroceryListModel theModel)
     {
-        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.LEFT);
         mAdapter = adapter;
         //TODO: We need an icon for deleting
         //icon = ContextCompat.getDrawable(mAdapter.getContext(),

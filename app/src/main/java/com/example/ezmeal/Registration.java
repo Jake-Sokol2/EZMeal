@@ -17,6 +17,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 public class Registration extends AppCompatActivity {
 
     private Button btnToRegister;
@@ -44,30 +46,30 @@ public class Registration extends AppCompatActivity {
         email = emailText.getText().toString();
         EditText passwordText = findViewById(R.id.passwordRegisterTextField);
         password = passwordText.getText().toString();
+        if (!Objects.equals(email, "") && !Objects.equals(password, "")) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                openActivityMain();
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            openActivityMain();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(Registration.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
 
-                        } else
-                        {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(Registration.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            emailText.setError("Empty field");
+            passwordText.setError("Empty field");
+        }
     }
 
     public void openActivityMain() {

@@ -39,6 +39,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import navigationFragments.MyRecipes.RecipeAdapters.IngredientsRecyclerAdapter;
 import navigationFragments.MyRecipes.RecipeModels.IngredientsModel;
@@ -131,7 +132,7 @@ public class FindRecipesIngredientsFragment extends Fragment{
 
                 for (int i = 0; i < ingredients.size(); i++)
                 {
-                    if (ingredients.get(i) != null)
+                    if (!Objects.equals(ingredients.get(i), ""))
                     {
                         ingredientsModel.addItem(ingredients.get(i));
                     }
@@ -190,6 +191,7 @@ public class FindRecipesIngredientsFragment extends Fragment{
 
                 for (int i = 0; i < ingredients.size(); i++)
                 {
+
                     if (ingredients.get(i) != null)
                     {
                         mAuth = FirebaseAuth.getInstance();
