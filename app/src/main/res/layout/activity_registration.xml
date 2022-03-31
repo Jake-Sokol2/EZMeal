@@ -11,36 +11,32 @@
         android:id="@+id/emailRegisterTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="312dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginBottom="71dp"
         android:drawableLeft="@drawable/ic_baseline_person_24"
         android:drawablePadding="20dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@+id/passwordRegisterTextField"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/passwordRegisterTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="84dp"
         android:drawableLeft="@drawable/ic_baseline_lock_24"
         android:drawablePadding="20dp"
         android:ems="10"
         android:hint="Password"
+
+
         android:inputType="textPassword"
-
-
         app:layout_constraintBottom_toTopOf="@+id/registerFinalButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -49,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="152dp"
         android:layout_marginEnd="153dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginBottom="152dp"
         android:backgroundTint="@color/EzGreen"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,9 +57,9 @@
         android:id="@+id/imageView3"
         android:layout_width="192dp"
         android:layout_height="288dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginBottom="144dp"
-        app:layout_constraintBottom_toTopOf="@+id/registerFinalButton"
+        app:layout_constraintBottom_toTopOf="@+id/emailRegisterTextField"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/transparentlogo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

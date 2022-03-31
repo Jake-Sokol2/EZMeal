@@ -8,20 +8,6 @@
     android:background="@drawable/asian_food_clear_background_vertical_141291_1715"
     tools:context=".Login">
 
-    <Button
-        android:id="@+id/btnToMainActivityDev"
-        android:layout_width="48dp"
-        android:layout_height="41dp"
-        android:backgroundTint="#5FA32D"
-        android:text="->"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
     <EditText
         android:id="@+id/emailTextField"
         android:layout_width="172dp"

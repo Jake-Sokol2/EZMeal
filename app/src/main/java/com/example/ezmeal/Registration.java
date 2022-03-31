@@ -66,7 +66,9 @@ public class Registration extends AppCompatActivity {
                             }
                         }
                     });
-        } else {Toast.makeText(Registration.this, "Missing fields", Toast.LENGTH_SHORT).show();
+        } else {
+            emailText.setError("Empty field");
+            passwordText.setError("Empty field");
         }
     }
 

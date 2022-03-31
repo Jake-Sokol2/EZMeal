@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.ezmeal.Login;
 import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.MainRecyclerAdapter;
 import com.example.ezmeal.Model.GroceryListModel;
@@ -107,17 +108,19 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         switch (view.getId()){
             case R.id.btnConfirm:
                 if(TextUtils.isEmpty(editItemName.getText().toString()) ) {
-                    editItemName.setError("Enter item name...");
+                    //Toast.makeText(view.getContext(), "Enter item name...", Toast.LENGTH_SHORT).show();;
+                    editItemName.setError("Enter field");
                 }
                 if(TextUtils.isEmpty(editBrandName.getText().toString())) {
-                    editBrandName.setError("Enter brand name...");
+                    editBrandName.setError("Empty field");
                 }
+                else {
+                    theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
+                    theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
-                theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
-                theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
-
-                adapter.notifyDataSetChanged();
-                dismiss();
+                    adapter.notifyDataSetChanged();
+                    dismiss();
+                }
                 break;
 
             case R.id.btnCancel:

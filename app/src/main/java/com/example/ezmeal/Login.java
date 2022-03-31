@@ -39,7 +39,7 @@ public class Login extends AppCompatActivity {
 
 
     // todo: remove btnToMainActivityDev when Login is functional
-    private Button btnToMainActivityDev;
+    //private Button btnToMainActivityDev;
     private Button btnToLogin;
     private Button btnToRegister;
     private FirebaseAuth mAuth;
@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
             e.printStackTrace();
         }*/
 
-
+        /*
         btnToMainActivityDev = (Button) findViewById(R.id.btnToMainActivityDev);
         btnToMainActivityDev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +77,7 @@ public class Login extends AppCompatActivity {
                 openActivityMain();
             }
         });
-
+        */
         btnToLogin = (Button) findViewById(R.id.loginButton);
         btnToLogin.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -98,9 +98,12 @@ public class Login extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        /*
         if(currentUser != null){
             openActivityMain();
         }
+        */
+
     }
 
 
@@ -141,7 +144,10 @@ public class Login extends AppCompatActivity {
                         }
                     });
         } else{
-            Toast.makeText(Login.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Login.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+            emailText.setError("Field empty");
+            passwordText.setError("Field empty");
+
         }
     }
 
