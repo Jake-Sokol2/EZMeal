@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/groupListsFragment"
-        android:name="navigationFragments.GroupListsFragment"
+        android:name="com.example.ezmeal.GroupLists.GroupListsFragment"
         android:label="Group Lists"
         tools:layout="@layout/fragment_group_lists" />
     <fragment
         android:id="@+id/groupRecipesFragment"
-        android:name="navigationFragments.FindRecipes.GroupRecipesFragment"
+        android:name="com.example.ezmeal.FindRecipes.FindRecipesFragment"
 
         android:label="Group Recipes"
         tools:layout="@layout/fragment_group_recipes" >
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/myRecipesFragment"
-        android:name="navigationFragments.MyRecipes.MyRecipesFragment"
+        android:name="com.example.ezmeal.MyRecipes.MyRecipesFragment"
         android:label="My Recipes"
         tools:layout="@layout/fragment_my_recipes_category" >
         <action
@@ -31,16 +31,16 @@
     </fragment>
     <fragment
         android:id="@+id/groupSettingsFragment"
-        android:name="navigationFragments.GroupSettingsFragment"
+        android:name="com.example.ezmeal.GroupSettings.GroupSettingsFragment"
         android:label="Group Settings"
         tools:layout="@layout/fragment_group_settings" />
     <fragment
         android:id="@+id/specificRecipeFragment"
-        android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeActivity"
+        android:name="com.example.ezmeal.FindRecipes.RecipeActivity"
         android:label="SpecificRecipeFragment" />
     <fragment
         android:id="@+id/myRecipesSpecificCategoryFragment"
-        android:name="navigationFragments.MyRecipes.MyRecipesSpecificCategoryFragment"
+        android:name="com.example.ezmeal.MyRecipes.CategoryFragment"
         android:label="MyRecipesSpecificCategoryFragment" >
         <action
             android:id="@+id/action_myRecipesSpecificCategoryFragment_to_myRecipesSpecificRecipeFragment"
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/myRecipesSpecificRecipeFragment"
-        android:name="navigationFragments.MyRecipes.MyRecipesSpecificRecipeFragment"
+        android:name="com.example.ezmeal.MyRecipes.RecipeFragment"
         android:label="MyRecipesSpecificRecipeFragment" />
 
 </navigation>

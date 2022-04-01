@@ -4,7 +4,7 @@
     android:id="@+id/nestedScrollIngredients"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="navigationFragments.MyRecipes.RecipeIngredientsFragment">
+    tools:context=".MyRecipes.RecipeIngredientsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clInstructions"

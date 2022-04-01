@@ -1,7 +1,6 @@
 package com.example.ezmeal.RoomDatabase;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
 
 public class RecipeCategoryTuple
 {

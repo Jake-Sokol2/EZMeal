@@ -5,7 +5,7 @@
     android:id="@+id/clFindRecipes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="navigationFragments.FindRecipes.GroupRecipesFragment">
+    tools:context=".FindRecipes.FindRecipesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFindRecipesCategory"
@@ -40,7 +40,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView4"
-        android:name="navigationFragments.FindRecipes.FindRecipesCategoryFragment"
+        android:name="com.example.ezmeal.FindRecipes.CategoryFragment"
         android:layout_width="match_parent"
         android:layout_height="443dp"
         app:layout_constraintBottom_toBottomOf="parent"
