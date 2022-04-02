@@ -17,11 +17,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Model.Item;
 import com.example.ezmeal.R;
+import com.example.ezmeal.RoomDatabase.Rating;
 import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -162,6 +164,10 @@ public class GroupListsFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_group_lists, container, false);
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
 
+        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
+        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
         // back stack logs
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);

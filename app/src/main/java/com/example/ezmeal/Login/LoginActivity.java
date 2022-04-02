@@ -15,6 +15,7 @@ import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.R;
 import com.example.ezmeal.Registration.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -120,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(Task<AuthResult> task) {
                             // Was the sign in successful?
                             if (task.isSuccessful()) {
                                 // Put successful log in code here...
@@ -131,7 +132,14 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            });
         } else{
             //Toast.makeText(Login.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             emailText.setError("Field empty");

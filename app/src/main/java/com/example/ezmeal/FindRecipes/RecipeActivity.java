@@ -2,10 +2,12 @@ package com.example.ezmeal.FindRecipes;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,16 +27,21 @@ import com.example.ezmeal.MyRecipes.RecipeAdapters.RecipeFragmentRecyclerAdapter
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.CategoryEntity;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.RoomDatabase.Rating;
 import com.example.ezmeal.RoomDatabase.Recipe;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,9 +79,15 @@ public class RecipeActivity extends AppCompatActivity
     private Button btnAddToMyRecipes;
     public String recipeId;
 
+    //public RatingsDatabase ratingsDb;
+
     ViewPager2 vpRecipe;
     TabLayout tabRecipe;
     RecipeActivityViewPagerAdapter vpAdapter;
+
+    private RatingBar rateRecipe;
+    float ratingValue;
+    String tempRating;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,13 +97,7 @@ public class RecipeActivity extends AppCompatActivity
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
 
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +109,41 @@ public class RecipeActivity extends AppCompatActivity
 
         ImageView imageRecipe = findViewById(R.id.imageRecipeImage);
         TextView txtRecipeTitle = findViewById(R.id.txtRecipeTitle);
+
+        rateRecipe = findViewById(R.id.rateRecipe);
+
+        // Room database instance
+        //ratingsDb = Room.databaseBuilder(getApplicationContext(), RatingsDatabase.class, "user")
+        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        sqlDb = Room.databaseBuilder(getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+
+        // retrieve current rating for this recipe (if one exists for this user) from Room to display in bottom rating bar
+        Rating userRating = sqlDb.testDao().getSpecificRatingObject(recipeId);
+
+        if (userRating == null)
+        {
+            Toast.makeText(getApplicationContext(), "NO RATING FOR THIS RECIPE", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Rating: " + userRating.getRating(), Toast.LENGTH_SHORT).show();
+        }
+
+
+        rateRecipe.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener()
+        {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b)
+            {
+                Toast.makeText(getApplicationContext(), "Thank you for rating this recipe!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // get rating that is currently in the bar
+        // rateRecipe.getRating();
+
 
         db = FirebaseFirestore.getInstance();
         CollectionReference dbRecipes = db.collection("Recipes");
@@ -139,8 +181,7 @@ public class RecipeActivity extends AppCompatActivity
         vpAdapter = new RecipeActivityViewPagerAdapter(fragmentManager, getLifecycle(), directions, nutrition, ingredients, recipeId);
         vpRecipe.setAdapter(vpAdapter);
 
-        sqlDb = Room.databaseBuilder(getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
 
         btnAddToMyRecipes = findViewById(R.id.btnAddToMyRecipes);
 
@@ -164,7 +205,6 @@ public class RecipeActivity extends AppCompatActivity
                 //.whereEqualTo(ingredients.get(i), null).get().addOnCompleteListener(
 
 
-                // todo: make it so user can't add same recipe twice
                 db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
                     @Override
@@ -341,6 +381,13 @@ public class RecipeActivity extends AppCompatActivity
         }).attach();
 
     }
+
+    public void rateApp()
+    {
+
+    }
+
+
     /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -377,4 +424,116 @@ public class RecipeActivity extends AppCompatActivity
             return null;
         }
     }*/
+
+        /*@Override
+    public void onResume()
+    {
+        super.onResume();
+    }*/
+
+/*    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+    }*/
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        //RatingsDatabase ratingsDb = Room.databaseBuilder(getApplicationContext(), RatingsDatabase.class, "user")
+        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        // get change in rating compared to user's previous rating (if one exists)
+        float oldRating = sqlDb.testDao().getSpecificRating(recipeId);
+        float newRating = rateRecipe.getRating();
+        float changeInRating = newRating - oldRating;
+
+        Rating r1 = sqlDb.testDao().getSpecificRatingObject(recipeId);
+        Rating r2 = sqlDb.testDao().getAllTheThings();
+        // if rating is different than it was when the user entered the recipe, they added / updated their rating, so update both database entries
+        if (changeInRating != 0)
+        {
+            db = FirebaseFirestore.getInstance();
+            CollectionReference dbRecipes = db.collection("Recipes");
+
+            // if user has never left a review on this recipe before, increment number of ratings in firestore
+            if (oldRating == 0)
+            {
+                dbRecipes.document(recipeId).update("numRating", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "numRating updated");
+                    }
+                });
+
+                // add a new entry to Room so their rating displays correctly next time they return to the recipe
+                Rating newRatingEntry = new Rating(recipeId, newRating);
+                sqlDb.testDao().insert(newRatingEntry);
+            }
+            // if newRating is not 0, they added a new rating, so update existing Room entry
+            else if (newRating != 0)
+            {
+                // update their existing Room entry with the correct new rating
+                Rating newRatingEntry = new Rating(recipeId, newRating);
+                sqlDb.testDao().updateRating(newRating, recipeId);
+            }
+
+            // if user added or changed their rating, update the total rating score in firestore
+            if (newRating != 0)
+            {
+                // increment or decrement (depending on if changeInRating is positive or negative) Firestore rating by new value
+                dbRecipes.document(recipeId).update("rating", FieldValue.increment(changeInRating)).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "rating updated");
+                    }
+                });
+            }
+                // otherwise do nothing, as they neither had a rating to begin with nor added a new one
+
+            if (sqlDb.isOpen())
+            {
+                sqlDb.close();
+            }
+
+
+
+            // update Room with new value
+            //sqlDb.testDao().updateRating(rateRecipe.getRating(), recipeId);
+
+            /*            {
+             *//*@Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        //Log.i("retrieve", document.getId() + "=> " + document.getData());
+                        //String title = document.getString("title");
+                        //String imageUrl = document.getString("imageUrl");
+                        categories.add(document.getString("category"));
+                        findRecipesFragmentModel.addItem(document.getString("category"), false);
+                        //recipeId.add(document.getId());
+                    }
+
+                    horizontalAdapter.notifyDataSetChanged();
+                }
+            }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+
+                }
+            });*//*
+        }*/
+        }
+
+    }
 }
+

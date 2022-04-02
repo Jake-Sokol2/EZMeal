@@ -24,12 +24,24 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpRecipe"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_width="408dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageRecipeImage" />
+        app:layout_constraintTop_toBottomOf="@+id/imageRecipeImage">
+
+
+    </androidx.viewpager2.widget.ViewPager2>
+
+    <RatingBar
+        android:id="@+id/rateRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vpRecipe" />
 
     <ImageView
         android:id="@+id/imageRecipeTitleShadow"

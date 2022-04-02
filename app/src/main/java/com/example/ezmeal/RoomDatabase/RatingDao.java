@@ -6,22 +6,36 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.RawQuery;
+import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import java.util.List;
 
 @Dao
-public interface TestDao {
-    @Insert
-    void insertAll(Recipe... recipes);
+public interface RatingDao
+{
+    //@Insert
+    //void insertAll(Recipe... recipes);
 
     //@Insert
     //void insertAllItems(String recipeId, List<String> category, List<String> ingredient, List<String> nutrition, List<String> direction);
 
     @Insert
-    void insert(Recipe recipe);
+    void insert(Rating rating);
 
-    @Delete
+    @Query("UPDATE Rating SET ratingValue = :rating WHERE recipeId = :rid")
+    void updateRating(Float rating, String rid);
+
+    @Query("SELECT * FROM Rating WHERE recipeId = :rid")
+    public Rating getSpecificRatingObject(String rid);
+
+    @Query("SELECT * FROM Rating")
+    public Rating getAllTheThings();
+
+    @Query("SELECT ratingValue FROM Rating WHERE recipeId LIKE :rid")
+    public float getSpecificRating(String rid);
+
+    /*@Delete
     void delete(Recipe recipe);
 
     @Query("SELECT * FROM Recipe")
@@ -77,27 +91,8 @@ public interface TestDao {
     //@Query("SELECT ")
 
     @Query("SELECT DISTINCT pathToImage FROM CategoryEntity JOIN Recipe on CategoryEntity.recipeId = Recipe.recipeID")
-    List<String> getCatUrl();
+    List<String> getCatUrl();*/
 
 
-
-
-    @Insert
-    void insert(Rating rating);
-
-    @Query("UPDATE Rating SET ratingValue = :rating WHERE recipeId = :rid")
-    void updateRating(Float rating, String rid);
-
-    @Query("SELECT * FROM Rating WHERE recipeId = :rid")
-    public Rating getSpecificRatingObject(String rid);
-
-    @Query("SELECT * FROM Rating")
-    public Rating getAllTheThings();
-
-    @Query("SELECT ratingValue FROM Rating WHERE recipeId LIKE :rid")
-    public float getSpecificRating(String rid);
-
-    @Query("DELETE FROM Rating")
-    public void BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM();
 }
 
