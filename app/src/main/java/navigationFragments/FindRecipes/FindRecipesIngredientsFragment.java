@@ -184,7 +184,7 @@ public class FindRecipesIngredientsFragment extends Fragment{
             public void onClick(View view)
             {
                 // in case user edited ingredient list, re-read ingredients from database
-                ingredients = sqlDb.testDao().getIngredients(recipeId);
+                //ingredients = sqlDb.testDao().getIngredients(recipeId);
 
                 FirebaseUser mCurrentUser = mAuth.getCurrentUser();
                 String email = mCurrentUser.getEmail();

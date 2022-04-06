@@ -141,7 +141,7 @@ public class MyRecipesFragment extends Fragment
             {
                 //String selectedName = groceryList.get(position);
                 //clickedView = (View) layoutManager.findViewByPosition(position);
-                Toast.makeText(getContext(), Integer.toString(cardView.getId()), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), Integer.toString(cardView.getId()), Toast.LENGTH_SHORT).show();
                 // Code to use the selected name goes here…
 
                 // todo: fix this when database is working
