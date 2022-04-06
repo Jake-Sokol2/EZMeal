@@ -6,7 +6,7 @@
     app:startDestination="@id/groupRecipesFragment2">
     <fragment
         android:id="@+id/groupRecipesFragment2"
-        android:name="navigationFragments.FindRecipes.GroupRecipesFragment"
+        android:name="com.example.ezmeal.FindRecipes.FindRecipesFragment"
         android:label="fragment_group_recipes"
         tools:layout="@layout/fragment_group_recipes" />
 </navigation>

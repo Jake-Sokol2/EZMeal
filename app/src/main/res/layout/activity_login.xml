@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/asian_food_clear_background_vertical_141291_1715"
-    tools:context=".Login">
+    tools:context=".Login.LoginActivity">
 
     <EditText
         android:id="@+id/emailTextField"

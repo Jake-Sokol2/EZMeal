@@ -13,13 +13,14 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.Objects;
+import com.example.ezmeal.GroupLists.GroupListsFragment;
 
-import navigationFragments.FindRecipes.GroupRecipesFragment;
-import navigationFragments.GroupListsFragment;
-import navigationFragments.GroupSettingsFragment;
-import navigationFragments.MyRecipes.MyRecipesFragment;
 
+/**
+ * The main activity for EZMeal.  Contains a FragmentContainerView which holds the GroupLists, FindRecipes, MyRecipes, and GroupSettings fragments
+ *
+ * layout: {@link R.layout#activity_main}
+ */
 public class MainActivity extends AppCompatActivity
 {
 
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });
+
+
        /* bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -196,16 +199,6 @@ public class MainActivity extends AppCompatActivity
         Log.i("TRACK BACKSTACK", "popped and fragment replaced: " + numOfBackstack);
 
         return true;
-    }
-    */
-
-
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
-    {
-        SpecificRecipeFragment specificRecipeFragment = (SpecificRecipeFragment) getSupportFragmentManager().findFragmentByTag("specific_recipe");
-        return super.dispatchTouchEvent(ev);
     }
     */
 

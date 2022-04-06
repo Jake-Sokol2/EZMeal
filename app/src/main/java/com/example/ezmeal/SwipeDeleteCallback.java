@@ -1,11 +1,7 @@
 package com.example.ezmeal;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -14,9 +10,8 @@ import android.view.View;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ezmeal.Model.GroceryListModel;
-
-import javax.annotation.Nonnull;
+import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
+import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 
 //Following tutorial from https://medium.com/@zackcosborn/step-by-step-recyclerview-swipe-to-delete-and-undo-7bbae1fce27e
 
@@ -24,10 +19,10 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     private Drawable icon;
     private final ColorDrawable background;
-    private MainRecyclerAdapter mAdapter;
-    private GroceryListModel theModel;
+    private GroupListsFragmentRecyclerAdapter mAdapter;
+    private GroupListsFragmentModel theModel;
 
-    public SwipeDeleteCallback(MainRecyclerAdapter adapter, GroceryListModel theModel)
+    public SwipeDeleteCallback(GroupListsFragmentRecyclerAdapter adapter, GroupListsFragmentModel theModel)
     {
         super(0, ItemTouchHelper.LEFT);
         mAdapter = adapter;

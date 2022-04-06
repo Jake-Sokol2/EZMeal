@@ -5,7 +5,7 @@
     android:id="@+id/nestedScrollDirections"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="navigationFragments.MyRecipes.RecipeDirectionsFragment">
+    tools:context=".MyRecipes.RecipeDirectionsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clInstructions"
@@ -15,7 +15,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDirection"
             android:layout_width="match_parent"
-            android:layout_height="492dp"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

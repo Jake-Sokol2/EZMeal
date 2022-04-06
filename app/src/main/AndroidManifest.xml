@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EZMeal">
         <activity
-            android:name="navigationFragments.FindRecipes.FindRecipesSpecificRecipeActivity"
+            android:name=".FindRecipes.RecipeActivity"
             android:exported="true"
             android:noHistory="true"/>
         <activity
-            android:name=".Login"
+            android:name=".Login.LoginActivity"
             android:exported="true"
             >
             <intent-filter>
@@ -29,7 +29,7 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".Registration"
+            android:name=".Registration.RegistrationActivity"
             android:exported="true"
             android:noHistory="true"/>
     </application>
