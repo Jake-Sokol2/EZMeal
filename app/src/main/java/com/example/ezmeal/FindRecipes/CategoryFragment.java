@@ -45,7 +45,7 @@ public class CategoryFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_find_recipes_category, container, false);
 
-        rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvGroupList);
+        rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvCategoryList);
         categoryFragmentAdapter = new CategoryFragmentAdapter(categoryFragmentModel.getRecipeList(), categoryFragmentModel.getUriList());
         rvFindRecipes.setAdapter(categoryFragmentAdapter);
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);

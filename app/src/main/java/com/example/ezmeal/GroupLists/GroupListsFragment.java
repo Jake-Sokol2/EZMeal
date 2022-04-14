@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//Not the bubbles but the actual list itself
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GroupListsFragment#newInstance} factory method to
@@ -159,8 +160,9 @@ public class GroupListsFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
-        view = inflater.inflate(R.layout.fragment_group_lists, container, false);
+        view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+
 
         // back stack logs
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
@@ -177,7 +179,7 @@ public class GroupListsFragment extends Fragment
 
         // back stack logs
 
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
+        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupList);
         //adapter = new MainRecyclerAdapter(groceryList);
         //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
@@ -215,7 +217,7 @@ public class GroupListsFragment extends Fragment
         });
 
 
-        Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
+        Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem4);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvGroupList"
+        android:id="@+id/rvCategoryList"
         android:layout_width="match_parent"
         android:layout_height="451dp"
         app:layout_constraintStart_toStartOf="parent"
