@@ -98,7 +98,8 @@ public class RecipeNutritionFragment extends Fragment {
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        // todo: RecipesRating
+        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)

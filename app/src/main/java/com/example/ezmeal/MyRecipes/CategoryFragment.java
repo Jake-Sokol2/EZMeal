@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -12,7 +13,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.room.Room;
 
 import com.example.ezmeal.MyRecipes.RecipeAdapters.CategoryFragmentAdapter;
@@ -111,8 +114,27 @@ public class CategoryFragment extends Fragment {
         adapter = new CategoryFragmentAdapter(categoryFragmentModel.getRecipeList(), categoryFragmentModel.getUrlList());
         rvGroupList.setAdapter(adapter);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        rvGroupList.setLayoutManager(gridLayoutManager);
+        StaggeredGridLayoutManager staggeredManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
+/*
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup()
+        {
+            @Override
+            public int getSpanSize(int position)
+            {
+                if (position == 6)
+                {
+                    return 3;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        });*/
+
+        rvGroupList.setLayoutManager(staggeredManager);
 
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 

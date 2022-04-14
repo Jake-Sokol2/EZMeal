@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetAddList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".GroupLists.AddListItemFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/txtTitleAddList"
+        android:layout_width="377dp"
+        android:layout_height="70dp"
+        android:gravity="center_horizontal"
+        android:text="Rate Recipe"
+        android:textColor="#5FA32D"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+        android:id="@+id/rbRateRecipeDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rlRate"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvRate3"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:alpha="0"
+            android:translationX="50dp"
+            app:layout_constraintStart_toEndOf="@+id/cvRate2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#2dba73"
+            app:strokeWidth=".7dp">
+
+            <TextView
+                android:id="@+id/txtRate3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="0dp"
+                android:text="Would Make Again" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvRate2"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:alpha="0"
+            android:translationX="50dp"
+            app:layout_constraintStart_toEndOf="@+id/cvRate1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#2dba73"
+            app:strokeWidth=".7dp">
+
+            <TextView
+                android:id="@+id/txtRate2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Easy to Make" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvRate1"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="24dp"
+            android:alpha="0"
+            android:translationX="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#2dba73"
+            app:strokeWidth=".7dp">
+
+            <TextView
+                android:id="@+id/txtRate1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Quick" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Space
+        android:layout_width="383dp"
+        android:layout_height="24dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.example.ezmeal.RatingBubbleFragment"
+        android:layout_width="380dp"
+        android:layout_height="16dp" />
+
+    <LinearLayout
+        android:id="@+id/linearButtonsCancelConfirm"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelRating"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#5FA32D"
+            android:text="Cancel"
+            android:textColor="#040404" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnConfirmRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#5FA32D"
+            android:text="Rate"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+</LinearLayout>

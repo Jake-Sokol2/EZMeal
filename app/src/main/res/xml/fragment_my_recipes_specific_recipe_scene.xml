@@ -82,8 +82,8 @@
         <Constraint
             android:id="@+id/imageRecipeTitleShadow"
             android:elevation="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_width="411dp"
+            android:layout_height="254dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
@@ -98,32 +98,121 @@
         <Constraint
             android:id="@+id/txtRecipeTitle"
             android:elevation="10dp"
-            android:layout_width="310dp"
-            android:layout_height="109dp"
+            android:layout_width="366dp"
+            android:layout_height="168dp"
             android:visibility="visible"
             android:layout_marginStart="36dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="36dp" />
-        <Constraint
-            android:id="@+id/fragmentContainerView"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            motion:layout_constraintTop_toBottomOf="@+id/vpRecipe"
-            motion:layout_constraintHorizontal_bias="0.0"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="176dp" />
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="36dp"
+            motion:layout_editor_absoluteX="37dp" />
         <Constraint
             android:elevation="6dp"
-            android:layout_width="39dp"
-            android:layout_height="39dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_marginStart="356dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="328dp"
             android:id="@+id/btnAddToMyRecipes"
             android:layout_marginLeft="356dp" />
+        <Constraint
+            android:id="@+id/rbRecipeIndicator"
+            android:elevation="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/imageRecipeTitleShadow"
+            android:layout_marginTop="36dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginStart="56dp" />
+        <Constraint
+            android:id="@+id/rbRecipeIndicator"
+            android:elevation="20dp"
+            android:scaleX="1.65"
+            android:scaleY="1.65"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/txtRecipeTitle"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="36dp"
+            motion:layout_constraintTop_toTopOf="@+id/imageRecipeTitleShadow"
+            android:layout_marginLeft="56dp"
+            android:layout_marginStart="56dp" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/cardRating1"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintStart_toEndOf="@+id/rbRecipeIndicator"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="20dp"
+            android:elevation="40dp"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/cardRating3"
+            android:elevation="40dp"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="48dp"
+            motion:layout_constraintStart_toStartOf="@+id/cardRating1"
+            motion:layout_constraintEnd_toEndOf="@+id/cardRating2" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toEndOf="@+id/cardRating1"
+            android:id="@+id/cardRating2"
+            android:elevation="40dp"
+            motion:visibilityMode="ignore"
+            motion:layout_editor_absoluteX="267dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="2dp"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/cardRating4"
+            android:elevation="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginTop="32dp"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toEndOf="@id/rbRecipeIndicator"
+            android:layout_marginStart="32dp"
+            motion:layout_editor_absoluteY="60dp"
+            motion:layout_editor_absoluteX="168dp" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toEndOf="@+id/cardRating4"
+            android:id="@+id/cardRating5"
+            android:elevation="40dp"
+            motion:visibilityMode="ignore"
+            motion:layout_editor_absoluteX="267dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="7dp"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/rateRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/txtRatingBarTitle"
+            motion:layout_constraintHorizontal_bias="0.5" />
+        <Constraint
+            android:id="@+id/txtRatingBarTitle"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintHorizontal_bias="0.5"
+            motion:layout_constraintTop_toBottomOf="@id/vpRecipe"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -180,12 +269,14 @@
         <Constraint
             android:id="@+id/btnAddToMyRecipes"
             android:elevation="6dp"
-            android:layout_width="39dp"
-            android:layout_height="39dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+
             android:layout_marginStart="356dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="128dp"
+            android:layout_marginLeft="356dp" />
         <Constraint
             android:id="@+id/btnDeleteFromMyRecipes"
             android:elevation="10dp"
@@ -209,6 +300,92 @@
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="36dp"
             android:translationX="-23dp" />
+        <Constraint
+            android:id="@+id/rateRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/txtRatingBarTitle"
+            motion:layout_constraintHorizontal_bias="0.5" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/cardRating1"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintStart_toEndOf="@+id/rbRecipeIndicator"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="-150dp"
+            android:elevation="20dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/cardRating4"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintStart_toEndOf="@+id/rbRecipeIndicator"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="-150dp"
+            android:elevation="20dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/rbRecipeIndicator"
+            android:scaleX="1.4"
+            android:scaleY="1.4"
+            android:elevation="20dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="60dp"
+            android:layout_marginStart="66dp"
+            motion:layout_constraintTop_toTopOf="@+id/imageRecipeTitleShadow"
+            android:layout_marginTop="17dp" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/cardRating3"
+            android:elevation="20dp"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="-100dp"
+            motion:layout_constraintStart_toStartOf="@+id/cardRating1"
+            motion:layout_constraintEnd_toEndOf="@+id/cardRating2" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toEndOf="@+id/cardRating1"
+            android:id="@+id/cardRating2"
+            android:elevation="20dp"
+            motion:visibilityMode="ignore"
+            motion:layout_editor_absoluteX="267dp"
+            android:layout_marginTop="-150dp"
+            android:layout_marginStart="7dp"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toEndOf="@+id/cardRating4"
+            android:id="@+id/cardRating5"
+            android:elevation="20dp"
+            motion:visibilityMode="ignore"
+            motion:layout_editor_absoluteX="267dp"
+            android:layout_marginTop="-150dp"
+            android:layout_marginStart="7dp"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/txtRatingBarTitle"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintHorizontal_bias="0.5"
+            motion:layout_constraintTop_toBottomOf="@id/vpRecipe"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp" />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/SwipeDown" />
 </MotionScene>

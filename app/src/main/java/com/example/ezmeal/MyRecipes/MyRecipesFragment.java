@@ -45,6 +45,8 @@ public class MyRecipesFragment extends Fragment
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    EZMealDatabase sqlDb;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -95,19 +97,23 @@ public class MyRecipesFragment extends Fragment
         rvCategories.setLayoutManager(linearLayoutManager);
 
 
-        EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
 
         // retrieve list of categories and some random images from Room
         cat = sqlDb.testDao().getCategories();
-        List<String> urls = sqlDb.testDao().getCatUrl();
+        //List<String> urls = sqlDb.testDao().getCatUrl();
         for (int i = 0; i < cat.size(); i++)
         {
             if (cat.get(i) != null)
             {
-                myRecipesFragmentModel.addItem(cat.get(i), urls.get(i));
+                List<String> url = sqlDb.testDao().getImagesForCategories(cat.get(i));
+                myRecipesFragmentModel.addItem(cat.get(i), url.get(0));
             }
         }
+
+        // todo: 4/1/2022        remove, is clearing entire Ratings db
+        //sqlDb.testDao().BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM();
 
         adapter.notifyDataSetChanged();
 
@@ -138,5 +144,10 @@ public class MyRecipesFragment extends Fragment
     {
         super.onStop();
         myRecipesFragmentModel.dumpList();
+
+        if (sqlDb.isOpen())
+        {
+            sqlDb.close();
+        }
     }
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/clHighRate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvLowRate1"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="24dp"
+        android:alpha="0"
+        android:translationX="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="#2dba73"
+        app:strokeWidth=".7dp">
+
+        <TextView
+            android:id="@+id/txtLowRate1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Incorrect Directions" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvLowRate2"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:alpha="0"
+        android:translationX="50dp"
+        app:layout_constraintStart_toEndOf="@+id/cvLowRate1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="#2dba73"
+        app:strokeWidth=".7dp">
+
+        <TextView
+            android:id="@+id/txtLowRate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Needed Changes" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvLowRate3"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:alpha="0"
+        android:translationX="50dp"
+        app:layout_constraintStart_toEndOf="@+id/cvLowRate2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="#2dba73"
+        app:strokeWidth=".7dp">
+
+        <TextView
+            android:id="@+id/txtLowRate3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="0dp"
+            android:text="Bland" />
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

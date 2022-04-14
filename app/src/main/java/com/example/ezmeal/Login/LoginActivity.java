@@ -15,6 +15,7 @@ import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.R;
 import com.example.ezmeal.Registration.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity
+{
 
 
 
@@ -37,12 +39,15 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         AssetManager assetManager = getAssets();
+
+
 
         /*ImageView img = findViewById(R.id.imageTest);
 
@@ -67,23 +72,66 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         */
-        btnToLogin = (Button) findViewById(R.id.loginButton);
-        btnToLogin.setOnClickListener(new View.OnClickListener(){
+
+        Button btnSkip = findViewById(R.id.btnSkip);
+        btnSkip.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view){
+            public void onClick(View view)
+            {
+                mAuth.signInWithEmailAndPassword("merge@email.com", "testmerge")
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                        {
+                            @Override
+                            public void onComplete(Task<AuthResult> task)
+                            {
+                                // Was the sign in successful?
+                                if (task.isSuccessful())
+                                {
+                                    // Put successful log in code here...
+                                    Toast.makeText(LoginActivity.this, "Login success.", Toast.LENGTH_SHORT).show();
+                                    openActivityMain();
+                                }
+                                else
+                                {
+                                    // Put unsuccessful log in code here
+                                    Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+
+        btnToLogin = (Button) findViewById(R.id.loginButton);
+        btnToLogin.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
                 loginActivityStart();
             }
         });
 
         btnToRegister = (Button) findViewById(R.id.registerButton);
-        btnToRegister.setOnClickListener(new View.OnClickListener(){
-           @Override
-           public void onClick(View view) { openActivityRegister();}
+        btnToRegister.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                openActivityRegister();
+            }
         });
-    }
 
-    @Override
-    public void onStart() {
+    }
+        @Override
+        public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -120,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(Task<AuthResult> task) {
                             // Was the sign in successful?
                             if (task.isSuccessful()) {
                                 // Put successful log in code here...
@@ -131,7 +179,14 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            });
         } else{
             //Toast.makeText(Login.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             emailText.setError("Field empty");

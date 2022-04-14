@@ -94,7 +94,8 @@ public class RecipeDirectionsFragment extends Fragment
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvDirections.getContext(), DividerItemDecoration.VERTICAL);
         rvDirections.addItemDecoration(dividerItemDecoration);
 
-        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        // todo: RecipesRating
+        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)

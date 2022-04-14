@@ -85,12 +85,12 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
         theViewModel = new ViewModelProvider(requireActivity()).get(AddListItemFragmentViewModel.class);
 
-        editItemName = view.findViewById(R.id.editItemName);
+        editItemName = view.findViewById(R.id.rbRateRecipeDialog);
         editBrandName = view.findViewById(R.id.editBrandName);
 
-        Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        Button btnCancel = (Button) view.findViewById(R.id.btnCancelRating);
         btnCancel.setOnClickListener(this);
-        Button btnAddItem = (Button) view.findViewById(R.id.btnConfirm);
+        Button btnAddItem = (Button) view.findViewById(R.id.btnConfirmRating);
         btnAddItem.setOnClickListener(this);
 
         return view;
@@ -100,7 +100,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     @Override
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.btnConfirm:
+            case R.id.btnConfirmRating:
                 if(TextUtils.isEmpty(editItemName.getText().toString()) ) {
                     //Toast.makeText(view.getContext(), "Enter item name...", Toast.LENGTH_SHORT).show();;
                     editItemName.setError("Enter field");
@@ -117,7 +117,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                 }
                 break;
 
-            case R.id.btnCancel:
+            case R.id.btnCancelRating:
                 dismiss();
                 break;
 
