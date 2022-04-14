@@ -22,6 +22,9 @@ import java.util.Objects;
 
 public class GroupListsFragmentModel
 {
+    private List<String> groupList; //This represents a list you share with other people
+    private List<Boolean> isSelectedList; //Marker that a given list is selected
+
     private List<List<String>> shoppingList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -29,8 +32,17 @@ public class GroupListsFragmentModel
     String brandName;
     String docID;
 
-    public GroupListsFragmentModel(){
+    public GroupListsFragmentModel()
+    {
+        groupList = new ArrayList<String>();
+        isSelectedList = new ArrayList<Boolean>();
         shoppingList = new ArrayList<List<String>>();
+    }
+
+    public void addList(String listName, Boolean isSelected)
+    {
+        groupList.add(listName);
+        isSelectedList.add(isSelected);
     }
 
     public void addItem(String itemName, String itemBrand){
@@ -92,6 +104,37 @@ public class GroupListsFragmentModel
     public void dumpList()
     {
         shoppingList.clear();
+    }
+
+    public void dumpGroupList()
+    {
+        groupList.clear();
+        isSelectedList.clear();
+    }
+
+    public void setGroupList(List<String> categoryList)
+    {
+        this.groupList = categoryList;
+    }
+
+    public void setSelected(int position)
+    {
+        isSelectedList.set(position, true);
+    }
+
+    public void setNotSelected(int position)
+    {
+        isSelectedList.set(position, false);
+    }
+
+    public List<String> getGroupList()
+    {
+        return groupList;
+    }
+
+    public List<Boolean> getIsSelectedList()
+    {
+        return isSelectedList;
     }
 
     public void addDataToFirestore(String itemName, String brandName) {

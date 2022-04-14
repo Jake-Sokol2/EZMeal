@@ -119,6 +119,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
 
             case R.id.btnCancel:
                 dismiss();
+                break;
 
             default:
                 break;

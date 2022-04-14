@@ -7,9 +7,8 @@
 
     <fragment
         android:id="@+id/groupListsFragment"
-        android:name="com.example.ezmeal.GroupLists.GroupListsFragment"
-        android:label="Group Lists"
-        tools:layout="@layout/fragment_group_lists" />
+        android:name="com.example.ezmeal.GroupLists.GroupListsCategoryFragment"
+        android:label="Group Lists" />
     <fragment
         android:id="@+id/groupRecipesFragment"
         android:name="com.example.ezmeal.FindRecipes.FindRecipesFragment"
