@@ -1,25 +1,55 @@
 package com.example.ezmeal.GroupSettings;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
 
+import com.example.ezmeal.FindRecipes.Recipe;
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
+import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +71,13 @@ public class GroupSettingsFragment extends Fragment {
     public Bitmap[] bitmapList;
     public String[] titleList;
 
+
+
     private FirebaseFirestore db;
     private StorageReference mStorageRef;
+
+    //public int recipeId = 0;
+
 
     public GroupSettingsFragment() {
         // Required empty public constructor
@@ -83,6 +118,13 @@ public class GroupSettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_settings, container, false);
 
+        EZMealDatabase sqlDb;
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
+
+        //sqlDb.testDao().deleteAllCategories();
+        //sqlDb.testDao().deleteALlRecyclerRecipes();
+
 
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.w("TRACK BACKSTACK", "Group Settings opened: " + numOfBackstack);
@@ -96,8 +138,10 @@ public class GroupSettingsFragment extends Fragment {
             }
         });
 
+        //int randomNum = ThreadLocalRandom.current().nextInt(1, 24);
 
-
+        int randomNum = new Random().nextInt(10) + 1;
+        Log.i("myRand", String.valueOf(randomNum));
 
         /*String image = "cookies.webp";
         int id = getContext().getResources().getIdentifier("drawable/cookies", null, getContext().getPackageName());
@@ -174,13 +218,38 @@ public class GroupSettingsFragment extends Fragment {
 
         //AsyncClass ac = new AsyncClass();
         //ac.execute();
+
+
     }
 
     /*public class AsyncClass extends AsyncTask<Void, Void, Void>
     {
+        private Random rand;
+
         //private Document doc = Jsoup.connect("https://cookstre.com").get();
         //String url = "https://firebase.google.com/";
-        String urlText = "https://www.allrecipes.com/recipes/248/main-dish/burgers/";
+
+
+
+
+
+
+        // NOT READY
+        String urlText = "https://www.allrecipes.com/recipes/1316/breakfast-and-brunch/waffles/";
+        String category = "Breakfast";
+
+        // ready for next run
+        double recipeId = 25;
+
+
+
+
+
+
+
+
+
+
         Elements divs;
 
         ProgressDialog progressDialog;
@@ -202,9 +271,10 @@ public class GroupSettingsFragment extends Fragment {
         {
             super.onPreExecute();
 
+            rand = new Random();
+
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.show();
-
         }
         @Override
         protected Void doInBackground(Void... voids)
@@ -213,6 +283,9 @@ public class GroupSettingsFragment extends Fragment {
             //Document get request stuff?
             try
             {
+
+                int randInt = rand.nextInt(Integer.MAX_VALUE - 2);
+
                 //Connect to website
                 Document doc = Jsoup.connect(urlText).get();
 
@@ -228,8 +301,9 @@ public class GroupSettingsFragment extends Fragment {
                 mStorageRef = FirebaseStorage.getInstance().getReference();
 
                 db = FirebaseFirestore.getInstance();
-                CollectionReference dbRecipes = db.collection("Recipes");
 
+                // todo: RecipesRating
+                CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
 
                 int i = 0;
                 for(Element e: divs)
@@ -238,7 +312,7 @@ public class GroupSettingsFragment extends Fragment {
                     URL url = new URL(imageList[i]);
 
                     String random = UUID.randomUUID().toString();
-                    StorageReference recipeRef = mStorageRef.child("recipeImages/" + random);
+                    StorageReference recipeRef = mStorageRef.child("recipeImagesRating/" + random);
 
                     InputStream stream = url.openConnection().getInputStream();
                     UploadTask uploadTask = recipeRef.putStream(stream);
@@ -261,28 +335,30 @@ public class GroupSettingsFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Uri uri)
                                 {
-                                    // String[] categories, String[] directions, String[] ingredients,
-                                    //                  String[] nutrition, String imageUrl, String title, double rating
+                                    // int recipeId, String[] categories, String[] directions, String[] ingredients,
+                                    //                  String[] nutrition, String imageUrl, String title, double rating, int countRating
                                     ArrayList<String> categories = new ArrayList<>();
-                                    categories.add("Burgers");
+                                    categories.add(category);
+
                                     ArrayList<String> directions = new ArrayList<>();
-                                    directions.add("Burgers direction 1");
-                                    directions.add("Burgers direction 2");
-                                    directions.add("Burgers direction 3");
+                                    directions.add(categories.get(0) + " direction 1");
+                                    directions.add(categories.get(0) + " direction 2");
+                                    directions.add(categories.get(0) + " direction 3");
 
                                     ArrayList<String> ingredients = new ArrayList<>();
-                                    ingredients.add("Cow");
-                                    ingredients.add("Burgers ingredient 2");
-                                    ingredients.add("Burgers ingredient 3");
+                                    ingredients.add(categories.get(0) + " ingredient 1");
+                                    ingredients.add(categories.get(0) + " ingredient 2");
+                                    ingredients.add(categories.get(0) + " ingredient 3");
 
                                     ArrayList<String> nutrition = new ArrayList<>();
-                                    nutrition.add("Burgers calories");
-                                    nutrition.add("Burgers protein");
-                                    nutrition.add("Burgers sodium");
+                                    nutrition.add(categories.get(0) + " calories");
+                                    nutrition.add(categories.get(0) + " protein");
+                                    nutrition.add(categories.get(0) + " sodium");
 
                                     String title = e.select("h3").text();
 
-                                    Recipe recipe = new Recipe(categories, directions, ingredients, nutrition, String.valueOf(uri), title, 0);
+
+                                    Recipe recipe = new Recipe(rand.nextInt(Integer.MAX_VALUE - 2), categories, directions, ingredients, nutrition, String.valueOf(uri), title, 0, 0, false);
 
 
                                     dbRecipes.add(recipe).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
@@ -290,7 +366,8 @@ public class GroupSettingsFragment extends Fragment {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference)
                                         {
-                                            Log.i("firebase storage tag", "recipe added to firestore database");
+                                            Log.i("firebase storage tag", "recipe added to firestore database with id: " + recipeId);
+                                            recipeId++;
                                         }
                                     }).addOnFailureListener(new OnFailureListener()
                                     {
@@ -346,6 +423,6 @@ public class GroupSettingsFragment extends Fragment {
             progressDialog.dismiss();
 
         }
-    }
-    */
+    }*/
+
 }

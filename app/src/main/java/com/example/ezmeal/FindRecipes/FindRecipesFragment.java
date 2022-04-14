@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -111,88 +114,11 @@ public class FindRecipesFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_recipes, container, false);
 
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Recipes opened: " + numOfBackstack);
-
-
-        // uncomment to blow the phone's memory to smithereens
-        /*Gson gson = new Gson();
-        // recipes_with_nutritional_info.json
-        String jsonFileString = Utils.getJsonFromAssets(getActivity(), "recipes_with_nutritional_info.json");
-
-        Type listUserType = new TypeToken<List<Example>>() { }.getType();
-        List<Example> users = gson.fromJson(jsonFileString, listUserType);
-
-        //for (int i = 0; i < users.size(); i++) {
-        //    Log.i("data", "> Item " + i + "\n" + users.get(i));
-        // }
-
-
-
-        // WORKING PARSE
-
-        /*JsonReader jsonReader;
-        //JsonReader jsonReader = null;
-        InputStreamReader inputStreamReader = null;
-        try
-        {
-
-            inputStreamReader = new InputStreamReader(getActivity().getAssets().open("recipes_with_nutritional_info.json"));
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        jsonReader = new JsonReader(inputStreamReader);
-
-
-        Gson gson = new Gson();
-
-
-
-        //final InputStreamReader isr = new InputStreamReader(inputStream);
-        Type listUserType = new TypeToken<List<Example>>() { }.getType();
-        //Type listUserType2 = new TypeToken<Collection<Example>>(){ }.getType();
-        //Collection<Example> users = gson.fromJson(inputStreamReader, listUserType2);
-
-        List<Example> users = gson.fromJson(inputStreamReader, listUserType);
-        //final Example example = gson.fromJson(inputStreamReader, Example.class);
-        //List<Example> users = gson.fromJson(inputStreamReader, listUserType);
-        try
-        {
-
-            jsonReader.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }*/
-
-        //for (int i = 0; i < users.size(); i++) {
-        //    Log.i("data", "> Item " + i + "\n" + users.get(i));
-        // }
-
-        //String name = users.get(0).getTitle();
-        //TextView txtName = view.findViewById(R.id.txtName);
-       // txtName.setText(name);
-
-        //categories.add("Breakfast");
-        //categories.add("Brunch");
-
-        //Bundle categoryBundle = new Bundle();
-
-        //categoryBundle.putString("cat", categories.get(0));
-        //bundleRecipeId.putString("id", recipeId);
         categories.add("Featured");
         findRecipesFragmentModel.addItem(categories.get(0), true);
 
         FragmentManager categoryFragManager = getChildFragmentManager();
-        //getSupportFragmentManager().beginTransaction().add(R.id.fragContainer, frag).addToBackStack(backStackTag).commit();
         Fragment frag = new CategoryFragment();
-        //frag.setArguments(categoryBundle);
         categoryFragManager.beginTransaction().replace(R.id.fragmentContainerView4, frag).commit();
 
         rvHorizontal = (RecyclerView) view.findViewById(R.id.rvHorizontalSelector);
@@ -202,9 +128,29 @@ public class FindRecipesFragment extends Fragment
         rvHorizontal.setLayoutManager(horizontalLayoutManager);
 
         db = FirebaseFirestore.getInstance();
-        CollectionReference dbRecipes = db.collection("Recipes");
 
-        db.collection("RecipeCategoryList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        // todo: RecipesRating
+        CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+
+        db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                categories = (ArrayList<String>) task.getResult().get("categories");
+
+                for (int i = 0; i < categories.size(); i++)
+                {
+                    findRecipesFragmentModel.addItem(categories.get(i), false);
+                }
+
+
+                horizontalAdapter.notifyDataSetChanged();
+            }
+        });
+
+        /*// todo: find
+        db.collection("RecipeCategoryRatingList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -228,21 +174,7 @@ public class FindRecipesFragment extends Fragment
             {
 
             }
-        });
-
-        //findRecipesHorizontalModel.addItem("abc");
-        //findRecipesHorizontalModel.addItem("ddd");
-        //findRecipesHorizontalModel.addItem("some category");
-        //rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipesCategory);
-        //findRecipesAdapter = new FindRecipesAdapter(findRecipesModel.getRecipeList(), findRecipesModel.getUriList());
-        /*rvFindRecipes.setAdapter(findRecipesAdapter);
-        RecyclerView.LayoutManager verticalLayoutManager = new GridLayoutManager(this.getActivity(), 2, RecyclerView.VERTICAL, false);
-        rvFindRecipes.setLayoutManager(verticalLayoutManager);*/
-
-        //db = FirebaseFirestore.getInstance();
-        //CollectionReference dbRecipes = db.collection("Recipes");
-
-
+        });*/
 
         horizontalAdapter.setOnItemClickListener(new FindRecipesFragmentHorizontalRecyclerAdapter.MainAdapterListener()
         {
@@ -262,7 +194,7 @@ public class FindRecipesFragment extends Fragment
                     horizontalAdapter.notifyDataSetChanged();
 
                     Bundle categoryBundleClick = new Bundle();
-                    categoryBundleClick.putString("cat", categories.get(position));
+                    categoryBundleClick.putString("cat", categories.get(position - 1));
                     fragCategoryClick.setArguments(categoryBundleClick);
                 }
                 else

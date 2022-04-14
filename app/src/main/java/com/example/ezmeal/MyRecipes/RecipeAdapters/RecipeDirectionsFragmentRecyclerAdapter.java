@@ -28,7 +28,7 @@ public class RecipeDirectionsFragmentRecyclerAdapter extends RecyclerView.Adapte
         {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.cardCategory);
+            cardView = (CardView) view.findViewById(R.id.cardRecipe);
             txtDirection = (TextView) view.findViewById(R.id.txtDirections);
 
             view.setOnClickListener(new View.OnClickListener()

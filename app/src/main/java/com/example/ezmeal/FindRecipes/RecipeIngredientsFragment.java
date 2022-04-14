@@ -116,7 +116,8 @@ public class RecipeIngredientsFragment extends Fragment{
 
         String recipeId = extras.getString("id");
 
-        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        // todo: RecipesRating
+        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)

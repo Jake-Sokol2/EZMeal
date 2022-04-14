@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -13,9 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.viewpager2.widget.ViewPager2;
@@ -29,10 +33,12 @@ import com.example.ezmeal.RoomDatabase.CategoryEntity;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.example.ezmeal.RoomDatabase.Rating;
 import com.example.ezmeal.RoomDatabase.Recipe;
+import com.example.ezmeal.RoomDatabase.TextRatings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,15 +46,16 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class RecipeActivity extends AppCompatActivity
+public class RecipeActivity extends AppCompatActivity implements RateRecipeDialogInterface
 {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -59,10 +66,29 @@ public class RecipeActivity extends AppCompatActivity
     private GroupListsFragmentModel nutritionModel = new GroupListsFragmentModel();
 
     List<String> list = new ArrayList<String>();
+    private List<String> chosenBubbles;
     private RecyclerView rvGroupList;
     private RecipeFragmentRecyclerAdapter adapter;
     List<String> nutritionListInner = new ArrayList<String>();
     private RecyclerView rvNutritionList;
+
+    // storing these as global so they can be called in onStop(), saving database costs
+    private Double countOfRatings;
+    private Double totalRatingFirebase;
+    private boolean highlyRated;
+
+    private RateRecipeBubbleViewModel vmRateRecipeBubble;
+    private RateRecipeViewModel vmRateRecipe;
+
+    private RateRecipeDialogInterface rateRecipeInterface;
+
+    private TextView tv1;
+    private TextView tv2;
+    private TextView tv3;
+
+    private CardView card1;
+    private CardView card2;
+    private CardView card3;
 
     ArrayList<String> categories;
     ArrayList<String> directions;
@@ -76,7 +102,7 @@ public class RecipeActivity extends AppCompatActivity
     private MotionLayout motionLayout;
     private NestedScrollView nestedScrollView;
 
-    private Button btnAddToMyRecipes;
+    private FloatingActionButton btnAddToMyRecipes;
     public String recipeId;
 
     //public RatingsDatabase ratingsDb;
@@ -97,12 +123,12 @@ public class RecipeActivity extends AppCompatActivity
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_specific_recipe);
+
+        rateRecipeInterface = this;
 
         Bundle extras = getIntent().getExtras();
         recipeId = extras.getString("id");
@@ -111,6 +137,22 @@ public class RecipeActivity extends AppCompatActivity
         TextView txtRecipeTitle = findViewById(R.id.txtRecipeTitle);
 
         rateRecipe = findViewById(R.id.rateRecipe);
+
+        vmRateRecipeBubble = new ViewModelProvider(this).get(RateRecipeBubbleViewModel.class);
+        vmRateRecipe = new ViewModelProvider(this).get(RateRecipeViewModel.class);
+
+        Observer<Float> ratingObserver = new Observer<Float>()
+        {
+            @Override
+            public void onChanged(Float f)
+            {
+                if (f != null)
+                {
+                    rateRecipe.setRating(f);
+                }
+            }
+        };
+        vmRateRecipe.getStarRating().observe(this, ratingObserver);
 
         // Room database instance
         //ratingsDb = Room.databaseBuilder(getApplicationContext(), RatingsDatabase.class, "user")
@@ -122,33 +164,44 @@ public class RecipeActivity extends AppCompatActivity
         // retrieve current rating for this recipe (if one exists for this user) from Room to display in bottom rating bar
         Rating userRating = sqlDb.testDao().getSpecificRatingObject(recipeId);
 
-        if (userRating == null)
-        {
-            Toast.makeText(getApplicationContext(), "NO RATING FOR THIS RECIPE", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "Rating: " + userRating.getRating(), Toast.LENGTH_SHORT).show();
-        }
-
-
         rateRecipe.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener()
         {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b)
+            public void onRatingChanged(RatingBar ratingBar, float value, boolean fromUser)
             {
-                Toast.makeText(getApplicationContext(), "Thank you for rating this recipe!", Toast.LENGTH_SHORT).show();
+                if (fromUser)
+                {
+                    FragmentManager fm = getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    RateRecipeBottomDialogFragment rateRecipeFrag = new RateRecipeBottomDialogFragment(value, rateRecipeInterface);
+                    ft.setReorderingAllowed(true);
+
+                    ft.add(rateRecipeFrag, "TAG");
+                    ft.show(rateRecipeFrag);
+                    ft.commit();
+                }
             }
         });
 
-        // get rating that is currently in the bar
-        // rateRecipe.getRating();
-
 
         db = FirebaseFirestore.getInstance();
-        CollectionReference dbRecipes = db.collection("Recipes");
 
-        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        // todo: RecipesRating
+        CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+
+
+        tv1 = findViewById(R.id.textRating1);
+        tv2 = findViewById(R.id.textRating2);
+        tv3 = findViewById(R.id.textRating3);
+
+        card1 = findViewById(R.id.cardRating1);
+        card2 = findViewById(R.id.cardRating2);
+        card3 = findViewById(R.id.cardRating3);
+
+        float avgRating = 0f;
+
+        // todo: RecipesRating
+        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
@@ -162,15 +215,129 @@ public class RecipeActivity extends AppCompatActivity
                 nutrition = (ArrayList<String>) task.getResult().get("nutrition");
                 imageUrl = task.getResult().getString("imageUrl");
                 title = task.getResult().getString("title");
+
+                countOfRatings = task.getResult().getDouble("countRating");
+                totalRatingFirebase = task.getResult().getDouble("rating");
+                highlyRated = task.getResult().getBoolean("highlyRated");
+
+                Double avgRating;
+
+                if (countOfRatings != null)
+                {
+                    avgRating = totalRatingFirebase / countOfRatings;
+                }
+                else
+                {
+                    countOfRatings = 0.0;
+                    avgRating = 0.0;
+                }
+
+                RatingBar rbRecipeIndicator = findViewById(R.id.rbRecipeIndicator);
+
+                if (Double.isNaN(avgRating))
+                {
+                    rbRecipeIndicator.setVisibility(View.INVISIBLE);
+                    avgRating = 0.0;
+                }
+                else
+                {
+                    float avgRatingFloat = avgRating.floatValue();
+                    rbRecipeIndicator.setRating(avgRatingFloat);
+                }
+
+
+
+                Integer totalRating = countOfRatings.intValue();
+
+                Map<String, Long> firebaseTextRatingsMap = (Map<String, Long>) task.getResult().get("textRatings");
+
+                List<CardView> textRatingCardViews = new ArrayList<CardView>();//(Arrays.asList(findViewById(R.id.cardRating1), findViewById(R.id.cardRating2), findViewById(R.id.cardRating3)));
+                List<TextView> textRatingTextViews = new ArrayList<TextView>();//(Arrays.asList(findViewById(R.id.textRating1), findViewById(R.id.textRating2), findViewById(R.id.textRating3)));
+
+                List<CardView> textRatingCardViewsInvisible = new ArrayList<CardView>();
+                List<TextView> textRatingTextViewsInvisible = new ArrayList<TextView>();
+
+                List<String> finalRatingList = new ArrayList<String>();
+
+                if (firebaseTextRatingsMap != null)
+                {
+                    // sort the list in reverse order to get top 3 ratings (we only display the top three bubbles)
+                    Map<String, Long> reverseSortedByNumberOfRatings = new TreeMap<>(Collections.reverseOrder());
+                    reverseSortedByNumberOfRatings.putAll(firebaseTextRatingsMap);
+
+
+                    Iterator<Map.Entry<String, Long>> iterator = reverseSortedByNumberOfRatings.entrySet().iterator();
+
+                    finalRatingList = sortTextRatingsByLength(iterator);
+
+                    if (finalRatingList.size() >= 3)
+                    {
+                        textRatingCardViews = new ArrayList<CardView>
+                                (Arrays.asList(findViewById(R.id.cardRating1), findViewById(R.id.cardRating2), findViewById(R.id.cardRating3)));
+                        textRatingTextViews = new ArrayList<TextView>
+                                (Arrays.asList(findViewById(R.id.textRating1), findViewById(R.id.textRating2), findViewById(R.id.textRating3)));
+
+                        updateLessThanThreeTextRatings(textRatingCardViews, textRatingTextViews, finalRatingList);
+
+                        textRatingCardViewsInvisible = new ArrayList<CardView>
+                                (Arrays.asList(findViewById(R.id.cardRating4), findViewById(R.id.cardRating5)));
+                        textRatingTextViewsInvisible = new ArrayList<TextView>
+                                (Arrays.asList(findViewById(R.id.textRating4), findViewById(R.id.textRating5)));
+
+                    }
+                    else
+                    {
+                        textRatingCardViews = new ArrayList<CardView>(Arrays.asList(findViewById(R.id.cardRating4), findViewById(R.id.cardRating5)));
+                        textRatingTextViews = new ArrayList<TextView>(Arrays.asList(findViewById(R.id.textRating4), findViewById(R.id.textRating5)));
+
+                        textRatingCardViewsInvisible = new ArrayList<CardView>
+                                (Arrays.asList(findViewById(R.id.cardRating1), findViewById(R.id.cardRating2), findViewById(R.id.cardRating3)));
+                        textRatingTextViewsInvisible = new ArrayList<TextView>
+                                (Arrays.asList(findViewById(R.id.textRating1), findViewById(R.id.textRating2), findViewById(R.id.textRating3)));
+
+                        updateLessThanThreeTextRatings(textRatingCardViews, textRatingTextViews, finalRatingList);
+                    }
+
+                    for (int i = 0; i < textRatingCardViewsInvisible.size(); i++)
+                    {
+                        textRatingCardViewsInvisible.get(i).setVisibility(View.INVISIBLE);
+                        textRatingTextViewsInvisible.get(i).setVisibility(View.INVISIBLE);
+                    }
+
+                    /*for (int i = 0; i < 3; i++)
+                    {
+                        if (i < finalRatingList.size())
+                        {
+                            textRatingTextViews.get(i).setText(finalRatingList.get(i));
+                        }
+                        else
+                        {
+                            textRatingTextViews.get(i).setVisibility(View.INVISIBLE);
+                            textRatingCardViews.get(i).setVisibility(View.INVISIBLE);
+                        }
+                    }*/
+                }
+                else
+                {
+                    // all cards and textviews are marked to be made invisible
+                    textRatingCardViewsInvisible = new ArrayList<CardView>
+                            (Arrays.asList(findViewById(R.id.cardRating1), findViewById(R.id.cardRating2), findViewById(R.id.cardRating3),
+                                    findViewById(R.id.cardRating4), findViewById(R.id.cardRating5)));
+                    textRatingTextViewsInvisible = new ArrayList<TextView>
+                            (Arrays.asList(findViewById(R.id.textRating1), findViewById(R.id.textRating2), findViewById(R.id.textRating3),
+                                    findViewById(R.id.textRating4), findViewById(R.id.textRating5)));
+                }
+
+                for (int i = 0; i < textRatingCardViewsInvisible.size(); i++)
+                {
+                    textRatingCardViewsInvisible.get(i).setVisibility(View.INVISIBLE);
+                    textRatingTextViewsInvisible.get(i).setVisibility(View.INVISIBLE);
+                }
             }
         });
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        // Parameters:
-        //@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<String> directions,
-        // ArrayList<String> nutrition, ArrayList<String> ingredients, String recipeId
 
         vpRecipe = findViewById(R.id.vpRecipe);
         tabRecipe = findViewById(R.id.tabRecipe);
@@ -205,7 +372,8 @@ public class RecipeActivity extends AppCompatActivity
                 //.whereEqualTo(ingredients.get(i), null).get().addOnCompleteListener(
 
 
-                db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                // todo: RecipesRating
+                db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
@@ -382,8 +550,58 @@ public class RecipeActivity extends AppCompatActivity
 
     }
 
-    public void rateApp()
+    private void updateThreeTextRatings(List<CardView> textRatingCardViews, List<TextView> textRatingTextViews, List<String> finalRatingList)
     {
+        for (int i = 0; i < 3; i++)
+        {
+            if (i < finalRatingList.size())
+            {
+                textRatingTextViews.get(i).setText(finalRatingList.get(i));
+            }
+            else
+            {
+                textRatingTextViews.get(i).setVisibility(View.INVISIBLE);
+                //textRatingCardViews.get(i).clearAnimation();
+                textRatingCardViews.get(i).setVisibility(View.INVISIBLE);
+                //textRatingCardViews.get(i).setCardBackgroundColor(Color.parseColor("#000000"));
+            }
+
+            if (finalRatingList.size() < 3)
+            {
+
+
+
+                /*ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textRatingCardViews.get(i).getLayoutParams();
+                layoutParams.topMargin = 100;
+
+                ConstraintSet constraintSet = ml.getConstraintSet(R.id.start);
+                constraintSet.connect();
+*/
+                //layoutParams.setMargins(0, intPixels, 0, 0);
+                //textRatingCardViews.get(i).setLayoutParams(layoutParams);
+            }
+        }
+
+
+    }
+
+    private void updateLessThanThreeTextRatings(List<CardView> textRatingCardViews, List<TextView> textRatingTextViews, List<String> finalRatingList)
+    {
+        for (int i = 0; i < textRatingCardViews.size(); i++)
+        {
+            if (i < finalRatingList.size())
+            {
+                textRatingTextViews.get(i).setText(finalRatingList.get(i));
+            }
+            else
+            {
+                textRatingTextViews.get(i).setVisibility(View.INVISIBLE);
+                //textRatingCardViews.get(i).clearAnimation();
+                textRatingCardViews.get(i).setVisibility(View.INVISIBLE);
+                //textRatingCardViews.get(i).setCardBackgroundColor(Color.parseColor("#000000"));
+            }
+        }
+
 
     }
 
@@ -425,25 +643,90 @@ public class RecipeActivity extends AppCompatActivity
         }
     }*/
 
-        /*@Override
-    public void onResume()
-    {
-        super.onResume();
-    }*/
-
 /*    @Override
     public void onDestroy()
     {
         super.onDestroy();
     }*/
 
+
+
+    private List<String> sortTextRatingsByLength(Iterator<Map.Entry<String, Long>> iterator)
+    {
+        List<String> finalRatingList = new ArrayList<String>();
+
+        int i = 0;
+        int largest = 0;
+        String key = "";
+        while (iterator.hasNext() && i < 3)
+        {
+            Map.Entry<String, Long> entry = iterator.next();
+            if (entry.getValue() >= 1L)
+            {
+                key = entry.getKey().toString();
+
+                if (key.length() > largest)
+                {
+                    largest = key.length();
+                    finalRatingList.add(key);
+                }
+                else
+                {
+                    finalRatingList.add(0, key);
+                }
+            }
+
+            i++;
+        }
+
+        return finalRatingList;
+    }
+
     @Override
     public void onStop()
     {
         super.onStop();
 
-        //RatingsDatabase ratingsDb = Room.databaseBuilder(getApplicationContext(), RatingsDatabase.class, "user")
-        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+/*        chosenBubbles = new ArrayList<String>();
+        Observer<List<String>> textRatingObserver = new Observer<List<String>>()
+        {
+            @Override
+            public void onChanged(List<String> s)
+            {
+                // user selected text ratings - clear out any old text ratings in Room, decrement the corresponding counters in Firebase, and increment the new counters in Firebase
+                if (s.size() > 0)
+                {
+                    chosenBubbles = s;
+                }
+                // user previously had selected text ratings, but left a new review with no ratings.  Clear the old ratings in SQL and firebase
+                if (s.size() == 0)
+                {
+
+                }
+
+                for (int i = 0; i < s.size(); i++)
+                {
+                    Log.i("test7", s.get(i));
+                }
+            }
+        };*/
+        MutableLiveData<List<String>> test = vmRateRecipeBubble.getRatingBubbleList();
+        chosenBubbles = test.getValue();
+
+        // even though it is initialized in the ViewModel, getRatingBubbleList will return null if a value has not been set yet by the user
+        if (chosenBubbles == null)
+        {
+            chosenBubbles = new ArrayList<String>();
+        }
+
+        // Room db insert/update expects 3 bubble selections when creating the record, so give it nulls for any missing ratings in case the user only selected 0-2 text ratings
+        if (chosenBubbles.size() < 3)
+        {
+            for (int i = chosenBubbles.size(); i < 3; i++)
+            {
+                chosenBubbles.add(null);
+            }
+        }
 
         // get change in rating compared to user's previous rating (if one exists)
         float oldRating = sqlDb.testDao().getSpecificRating(recipeId);
@@ -452,16 +735,18 @@ public class RecipeActivity extends AppCompatActivity
 
         Rating r1 = sqlDb.testDao().getSpecificRatingObject(recipeId);
         Rating r2 = sqlDb.testDao().getAllTheThings();
+
         // if rating is different than it was when the user entered the recipe, they added / updated their rating, so update both database entries
         if (changeInRating != 0)
         {
             db = FirebaseFirestore.getInstance();
-            CollectionReference dbRecipes = db.collection("Recipes");
+            // todo: RecipesRating
+            CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
 
             // if user has never left a review on this recipe before, increment number of ratings in firestore
             if (oldRating == 0)
             {
-                dbRecipes.document(recipeId).update("numRating", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                dbRecipes.document(recipeId).update("countRating", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)
@@ -471,20 +756,33 @@ public class RecipeActivity extends AppCompatActivity
                 });
 
                 // add a new entry to Room so their rating displays correctly next time they return to the recipe
-                Rating newRatingEntry = new Rating(recipeId, newRating);
+                Rating newRatingEntry = new Rating(recipeId, newRating, chosenBubbles);
                 sqlDb.testDao().insert(newRatingEntry);
+
+                // increment count of Ratings so onStop() knows how to calculate the correct final average rating after new rating is written to firebase
+                countOfRatings++;
             }
-            // if newRating is not 0, they added a new rating, so update existing Room entry
+            // if newRating is not 0, they changed their rating, so update existing Room entry
             else if (newRating != 0)
             {
                 // update their existing Room entry with the correct new rating
-                Rating newRatingEntry = new Rating(recipeId, newRating);
+                Rating newRatingEntry = new Rating(recipeId, newRating, chosenBubbles);
+
+                // decrement counters in firebase for any old text rating's that the user may have chosen on their last review
+                decrementTextRatingsInFirebase();
+
                 sqlDb.testDao().updateRating(newRating, recipeId);
+                sqlDb.testDao().updateTextRatings(chosenBubbles.get(0), chosenBubbles.get(1), chosenBubbles.get(2), recipeId);
+
             }
 
             // if user added or changed their rating, update the total rating score in firestore
             if (newRating != 0)
             {
+                // increment counters in firebase for text ratings
+                // using chosenBubbles global list
+                incrementTextRatingsInFirebase();
+
                 // increment or decrement (depending on if changeInRating is positive or negative) Firestore rating by new value
                 dbRecipes.document(recipeId).update("rating", FieldValue.increment(changeInRating)).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
@@ -495,44 +793,90 @@ public class RecipeActivity extends AppCompatActivity
                     }
                 });
             }
-                // otherwise do nothing, as they neither had a rating to begin with nor added a new one
+
+            // new rating pushed Recipe above the highly rated threshold - notify firebase
+            if ((highlyRated == false) && ((changeInRating + totalRatingFirebase) / countOfRatings) >= 4)
+            {
+                dbRecipes.document(recipeId).update("highlyRated", true).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "highlyRated updated");
+                    }
+                });
+            }
+            // new rating dropped Recipe beneath the highly rated threshold - notify firebase
+            else if ((highlyRated) && ((changeInRating + totalRatingFirebase) / countOfRatings) < 4)
+            {
+                dbRecipes.document(recipeId).update("highlyRated", false).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "highlyRated updated");
+                    }
+                });
+            }
 
             if (sqlDb.isOpen())
             {
                 sqlDb.close();
             }
-
-
-
-            // update Room with new value
-            //sqlDb.testDao().updateRating(rateRecipe.getRating(), recipeId);
-
-            /*            {
-             *//*@Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task)
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        //Log.i("retrieve", document.getId() + "=> " + document.getData());
-                        //String title = document.getString("title");
-                        //String imageUrl = document.getString("imageUrl");
-                        categories.add(document.getString("category"));
-                        findRecipesFragmentModel.addItem(document.getString("category"), false);
-                        //recipeId.add(document.getId());
-                    }
-
-                    horizontalAdapter.notifyDataSetChanged();
-                }
-            }).addOnFailureListener(new OnFailureListener()
-            {
-                @Override
-                public void onFailure(@NonNull Exception e)
-                {
-
-                }
-            });*//*
-        }*/
         }
+    }
+
+    private void decrementTextRatingsInFirebase()
+    {
+        TextRatings previousTextRatings = sqlDb.testDao().getSpecificTextRatings(recipeId);
+        List<String> previousRatingsList = new ArrayList<>(Arrays.asList(previousTextRatings.getTextRating1(), previousTextRatings.getTextRating2(), previousTextRatings.getTextRating3()));
+
+        for (int i = 0; i < previousRatingsList.size(); i++)
+        {
+            // if user actually saved a text rating last time
+            if (previousRatingsList.get(i) != null)
+            {
+                // delete the rating in firebase
+                // todo: RecipesRating
+                db.collection("RecipesRatingBigInt").document(recipeId).update("textRatings." + previousRatingsList.get(i), FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "textRatings updated");
+                    }
+                });
+            }
+        }
+    }
+
+    private void incrementTextRatingsInFirebase()
+    {
+        //TextRatings previousTextRatings = sqlDb.testDao().getSpecificTextRatings(recipeId);
+        //List<String> previousRatingsList = new ArrayList<>(Arrays.asList(previousTextRatings.getTextRating1(), previousTextRatings.getTextRating2(), previousTextRatings.getTextRating3()));
+
+        for (int i = 0; i < chosenBubbles.size(); i++)
+        {
+            // if user actually saved a text rating last time
+            if (chosenBubbles.get(i) != null)
+            {
+                // delete the rating in firebase
+                // todo: RecipesRating
+                db.collection("RecipesRatingBigInt").document(recipeId).update("textRatings." + chosenBubbles.get(i), FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("rating", "textRatings updated");
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void recipeCallback(float rating)
+    {
 
     }
 }

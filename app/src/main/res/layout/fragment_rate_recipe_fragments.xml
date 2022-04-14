@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetAddList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".GroupLists.AddListItemFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RatingBar
+        android:id="@+id/rbRateRecipeDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:stepSize="1" />
+
+    <TextView
+        android:id="@+id/txtRatingDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="0dp"
+        android:alpha="0"
+        android:gravity="center"
+        android:paddingBottom="6dp"
+        android:text="Excellent"
+        android:textSize="25sp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragRatingBubbleContainer"
+        android:name="com.example.ezmeal.FindRecipes.HighRatingBubbleFragment"
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
+
+    <Space
+        android:layout_width="383dp"
+        android:layout_height="24dp" />
+
+    <LinearLayout
+        android:id="@+id/linearButtonsCancelConfirm"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelRating"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#5FA32D"
+            android:text="Cancel"
+            android:textColor="#040404" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnConfirmRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#5FA32D"
+            android:text="Rate"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -9,18 +9,24 @@ public class CategoryFragmentModel
 {
     private List<String> recipeList;
     private List<String> uriList;
+    private List<Double> avgRatingList;
+    private List<Integer> totalRatingsList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public CategoryFragmentModel()
     {
         recipeList = new ArrayList<String>();
         uriList = new ArrayList<String>();
+        avgRatingList = new ArrayList<Double>();
+        totalRatingsList = new ArrayList<Integer>();
     }
 
-    public void addItem(String recipeTitle, String uri)
+    public void addItem(String recipeTitle, String uri, Double avgRating, Integer totalRatings)
     {
         uriList.add(uri);
         recipeList.add(recipeTitle);
+        avgRatingList.add(avgRating);
+        totalRatingsList.add(totalRatings);
     }
 
     public void setRecipeList(List<String> recipeList)
@@ -42,27 +48,9 @@ public class CategoryFragmentModel
     {
         recipeList.clear();
         uriList.clear();
+        avgRatingList.clear();
+        totalRatingsList.clear();
     }
-
-    /*
-    public void addDataToFirestore(String itemName, String brandName) {
-        CollectionReference dbItems = db.collection("Items");
-        Item item = new Item(itemName, brandName);
-        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                //Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
-                Log.i("Item added", "success");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
-                Log.i("Item failed to add.", "failure");
-            }
-        });
-    }
-     */
 
     public List<String> getRecipeList()
     {
@@ -77,5 +65,30 @@ public class CategoryFragmentModel
     public void restoreRecipeList(List<String> recipeList)
     {
         this.recipeList = recipeList;
+    }
+
+    public void setUriList(List<String> uriList)
+    {
+        this.uriList = uriList;
+    }
+
+    public List<Double> getAvgRatingList()
+    {
+        return avgRatingList;
+    }
+
+    public void setAvgRatingList(List<Double> avgRatingList)
+    {
+        this.avgRatingList = avgRatingList;
+    }
+
+    public List<Integer> getTotalRatingsList()
+    {
+        return totalRatingsList;
+    }
+
+    public void setTotalRatingsList(List<Integer> totalRatingsList)
+    {
+        this.totalRatingsList = totalRatingsList;
     }
 }

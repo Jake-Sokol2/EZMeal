@@ -20,7 +20,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/editItemName"
+        android:id="@+id/rbRateRecipeDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -52,7 +52,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnCancelRating"
             android:layout_width="113dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#5FA32D"
@@ -66,7 +66,7 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/btnConfirm"
+            android:id="@+id/btnConfirmRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

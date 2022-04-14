@@ -98,21 +98,22 @@ public class MyRecipesFragment extends Fragment
 
 
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
 
         // retrieve list of categories and some random images from Room
         cat = sqlDb.testDao().getCategories();
-        List<String> urls = sqlDb.testDao().getCatUrl();
+        //List<String> urls = sqlDb.testDao().getCatUrl();
         for (int i = 0; i < cat.size(); i++)
         {
             if (cat.get(i) != null)
             {
-                myRecipesFragmentModel.addItem(cat.get(i), urls.get(i));
+                List<String> url = sqlDb.testDao().getImagesForCategories(cat.get(i));
+                myRecipesFragmentModel.addItem(cat.get(i), url.get(0));
             }
         }
 
         // todo: 4/1/2022        remove, is clearing entire Ratings db
-        sqlDb.testDao().BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM();
+        //sqlDb.testDao().BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM();
 
         adapter.notifyDataSetChanged();
 

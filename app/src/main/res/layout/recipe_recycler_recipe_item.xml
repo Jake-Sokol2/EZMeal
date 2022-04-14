@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardCategory"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardRecipe"
         android:layout_width="0dp"
-        android:layout_height="175dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="9dp"
         app:cardCornerRadius="0dp"
         app:cardElevation="10dp"
@@ -22,21 +22,23 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clCardCategory"
-            android:layout_width="match_parent"
+            android:layout_width="380dp"
             android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/textTitleRecipe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="128dp"
+                android:layout_width="182dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="152dp"
                 android:elevation="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="Fettuccine Alfredo"
                 android:textColor="#5C5C5C"
                 android:textSize="18sp"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.079"
+                app:layout_constraintHorizontal_bias="0.037"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/imageCategoryBackground" />
 
@@ -60,6 +62,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/landscape_1504715566_delish_fettuccine_alfredo" />
+
+            <RatingBar
+                android:id="@+id/rbCard"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="81dp"
+                android:layout_height="17dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:scaleX="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgRecipeImage" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

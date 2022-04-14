@@ -1,6 +1,7 @@
 package com.example.ezmeal.GroupLists;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -295,28 +297,38 @@ public class GroupListsFragment extends Fragment
     }
 
 
+<<<<<<< Updated upstream
 
 
 
 
 
 /*
+=======
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        adapter.notifyDataSetChanged();
+    }
+
+
+>>>>>>> Stashed changes
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
         Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
         super.onSaveInstanceState(outState);
         //I need to save the grocery list here
         //save recycler view position?
-        //outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
+        outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
         //save recycler view items?
-        //outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
+        outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
-
     }
 
 
 
 
-*/
+
 
 }
