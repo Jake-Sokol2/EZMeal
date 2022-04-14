@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Model.Item;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//Not the bubbles but the actual list itself
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GroupListsFragment#newInstance} factory method to
@@ -56,7 +58,7 @@ public class GroupListsFragment extends Fragment
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
     private GroupListsFragmentRecyclerAdapter adapter;
-
+    private GroupListFragHorizontalRecyclerAdapter hAdapter;
     //Firebase variables
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -80,6 +82,12 @@ public class GroupListsFragment extends Fragment
     public GroupListsFragment() {
         // Required empty public constructor
     }
+
+    public GroupListsFragment(GroupListsFragmentModel theModel,  GroupListFragHorizontalRecyclerAdapter adapter){
+        this.theModel = theModel;
+        hAdapter = adapter;
+    }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -161,8 +169,9 @@ public class GroupListsFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
-        view = inflater.inflate(R.layout.fragment_group_lists, container, false);
-        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+        view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
+
+
 
         //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
         //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
@@ -182,8 +191,8 @@ public class GroupListsFragment extends Fragment
         super.onResume();
 
         // back stack logs
-
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupLists);
+        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupList);
         //adapter = new MainRecyclerAdapter(groceryList);
         //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
         rvGroupList.setAdapter(adapter);
@@ -221,7 +230,7 @@ public class GroupListsFragment extends Fragment
         });
 
 
-        Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem);
+        Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem4);
         btnAddListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,11 +238,12 @@ public class GroupListsFragment extends Fragment
                 //Fragment manager to open new AddListItemFrag
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
+                //AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
+                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter, hAdapter);
                 ft.setReorderingAllowed(true);
 
-                ft.add(addItemFrag, "TAG").addToBackStack("TAG");
-                ft.show(addItemFrag);
+                ft.add(addBtn, "TAG").addToBackStack("TAG");
+                ft.show(addBtn);
                 ft.commit();
 
 
@@ -282,14 +292,6 @@ public class GroupListsFragment extends Fragment
 
         theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
-    }
-
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        adapter.notifyDataSetChanged();
     }
 
 

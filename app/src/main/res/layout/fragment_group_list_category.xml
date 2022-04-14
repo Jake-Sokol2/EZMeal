@@ -5,10 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/btnAddItem4"
+        android:layout_width="61dp"
+        android:layout_height="61dp"
+        android:backgroundTint="@color/EzGreen"
+        android:text="+"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvGroupList" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCategoryList"
+        android:id="@+id/rvGroupList"
         android:layout_width="match_parent"
-        android:layout_height="451dp"
+        android:layout_height="485dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
