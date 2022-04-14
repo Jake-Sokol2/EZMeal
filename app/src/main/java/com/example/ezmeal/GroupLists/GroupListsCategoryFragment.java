@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.ezmeal.FindRecipes.CategoryFragment;
+import com.example.ezmeal.FindRecipes.FindRecipesAdapters.FindRecipesFragmentHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListSelectionAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
@@ -29,6 +31,7 @@ public class GroupListsCategoryFragment extends Fragment
     private RecyclerView rvGroupListBubbles;
     private GroupListFragHorizontalRecyclerAdapter glFragAdapter;
     private List<String> grpListBubbles = new ArrayList<String>();
+    private int currentSelectedCategoryPosition = 0;
 
 
 
@@ -58,12 +61,49 @@ public class GroupListsCategoryFragment extends Fragment
         RecyclerView.LayoutManager hLayoutMgr = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvGroupListBubbles.setLayoutManager(hLayoutMgr);
 
+        glFragAdapter.setOnItemClickListener(new GroupListFragHorizontalRecyclerAdapter.MainAdapterListener()
+        {
+            @Override
+            public void onItemClick(int position)
+            {
 
-        //rvGroupLists = (RecyclerView) view.findViewById(R.id.rvGroupList);
-        //glFragAdapter = new GroupListSelectionAdapter(glCatModel.getGroupList());
-        //rvGroupLists.setAdapter(glFragAdapter);
-        //RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+                Fragment fragCategoryClick = new GroupListsFragment();
+
+                // position 0 is "featured" section, which is not stored as a category in the database and would cause a crash if passed in as one
+                // only pass a bundle if the user selects a card other than featured
+                if (position != 0)
+                {
+                    glCatModel.setNotSelected(currentSelectedCategoryPosition);
+                    glCatModel.setSelected(position);
+                    currentSelectedCategoryPosition = position;
+                    glFragAdapter.notifyDataSetChanged();
+
+                    Bundle categoryBundleClick = new Bundle();
+                    categoryBundleClick.putString("cat", grpListBubbles.get(position));
+                    fragCategoryClick.setArguments(categoryBundleClick);
+                }
+                else
+                // featured was clicked, set last category to unclicked (visually) and set featured to clicked
+                {
+                    glCatModel.setNotSelected(currentSelectedCategoryPosition);
+                    glCatModel.setSelected(0);
+                    currentSelectedCategoryPosition = 0;
+                    glFragAdapter.notifyDataSetChanged();
+                }
+
+                getChildFragmentManager().popBackStack();
+                getChildFragmentManager().beginTransaction().replace(R.id.grpListContainerView, fragCategoryClick).commit();
+            }
+        });
 
         return view;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        glCatModel.dumpGroupList();
+        rvGroupListBubbles.getAdapter().notifyDataSetChanged();
     }
 }
