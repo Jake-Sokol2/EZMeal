@@ -122,8 +122,8 @@ public class GroupSettingsFragment extends Fragment {
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
 
-        //sqlDb.testDao().deleteAllCategories();
-        //sqlDb.testDao().deleteALlRecyclerRecipes();
+        sqlDb.testDao().deleteAllCategories();
+        sqlDb.testDao().deleteALlRecyclerRecipes();
 
 
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());

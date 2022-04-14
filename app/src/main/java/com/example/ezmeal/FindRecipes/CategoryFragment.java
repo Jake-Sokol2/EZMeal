@@ -82,14 +82,17 @@ public class CategoryFragment extends Fragment
     public List<Category_RecyclerRecipe> categoryRecyclerRecipeList;
     public EZMealDatabase sqlDb;
 
+
     private SwipeRefreshLayout swipeLayout;
 
     private CategoryFragmentViewModel viewModel;
 
-    private final int RECIPE_RESET_TIME = 100;
+    private final int RECIPE_RESET_TIME = 500000;
     private final int NUM_OF_RECIPES = 15;
     private final int HALF_MAX_NUMBER_OF_HIGH_RATED_RECIPES = 3;
     private final int INDIVIDUAL_QUERY_VERTICAL_RECIPE_LIMIT = 5;
+
+    private boolean bln = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,6 +112,7 @@ public class CategoryFragment extends Fragment
                 deleteEntireCategory(category);
                 sqlDb.testDao().deleteFromRecyclerRecipe2SpecificCategory(category);
 
+                recyclerRecipeList2 = new ArrayList<RecyclerRecipe2>();
                 //rvFindRecipes.suppressLayout(true);
                 //rvFindRecipes.setVisibility(View.INVISIBLE);
 
@@ -118,6 +122,7 @@ public class CategoryFragment extends Fragment
                 Category2 cat2 = null;
 
                 rvFindRecipes = (RecyclerView) view.findViewById(R.id.rvFindRecipes);
+                //rvFindRecipes.suppressLayout(true);
 
                 highRatedTitles = new ArrayList<String>();
                 highRatedImages = new ArrayList<String>();
@@ -167,7 +172,7 @@ public class CategoryFragment extends Fragment
 
         rvFindRecipes.setLayoutManager(staggeredGridLayoutManager);
 
-        //rvFindRecipes.suppressLayout(true);
+        rvFindRecipes.suppressLayout(true);
         //rvFindRecipes.setVisibility(View.INVISIBLE);
         //rvFindRecipes.setVisibility(View.VISIBLE);
         //rvFindRecipes.suppressLayout(true);
@@ -202,7 +207,7 @@ public class CategoryFragment extends Fragment
         Bundle extras = getArguments();
 
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
+                .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
         recipeId = new ArrayList<String>();
 
@@ -253,7 +258,7 @@ public class CategoryFragment extends Fragment
         // if bundle was null, it means that the user just opened the screen and is on the "featured" page.  Query random, highly rated recipes (right now just querying all recipes)
         if (extras == null)
         {
-            categoryWithRecipes = sqlDb.testDao().getCategoriesWithRecipes("Featured");
+            /*categoryWithRecipes = sqlDb.testDao().getCategoriesWithRecipes("Featured");
 
             if ((categoryWithRecipes.size() != 0) && (new Date().getTime()) < (categoryWithRecipes.get(0).category2.getDateRetrieved() + RECIPE_RESET_TIME))
             {
@@ -268,7 +273,7 @@ public class CategoryFragment extends Fragment
                 int randomBound = 27;
                 retrieveAndSaveRandomRecipesFeatured(rand, randomBound, NUM_OF_RECIPES,"Featured");
 
-            }
+            }*/
         }
         // if not null, the user picked a category, so query for the existing category only
         else
@@ -354,7 +359,7 @@ public class CategoryFragment extends Fragment
         sqlDb.testDao().deleteFromRecyclerRecipe2SpecificCategory(cat);
     }
 
-    // todo: remove when Featured Recipes becomes Recommended
+    /*// todo: remove when Featured Recipes becomes Recommended
     public void retrieveAndSaveRandomRecipesFeatured(Random rand, int bound, int numberOfRecipes, String category)
     {
         int randomNum = rand.nextInt(bound);
@@ -433,7 +438,7 @@ public class CategoryFragment extends Fragment
                 Log.i("random recipes", "no random recipe for that query");
             }
         });
-    }
+    }*/
 
     // Unlike retrieveAndSaveRandomRecipesGreaterThan/LessThan, this shouldn't be recursive because there is never
     // a guarantee as to how many highly rated recipes are in the database.  Could lead to a stack overflow
@@ -579,6 +584,7 @@ public class CategoryFragment extends Fragment
                                                 }
                                                 // todo: delete
                                                 //categoryFragmentAdapter.notifyDataSetChanged();
+
                                             }
                                         }).addOnFailureListener(new OnFailureListener()
                                 {
@@ -593,6 +599,15 @@ public class CategoryFragment extends Fragment
                             //categoryFragmentAdapter.notifyDataSetChanged();
 
                             categoryFragmentAdapter.notifyDataSetChanged();
+
+                            if (bln == false)
+                            {
+                                if (recyclerRecipeList2 != null)
+                                {
+                                    sqlDb.testDao().insertAllRecyclerRecipe2(recyclerRecipeList2);
+                                    bln = true;
+                                }
+                            }
                         }
                     }).addOnFailureListener(new OnFailureListener()
             {
@@ -605,6 +620,16 @@ public class CategoryFragment extends Fragment
         }
         else
         {
+            if (bln == false)
+            {
+                if (recyclerRecipeList2 != null)
+                {
+                    sqlDb.testDao().insertAllRecyclerRecipe2(recyclerRecipeList2);
+                    bln = true;
+                }
+            }
+
+
             categoryFragmentAdapter.notifyDataSetChanged();
         }
     }
@@ -728,11 +753,6 @@ public class CategoryFragment extends Fragment
                                             }
                                         }
                                     }
-                                }
-
-                                if (recyclerRecipeList2 != null)
-                                {
-                                    sqlDb.testDao().insertAllRecyclerRecipe2(recyclerRecipeList2);
                                 }
                             }
 

@@ -98,7 +98,7 @@ public class MyRecipesFragment extends Fragment
 
 
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
+                .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
         // retrieve list of categories and some random images from Room
         cat = sqlDb.testDao().getCategories();
