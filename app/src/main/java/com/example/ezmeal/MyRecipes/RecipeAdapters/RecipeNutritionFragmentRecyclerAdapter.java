@@ -28,7 +28,7 @@ public class RecipeNutritionFragmentRecyclerAdapter extends RecyclerView.Adapter
         {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.cardRecipe);
+            cardView = (CardView) view.findViewById(R.id.cardCategory);
             txtNutrition = (TextView) view.findViewById(R.id.txtNutrition);
 
             view.setOnClickListener(new View.OnClickListener()

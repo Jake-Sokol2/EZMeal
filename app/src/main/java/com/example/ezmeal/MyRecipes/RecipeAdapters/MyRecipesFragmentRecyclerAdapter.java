@@ -33,7 +33,7 @@ public class MyRecipesFragmentRecyclerAdapter extends RecyclerView.Adapter<MyRec
         {
             super(view);
 
-            cardView = (CardView) view.findViewById(R.id.cardRecipe);
+            cardView = (CardView) view.findViewById(R.id.cardCategory);
             txtTitleRecipe = (TextView) view.findViewById(R.id.txtTitleRecipe);
             imgRecipe = (ImageView) view.findViewById(R.id.imgRecipe);
             imgBackground = (ImageView) view.findViewById(R.id.imageCategoryBackground);

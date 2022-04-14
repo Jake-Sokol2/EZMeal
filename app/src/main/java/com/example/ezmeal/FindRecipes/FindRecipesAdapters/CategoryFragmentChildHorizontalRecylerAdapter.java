@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -52,7 +51,7 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
             recipeImage = view.findViewById(R.id.imgRecipeImage);
             txtTitle = view.findViewById(R.id.textTitleRecipe);
             ratingBar = view.findViewById(R.id.rbCard);
-            card = view.findViewById(R.id.cardRecipe);
+            card = view.findViewById(R.id.cardCategory);
 
             //CardView cardView = (CardView) view.findViewById(R.id.cardRecipe);
 

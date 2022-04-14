@@ -81,11 +81,13 @@ public class GroupListsFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
-    public GroupListsFragment() {
+    public GroupListsFragment()
+    {
         // Required empty public constructor
     }
 
-    public GroupListsFragment(GroupListsFragmentModel theModel,  GroupListFragHorizontalRecyclerAdapter adapter){
+    public GroupListsFragment(GroupListsFragmentModel theModel, GroupListFragHorizontalRecyclerAdapter adapter)
+    {
         this.theModel = theModel;
         hAdapter = adapter;
     }
@@ -100,7 +102,8 @@ public class GroupListsFragment extends Fragment
      * @return A new instance of fragment GroupListsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GroupListsFragment newInstance(String param1, String param2) {
+    public static GroupListsFragment newInstance(String param1, String param2)
+    {
         GroupListsFragment fragment = new GroupListsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -110,13 +113,18 @@ public class GroupListsFragment extends Fragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
 
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
-            theModel.restoreGroceryList((List<List<String>>)savedInstanceState.getSerializable(RV_DATA));
-        }else {
-            if (getArguments() != null) {
+        if (savedInstanceState != null)
+        {
+            theModel.restoreGroceryList((List<List<String>>) savedInstanceState.getSerializable(RV_DATA));
+        }
+        else
+        {
+            if (getArguments() != null)
+            {
                 mParam1 = getArguments().getString(ARG_PARAM1);
                 mParam2 = getArguments().getString(ARG_PARAM2);
             }
@@ -140,8 +148,8 @@ public class GroupListsFragment extends Fragment
     private String itemName, brandName, userName;
 
 
-
-    private void addDataToFirestore(String itemName, String brandName, String userName){
+    private void addDataToFirestore(String itemName, String brandName, String userName)
+    {
 
         //Code to make retrieval of items user specific
         //Get FirebaseAuth instance
@@ -153,14 +161,18 @@ public class GroupListsFragment extends Fragment
 
         CollectionReference dbItems = db.collection("Items");
         Item item = new Item(itemName, brandName, userName);
-        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
+            public void onSuccess(DocumentReference documentReference)
+            {
                 Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(new OnFailureListener()
+        {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NonNull Exception e)
+            {
                 Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
             }
         });
@@ -168,11 +180,11 @@ public class GroupListsFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
-
 
 
         //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
@@ -228,14 +240,15 @@ public class GroupListsFragment extends Fragment
             }
 
 
-
         });
 
 
         Button btnAddListItem = (Button) view.findViewById(R.id.btnAddItem4);
-        btnAddListItem.setOnClickListener(new View.OnClickListener() {
+        btnAddListItem.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
                 //Fragment manager to open new AddListItemFrag
                 FragmentManager fm = getParentFragmentManager();
@@ -264,24 +277,32 @@ public class GroupListsFragment extends Fragment
 
         db.collection("Items")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {@Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d("MYDEBUG", document.getId() + " => " + document.getData());
-                            brand = document.getString("brand");
-                            name = document.getString("name");
-                            //quantity = document.getDouble("quantity");
-                            if (Objects.equals(document.getString("user"), email)) {
-                                theModel.addItem(name, brand);
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
+                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
+                                brand = document.getString("brand");
+                                name = document.getString("name");
+                                //quantity = document.getDouble("quantity");
+                                if (Objects.equals(document.getString("user"), email))
+                                {
+                                    theModel.addItem(name, brand);
 
+                                }
+                                adapter.notifyDataSetChanged();
                             }
-                            adapter.notifyDataSetChanged();
                         }
-                    } else {
-                        Log.w("MYDEBUG", "Error getting documents.", task.getException());
+                        else
+                        {
+                            Log.w("MYDEBUG", "Error getting documents.", task.getException());
+                        }
                     }
-                }
                 });
     }
 
@@ -296,10 +317,7 @@ public class GroupListsFragment extends Fragment
         rvGroupList.getAdapter().notifyDataSetChanged();
     }
 
-
-<<<<<<< Updated upstream
-
-
+}
 
 
 
@@ -325,10 +343,9 @@ public class GroupListsFragment extends Fragment
         outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
         //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
     }
+*/
 
 
 
 
 
-
-}

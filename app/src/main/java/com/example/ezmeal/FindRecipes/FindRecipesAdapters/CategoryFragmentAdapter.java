@@ -75,7 +75,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
             // only used on horizontal rows
             //childHorizontalRecyclerView = itemView.findViewById(R.id.rvChildHorizontalRecipes);
 
-            CardView cardView = (CardView) view.findViewById(R.id.cardRecipe);
+            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
             {

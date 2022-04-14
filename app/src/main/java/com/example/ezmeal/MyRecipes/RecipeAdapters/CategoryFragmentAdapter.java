@@ -33,7 +33,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<CategoryFragme
             recipeImage = view.findViewById(R.id.imgRecipeImage);
             txtTitle = view.findViewById(R.id.textTitleRecipe);
 
-            CardView cardView = (CardView) view.findViewById(R.id.cardRecipe);
+            CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
             {

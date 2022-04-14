@@ -109,6 +109,8 @@ public class CategoryFragment extends Fragment
                 deleteEntireCategory(category);
                 sqlDb.testDao().deleteFromRecyclerRecipe2SpecificCategory(category);
 
+                //rvFindRecipes.suppressLayout(true);
+                //rvFindRecipes.setVisibility(View.INVISIBLE);
 
                 viewModel = new ViewModelProvider(requireActivity()).get(CategoryFragmentViewModel.class);
 
@@ -164,6 +166,9 @@ public class CategoryFragment extends Fragment
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         rvFindRecipes.setLayoutManager(staggeredGridLayoutManager);
+
+        //rvFindRecipes.suppressLayout(true);
+        //rvFindRecipes.setVisibility(View.INVISIBLE);
         //rvFindRecipes.setVisibility(View.VISIBLE);
         //rvFindRecipes.suppressLayout(true);
         /*@Override
