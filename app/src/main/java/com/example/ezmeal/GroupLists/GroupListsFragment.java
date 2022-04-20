@@ -1,7 +1,9 @@
 package com.example.ezmeal.GroupLists;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +27,9 @@ import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Model.Item;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.Rating;
+import com.example.ezmeal.RoomDatabase.Category;
+import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.RoomDatabase.Identifier;
 import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,13 +39,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 //Not the bubbles but the actual list itself
@@ -54,6 +61,7 @@ public class GroupListsFragment extends Fragment
 {
     private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
     private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
+    private EZMealDatabase sqlDb;
     //BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
     //BottomSheetDialogFragment bottomSheetDialogFrag = new BottomSheetDialogFragment();
 
@@ -186,14 +194,86 @@ public class GroupListsFragment extends Fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
+        // Get Firebase database reference
+        db = FirebaseFirestore.getInstance();
 
-        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
-        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        // Open Room database
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
+                .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
-        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+        // todo: remove, this is nuking shared preferences
+        //getActivity().getSharedPreferences("FirstRunAfterUpdate", 0).edit().clear().commit();
+
+        SharedPreferences sp;
+        sp = getActivity().getSharedPreferences("FirstRunAfterUpdate", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sp.edit();
+        boolean isFirstRun = sp.getBoolean("isFirstRun", true);
+
+        // only executes the first time the app is installed or after it is updated
+        if (isFirstRun)
+        {
+            sqlDb.testDao().deleteAllFromCategory();
+            sqlDb.testDao().deleteAllFromIdentifier();
+
+            // Insert list of categories for Find Recipes page into Room
+            db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+            {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                {
+                    List<String> categories = (ArrayList<String>) task.getResult().get("categories");
+                    List<Category> categoryList = new ArrayList<Category>();
+                    for (int i = 0; i < categories.size(); i++)
+                    {
+                        Category newCategory = new Category(categories.get(i));
+                        categoryList.add(newCategory);
+                    }
+
+                    sqlDb.testDao().insertAllCategory(categoryList);
+                }
+            });
+
+            // Insert pairs of identifiers into Room for Find Recipes page
+            db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+            {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                {
+                    Map<String, String> identifiers = (Map<String, String>) task.getResult().get("categoryIdentifiers");
+                    List<String> substringList = new ArrayList<String>();
+                    List<String> categoryList = new ArrayList<String>();
+
+                    List<Identifier> identifierList = new ArrayList<Identifier>();
+
+                    for (Map.Entry<String, String> entry : identifiers.entrySet())
+                    {
+                        substringList.add(entry.getValue());
+                        categoryList.add(entry.getKey());
+                    }
+
+                    for (int i = 0; i < identifiers.size(); i++)
+                    {
+                        Identifier newIdentifier = new Identifier(substringList.get(i), categoryList.get(i), false);
+                        identifierList.add(newIdentifier);
+                        //categoryList.add(newCategory);
+                    }
+
+                    sqlDb.testDao().insertAllIdentifier(identifierList);
+                }
+            });
+
+            //sqlDb.testDao().getCategoriesCategoryEntity();
+            Log.i("sp", "first run");
+
+
+            editor.putBoolean("isFirstRun", false);
+            editor.commit();
+        }
+        else
+        {
+            Log.i("sp", "not first run");
+        }
 
         return view;
     }
@@ -272,9 +352,6 @@ public class GroupListsFragment extends Fragment
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
 
-        //Code to display database items
-        db = FirebaseFirestore.getInstance();
-
         db.collection("Items")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
@@ -282,8 +359,15 @@ public class GroupListsFragment extends Fragment
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task)
                     {
+                        // TODO: remove once we are only querying through a SnapshotListener
+                        // TODO: this section isn't completely finished - it doesn't update on screen change (though it does update on restart).  But that relies on switch to LiveData and SnapshotListener
+                        // mark all inactive to remove previous data
+                        sqlDb.testDao().updateAllIdentifiersIsNotActive();
+
                         if (task.isSuccessful())
                         {
+                            List<String> identifiers = sqlDb.testDao().getDistinctIdentifiers();
+
                             for (QueryDocumentSnapshot document : task.getResult())
                             {
                                 Log.d("MYDEBUG", document.getId() + " => " + document.getData());
@@ -294,6 +378,17 @@ public class GroupListsFragment extends Fragment
                                 {
                                     theModel.addItem(name, brand);
 
+                                    // checks if item name is a substring of any category identifier
+                                    // category identifiers are keywords (chicken, cookies, dough) that let the Find Recipes page
+                                    // suggest recipes based on the users shopping list
+                                    for (String identifier:identifiers)
+                                    {
+                                        if (name.toLowerCase().contains(identifier))
+                                        {
+                                            // mark the identifier as active - tells Find Recipes to query recipes for the category belonging to this identifier
+                                            sqlDb.testDao().updateIdentifierIsActive(identifier);
+                                        }
+                                    }
                                 }
                                 adapter.notifyDataSetChanged();
                             }
@@ -315,6 +410,19 @@ public class GroupListsFragment extends Fragment
 
         theModel.dumpList();
         rvGroupList.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        // close Room
+        if ((sqlDb != null) && (sqlDb.isOpen()))
+        {
+            sqlDb.close();
+        }
+
     }
 
 }

@@ -101,7 +101,7 @@ public class MyRecipesFragment extends Fragment
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
         // retrieve list of categories and some random images from Room
-        cat = sqlDb.testDao().getCategories();
+        cat = sqlDb.testDao().getCategoriesCategoryEntity();
         //List<String> urls = sqlDb.testDao().getCatUrl();
         for (int i = 0; i < cat.size(); i++)
         {

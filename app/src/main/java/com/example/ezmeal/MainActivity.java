@@ -48,6 +48,14 @@ public class MainActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
                 NavigationUI.onNavDestinationSelected(item, navController);
+
+                // disable multiple backstack
+
+                //if (item.getItemId() == R.id.groupRecipesFragment)
+                //{
+                navController.popBackStack(item.getItemId(), false);
+                //}
+
                 return true;
             }
         });

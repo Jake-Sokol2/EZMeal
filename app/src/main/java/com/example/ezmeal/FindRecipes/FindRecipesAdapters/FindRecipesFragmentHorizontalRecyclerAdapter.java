@@ -58,6 +58,8 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
         }
     }
 
+    public FindRecipesFragmentHorizontalRecyclerAdapter(){}
+
     public FindRecipesFragmentHorizontalRecyclerAdapter(List<String> list, List<Boolean> isSelected)//, List<String> url)
     {
         this.list = list;
@@ -99,12 +101,20 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
     @Override
     public int getItemCount()
     {
-        return list.size();
+        if (list == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return list.size();
+        }
     }
 
-    public void setData(List<String> list)
+    public void setData(List<String> list, List<Boolean> isSelectedList)
     {
         this.list = list;
+        this.isSelectedList = isSelectedList;
         notifyDataSetChanged();
     }
 

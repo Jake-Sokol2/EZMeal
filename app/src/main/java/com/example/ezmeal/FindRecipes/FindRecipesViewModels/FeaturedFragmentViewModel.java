@@ -5,15 +5,15 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.android.gms.tasks.Task;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CategoryFragmentViewModel extends ViewModel
+public class FeaturedFragmentViewModel extends ViewModel
 {
     private MutableLiveData<Integer> numOfRetrievedRecipes;
     private MutableLiveData<Integer> numOfRetrievedHighRatedRecipes;
+
     private MutableLiveData<Set<Integer>> setOfUniqueRecipes;
     private MutableLiveData<Set<Integer>> setOfUniqueHighRatedRecipes;
 
@@ -26,7 +26,7 @@ public class CategoryFragmentViewModel extends ViewModel
 
 
 
-    public CategoryFragmentViewModel()
+    public FeaturedFragmentViewModel()
     {
         numOfRetrievedRecipes = new MutableLiveData<>(0);
 
@@ -201,14 +201,14 @@ public class CategoryFragmentViewModel extends ViewModel
 
 
     // numOfRetrievedHighRatedRecipes
-    public Integer getNumOfRetrievedHighRatedRecipes()
+    public MutableLiveData<Integer> getNumOfRetrievedHighRatedRecipes()
     {
         if (numOfRetrievedHighRatedRecipes == null)
         {
             numOfRetrievedHighRatedRecipes = new MutableLiveData<>();
         }
 
-        return numOfRetrievedHighRatedRecipes.getValue();
+        return numOfRetrievedHighRatedRecipes;
     }
 
     public void setNumOfRetrievedHighRatedRecipes(Integer numOfRecipes)

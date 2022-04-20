@@ -41,6 +41,7 @@ public class FindRecipesFragmentModel
     {
         this.categoryList = categoryList;
     }
+    public void setIsSelectedList(List<Boolean> isSelectedList) { this.isSelectedList = isSelectedList; }
 
     public void setSelected(int position)
     {

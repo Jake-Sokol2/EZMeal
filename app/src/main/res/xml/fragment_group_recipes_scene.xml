@@ -57,6 +57,18 @@
             android:layout_width="match_parent"
             android:id="@+id/txtTopBar"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/fragmentContainerView4"
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            motion:layout_editor_absoluteX="16dp"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+        <Constraint
+            android:id="@+id/fragmentContainerView4"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            motion:layout_editor_absoluteX="16dp"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -104,5 +116,17 @@
             android:layout_width="match_parent"
             android:id="@+id/txtTopBar"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/fragmentContainerView4"
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+        <Constraint
+            android:id="@+id/fragmentContainerView4"
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
     </ConstraintSet>
 </MotionScene>
