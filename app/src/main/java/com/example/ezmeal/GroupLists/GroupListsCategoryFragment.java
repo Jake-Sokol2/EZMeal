@@ -44,6 +44,7 @@ public class GroupListsCategoryFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_new_group_list, container,
                 false);
 
+        //TODO: replace with view model
         grpListBubbles.add("My List");
         grpListBubbles.add("Jake's List");
         grpListBubbles.add("Tristan's List");

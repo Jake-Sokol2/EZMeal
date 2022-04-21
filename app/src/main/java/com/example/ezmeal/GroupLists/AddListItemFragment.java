@@ -109,7 +109,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     editBrandName.setError("Empty field");
                 }
                 else {
-                    theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
+                    //theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                     theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
                     adapter.notifyDataSetChanged();

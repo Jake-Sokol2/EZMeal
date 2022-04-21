@@ -1,7 +1,9 @@
 package com.example.ezmeal.GroupLists;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +47,10 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     {
         this.theModel = theModel;
         this.hAdapter = hAdapter;
+        //boolean isItNull = this.hAdapter == null;
+        Log.d("AddGroupListFragment", "hAdapter is theoretically not null?");
+        Log.d("AddGroupListFragment", String.valueOf(hAdapter));
+
     }
 
     public static AddGroupListFragment newInstance(GroupListsFragmentModel theModel, GroupListFragHorizontalRecyclerAdapter hAdapter)
@@ -65,16 +71,14 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     {
         super.onCreate(savedInstanceState);
 
-        if(getArguments() != null)
+        Bundle blunt = getArguments();
+
+        if(blunt != null)
         {
-            Bundle args = getArguments();
-            toSave = (List) args.getSerializable("model");
-            theModel = toSave.get(0);
-
-            saveAdapter = (List) args.getSerializable("hAdapter");
-            hAdapter = saveAdapter.get(0);
-
+            theModel.setGroupList((List<String>) blunt.getSerializable("GroupList"));
         }
+
+
     }
 
     @Override
@@ -111,9 +115,14 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                     editListName.setError("Empty field");
                 else
                 {
+                    //TODO create mutable live data for group lists
+                        //1 pass new list information back to the recycler view
+                        //2 store that list in firebase under users group lists
+                        //3 group lists need to also be stored in RoomDB
+
                     theModel.addList(editListName.getText().toString(), false);
                     //TODO data needs to be added to firestore
-                    hAdapter.notifyDataSetChanged();
+                    //hAdapter.notifyDataSetChanged();
                     dismiss();
                 }
                 break;

@@ -3,7 +3,9 @@ package com.example.ezmeal.GroupLists.Model;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,24 +27,28 @@ public class GroupListsFragmentModel
     private List<String> groupList; //This represents a list you share with other people
     private List<Boolean> isSelectedList; //Marker that a given list is selected
 
-    private List<List<String>> shoppingList;
+    private List<List<String>> shoppingList = new ArrayList<List<String>>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String itemName;
     String brandName;
     String docID;
 
+
     public GroupListsFragmentModel()
     {
         groupList = new ArrayList<String>();
         isSelectedList = new ArrayList<Boolean>();
-        shoppingList = new ArrayList<List<String>>();
+       // shoppingList = new ArrayList<List<String>>();
+       // getListData();
+
     }
 
     public void addList(String listName, Boolean isSelected)
     {
         groupList.add(listName);
         isSelectedList.add(isSelected);
+
     }
 
     public void addItem(String itemName, String itemBrand){
@@ -52,7 +58,6 @@ public class GroupListsFragmentModel
         tmp.add("1");
 
         shoppingList.add(tmp);
-
     }
 
     public void addItem(String itemName, String itemBrand, int itemQuantity){
@@ -62,6 +67,11 @@ public class GroupListsFragmentModel
         tmp.add(String.valueOf(itemQuantity));
 
         shoppingList.add(tmp);
+    }
+
+    public void addItem(List<String> completeItem)
+    {
+        shoppingList.add(completeItem);
     }
 
     public void removeItem(int position)
@@ -164,6 +174,7 @@ public class GroupListsFragmentModel
         });
     }
 
+
     public List<List<String>> getGroceryList() {
         return shoppingList;
     }
@@ -171,5 +182,7 @@ public class GroupListsFragmentModel
     public void restoreGroceryList(List<List<String>> theList) {
         shoppingList = theList;
     }
+
+
 
 }
