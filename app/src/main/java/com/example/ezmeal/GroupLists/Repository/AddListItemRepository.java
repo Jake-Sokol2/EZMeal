@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+    Working with live data and SQL cannot use mutable live data
+    has to be live data.
+ */
+
 public class AddListItemRepository{
     final MutableLiveData<List<List<String>>> aList = new MutableLiveData<List<List<String>>>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
