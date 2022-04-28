@@ -18,8 +18,9 @@
         android:layout_marginTop="48dp"
         android:elevation="20dp"
         android:text="Find Recipes"
+        android:fontFamily="@font/sonsie_one"
         android:textColor="#000000"
-        android:textSize="25sp"
+        android:textSize="15sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="224dp" />
 
@@ -34,6 +35,7 @@
         android:paddingStart="15dp"
         android:paddingBottom="20dp"
         android:textColor="#000000"
+        android:fontFamily="@font/sonsie_one"
         android:textSize="25sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4"

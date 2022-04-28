@@ -68,7 +68,7 @@
         android:layout_marginTop="324dp"
         android:src="@drawable/icons8_plus_48"
         app:fabCustomSize="45.5dp"
-        android:backgroundTint="#2dba73"
+        android:backgroundTint="@color/EzGreen"
         android:elevation="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
