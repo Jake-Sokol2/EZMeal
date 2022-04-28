@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ezmeal.R;
@@ -19,7 +20,6 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
     //private List<String> url;
     private MainAdapterListener listener;
     private List<Boolean> isSelectedList;
-
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder

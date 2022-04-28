@@ -2,17 +2,13 @@ package com.example.ezmeal.FindRecipes;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,18 +18,14 @@ import com.example.ezmeal.FindRecipes.FindRecipesAdapters.CategoryFragmentAdapte
 import com.example.ezmeal.FindRecipes.FindRecipesAdapters.FindRecipesFragmentHorizontalRecyclerAdapter;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentModel;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.FindRecipesFragmentModel;
-import com.example.ezmeal.FindRecipes.FindRecipesViewModels.FeaturedFragmentViewModel;
 import com.example.ezmeal.FindRecipes.FindRecipesViewModels.FindRecipesViewModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -64,7 +56,10 @@ public class FindRecipesFragment extends Fragment
     private FindRecipesFragmentHorizontalRecyclerAdapter horizontalAdapter;
 
     private List<String> recipeId = new ArrayList<String>();
+
     public List<String> categories = new ArrayList<String>();
+    private List<Boolean> isSelected = new ArrayList<>();
+    private Integer lastSelectedCategory = 0;
 
     private FindRecipesViewModel viewModel;
 
@@ -128,6 +123,19 @@ public class FindRecipesFragment extends Fragment
         RecyclerView.LayoutManager horizontalLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvHorizontal.setLayoutManager(horizontalLayoutManager);
 
+        //horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(findRecipesFragmentModel.getCategoryList(), findRecipesFragmentModel.getIsSelectedList());
+        horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(categories, isSelected);
+        //horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
+        rvHorizontal.setAdapter(horizontalAdapter);
+
+        viewModel.getHorizontalRecyclerModel().observe(getViewLifecycleOwner(), model ->
+        {
+            categories = model.getCategoryList();
+            isSelected = model.getIsSelectedList();
+            horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
+            horizontalAdapter.notifyDataSetChanged();
+        });
+
         if (savedInstanceState == null)
         {
             FindRecipesFragmentModel fm = new FindRecipesFragmentModel();
@@ -147,9 +155,7 @@ public class FindRecipesFragment extends Fragment
 
 
 
-            //horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(findRecipesFragmentModel.getCategoryList(), findRecipesFragmentModel.getIsSelectedList());
-            horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter();
-            rvHorizontal.setAdapter(horizontalAdapter);
+
 
 
             db = FirebaseFirestore.getInstance();
@@ -227,29 +233,7 @@ public class FindRecipesFragment extends Fragment
             }
         });*/
 
-        viewModel.getHorizontalRecyclerModel().observe(getViewLifecycleOwner(), model ->
-        {
-            if (savedInstanceState != null) //viewModel.getListSize() == categories.size())
-            {
-                //viewModel.setHorizontalRecipeRandomNum(rand.nextInt());
-                //retrieveHorizontal(category, "Popular Recipe", taskGreater);
-                //retrieveAndSaveHorizontalRecipesCategoryLess(numRecipes, category, randomNum);
-                horizontalAdapter = viewModel.getHorizontalRecyclerAdapter().getValue();
 
-
-                    horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
-                    rvHorizontal.setAdapter(horizontalAdapter);
-                    horizontalAdapter.notifyDataSetChanged();
-
-
-            }
-            else
-            {
-                viewModel.setHorizontalRecyclerAdapter(horizontalAdapter);
-                horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
-                horizontalAdapter.notifyDataSetChanged();
-            }
-        });
 
         return view;
     }
@@ -265,6 +249,12 @@ public class FindRecipesFragment extends Fragment
         categoryFragManager.beginTransaction().replace(R.id.fragmentContainerView4, frag).commit();*/
 
         //getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();
+
+
+        viewModel.getLastSelectedCategory().observe(getViewLifecycleOwner(), categoryPosition ->
+        {
+            lastSelectedCategory = categoryPosition;
+        });
 
         horizontalAdapter.setOnItemClickListener(new FindRecipesFragmentHorizontalRecyclerAdapter.MainAdapterListener()
         {
@@ -289,36 +279,39 @@ public class FindRecipesFragment extends Fragment
                 {
                     fragCategoryClick = new CategoryFragment();
 
-                    viewModel.setSelected(currentSelectedCategoryPosition, false);
+                    viewModel.setSelected(lastSelectedCategory, false);
                     viewModel.setSelected(position, true);
+                    viewModel.setLastSelectedCategory(position);
 
                     //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
                     //findRecipesFragmentModel.setSelected(position);
 
-                    currentSelectedCategoryPosition = position;
+                    //currentSelectedCategoryPosition = position;
 
                     Bundle categoryBundleClick = new Bundle();
                     categoryBundleClick.putString("cat", categories.get(position - 1));
                     fragCategoryClick.setArguments(categoryBundleClick);
 
                     fragmentTransaction = getChildFragmentManager().beginTransaction();
-                    getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).addToBackStack("testtag").commitAllowingStateLoss();
+                    getChildFragmentManager().popBackStack();
+
+                    getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
                 }
                 else
                 // featured was clicked, set last category to unclicked (visually) and set featured to clicked
                 {
                     fragCategoryClick = new FeaturedFragment();
 
-                    viewModel.setSelected(currentSelectedCategoryPosition, false);
+                    viewModel.setSelected(lastSelectedCategory, false);
                     viewModel.setSelected(0, true);
-
+                    viewModel.setLastSelectedCategory(0);
                     //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
                     //findRecipesFragmentModel.setSelected(0);
 
-
-                    currentSelectedCategoryPosition = 0;
+                    //currentSelectedCategoryPosition = 0;
 
                     fragmentTransaction = getChildFragmentManager().beginTransaction();
+
                     getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
                 }
                 horizontalAdapter.notifyDataSetChanged();

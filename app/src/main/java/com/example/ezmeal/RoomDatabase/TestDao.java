@@ -1,6 +1,7 @@
-package com.example.ezmeal.RoomDatabase;
+package com.example.ezmeal.roomDatabase;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -38,6 +39,9 @@ public interface TestDao {
 
     @Query("SELECT * FROM Recipe")
     public List<RecipeItems> getRecipeItems();
+
+    @Query("SELECT * FROM Recipe")
+    public LiveData<List<RecipeItems>> getRecipeItemsLive();
 
     @Query("SELECT pathToImage FROM Recipe r INNER JOIN CategoryEntity ce ON r.RecipeId = ce.RecipeId WHERE category = :cat")
     public List<String> getImagesForCategories(String cat);
@@ -151,10 +155,13 @@ public interface TestDao {
     void insertCategory2(Category2 category2);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllRecyclerRecipe2(List<RecyclerRecipe2> recyclerRecipeList2);
+    void insertRecyclerRecipe2(RecyclerRecipe2 recyclerRecipe2);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRecyclerRecipe2(RecyclerRecipe2 recyclerRecipe2);
+    void insertAllRecyclerRecipe2(List<RecyclerRecipe2> recyclerRecipe2);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertRecyclerRecipe2Live(RecyclerRecipe2 recyclerRecipe2);
 
     @Query("DELETE FROM Category2")
     public void deleteCategory2();
@@ -206,6 +213,8 @@ public interface TestDao {
     public void updateAllIdentifiersIsNotActive();
 
     @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
-    public List<String> getActiveCategoriesFromIdentifier();
-}
+    public LiveData<List<String>> getActiveCategoriesFromIdentifier();
 
+    @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
+    public List<String> getActiveCategoriesFromIdentifier2();
+}

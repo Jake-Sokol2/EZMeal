@@ -22,7 +22,9 @@ import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentChildHor
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.RecipeActivity;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+// todo:
+//import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -189,57 +191,61 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-        final int itemType = getItemViewType(position);
-
-        db = FirebaseFirestore.getInstance();
-        // todo: RecipesRating
-        dbRecipes = db.collection("RecipesRatingBigInt");
-
-        StaggeredGridLayoutManager.LayoutParams staggeredLayout = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-        staggeredLayout.setFullSpan(true);
-        holder.itemView.setLayoutParams(staggeredLayout);
-
-        HorizontalViewHolder horizontalHolder = (HorizontalViewHolder) holder;
-
-        horizontalHolder.horizontalRecipes.setBackgroundColor(Color.parseColor("#ffffffff"));
-
-        RecyclerView.LayoutManager horizontalManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        horizontalHolder.childHorizontalRecyclerView.setHasFixedSize(true);
-
-        horizontalHolder.childHorizontalRecyclerView.setLayoutManager(horizontalManager);
-
-        EZMealDatabase sqlDb = Room.databaseBuilder(holder.itemView.getContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        CategoryFragmentChildHorizontalRecyclerModel horizontalModel;
-
-        horizontalModel = new CategoryFragmentChildHorizontalRecyclerModel(popularRecipesTitleList, popularRecipesImageList, avgPopularRatingList);
-
-        //CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
-        //        horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());
-
-        horizontalHolder.txtTitle.setText(verticalTitleList.get(position));
-
-        if (horizontalLists.size() > 0)
+        if (position == 0)
         {
-            CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(position));
+            final int itemType = getItemViewType(position);
 
-            highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
+            db = FirebaseFirestore.getInstance();
+            // todo: RecipesRating
+            dbRecipes = db.collection("RecipesRatingBigInt");
+
+            StaggeredGridLayoutManager.LayoutParams staggeredLayout = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+            staggeredLayout.setFullSpan(true);
+            holder.itemView.setLayoutParams(staggeredLayout);
+
+            HorizontalViewHolder horizontalHolder = (HorizontalViewHolder) holder;
+
+            horizontalHolder.horizontalRecipes.setBackgroundColor(Color.parseColor("#ffffffff"));
+
+            RecyclerView.LayoutManager horizontalManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            horizontalHolder.childHorizontalRecyclerView.setHasFixedSize(true);
+
+            horizontalHolder.childHorizontalRecyclerView.setLayoutManager(horizontalManager);
+
+            EZMealDatabase sqlDb = Room.databaseBuilder(holder.itemView.getContext(), EZMealDatabase.class, "user")
+                    .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+            CategoryFragmentChildHorizontalRecyclerModel horizontalModel;
+
+            horizontalModel = new CategoryFragmentChildHorizontalRecyclerModel(popularRecipesTitleList, popularRecipesImageList, avgPopularRatingList);
+
+            //CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
+            //        horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());
+
+            horizontalHolder.txtTitle.setText(verticalTitleList.get(position));
+
+            if (horizontalLists.size() > 0)
             {
-                @Override
-                public void onItemClick(int position)
+                CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(position));
+
+                highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
                 {
-                    Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
-                    Bundle bundle = new Bundle();
+                    @Override
+                    public void onItemClick(int position)
+                    {
+                        Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
+                        Bundle bundle = new Bundle();
 
-                    //bundle.putString("id", highRatedRecipeIdList.get(position));
-                    //intent.putExtras(bundle);
-                    //holder.itemView.getContext().startActivity(intent);
-                }
-            });
+                        //bundle.putString("id", highRatedRecipeIdList.get(position));
+                        //intent.putExtras(bundle);
+                        //holder.itemView.getContext().startActivity(intent);
+                    }
+                });
 
-            horizontalHolder.childHorizontalRecyclerView.setAdapter(highRatedRecipesAdapter);
+                horizontalHolder.childHorizontalRecyclerView.setAdapter(highRatedRecipesAdapter);
+            }
         }
+
 
     }
 

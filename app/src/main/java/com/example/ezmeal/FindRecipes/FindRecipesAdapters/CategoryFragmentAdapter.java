@@ -23,7 +23,8 @@ import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.VerticalRecipe;
 import com.example.ezmeal.FindRecipes.RecipeActivity;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+//import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -151,13 +152,6 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     {
         this.verticalRecipes = verticalRecipes;
         this.horizontalLists = horizontalLists;
-        /*this.uriList = uriList;
-        this.popularRecipesTitleList = popularRecipesTitleList;
-        this.popularRecipesImageList = popularRecipesImageList;
-        this.highRatedRecipeIdList = highRatedRecipeIdList;
-        this.totalRatingCountList = totalRatingCountList;
-        this.avgRatingList = avgRatingList;
-        this.avgPopularRatingList = avgPopularRatingList;*/
     }
 
 
@@ -222,7 +216,6 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
             horizontalModel = new CategoryFragmentChildHorizontalRecyclerModel(popularRecipesTitleList, popularRecipesImageList, avgPopularRatingList);
 
             CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(0));
-
             /*CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
                     horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());*/
 
@@ -234,7 +227,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
                     Bundle bundle = new Bundle();
 
-                    bundle.putString("id", highRatedRecipeIdList.get(position));
+                    bundle.putString("id", horizontalLists.get(0).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
                     intent.putExtras(bundle);
                     holder.itemView.getContext().startActivity(intent);
                 }

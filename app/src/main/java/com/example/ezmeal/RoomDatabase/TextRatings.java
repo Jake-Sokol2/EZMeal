@@ -1,4 +1,4 @@
-package com.example.ezmeal.RoomDatabase;
+package com.example.ezmeal.roomDatabase;
 
 public class TextRatings
 {

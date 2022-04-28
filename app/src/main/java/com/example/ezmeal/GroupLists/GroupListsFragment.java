@@ -3,12 +3,10 @@ package com.example.ezmeal.GroupLists;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,11 +25,10 @@ import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdap
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Model.Item;
-import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.Category;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
-import com.example.ezmeal.RoomDatabase.Identifier;
+import com.example.ezmeal.roomDatabase.Category;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.Identifier;
 import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,9 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,8 +59,6 @@ public class GroupListsFragment extends Fragment
     private ArrayList<List<String>> groceryList = new ArrayList<List<String>>();
     private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
     private EZMealDatabase sqlDb;
-    private List<List<String>> localShoppingList;
-    private GroupListsViewModel theVM;
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
@@ -81,6 +73,8 @@ public class GroupListsFragment extends Fragment
     private double quantity;
     public String email;
     private View view;
+
+    private List<String> identifiers;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -141,10 +135,6 @@ public class GroupListsFragment extends Fragment
             }
         }
 
-        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
-
-
-
         /*
         No longer needed because adding items works and the items
         are not nuked on rotation.
@@ -165,7 +155,6 @@ public class GroupListsFragment extends Fragment
 
     private void addDataToFirestore(String itemName, String brandName, String userName)
     {
-
         //Code to make retrieval of items user specific
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -200,8 +189,6 @@ public class GroupListsFragment extends Fragment
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
-        theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
-
 
         // Get Firebase database reference
         db = FirebaseFirestore.getInstance();
@@ -210,42 +197,8 @@ public class GroupListsFragment extends Fragment
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
-        // todo: remove, this is nuking shared preferences
-        //getActivity().getSharedPreferences("FirstRunAfterUpdate", 0).edit().clear().commit();
-
-        SharedPreferences sp;
-        sp = getActivity().getSharedPreferences("FirstRunAfterUpdate", Context.MODE_PRIVATE);
-
-        //Observe live data and update grocery list
-        theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
-        {
-            if(shoppingList != null)
-            {
-
-                if (shoppingList.size() > 0)
-                {
-                    for(int i = 0; i < shoppingList.size(); i++)
-                        theModel.addItem(shoppingList.get(i));
-                }
-
-            }
-            adapter.notifyDataSetChanged();
-            Log.d("adapter", "adapter has been notified");
-        });
-
-        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupList);
-        rvGroupList.setAdapter(adapter);
 
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
-        rvGroupList.setLayoutManager(layoutManager);
-
-
-
-        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
 
         return view;
     }
@@ -257,15 +210,14 @@ public class GroupListsFragment extends Fragment
         super.onResume();
 
         // back stack logs
-
+        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList = (RecyclerView) view.findViewById(R.id.rvGroupList);
         //adapter = new MainRecyclerAdapter(groceryList);
         //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
+        rvGroupList.setAdapter(adapter);
 
-
-
-
-
-        //adapter.notifyDataSetChanged();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+        rvGroupList.setLayoutManager(layoutManager);
 
         //Attach the ItemTouchHelper
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel));
@@ -273,7 +225,6 @@ public class GroupListsFragment extends Fragment
 
         // Add some data
         // todo: remove this when user's list saves on application close
-        Log.d("RecyclerView", "There is a recycler view?" + rvGroupList);
         adapter.notifyDataSetChanged();
 
         //clickedView = (View) view.findViewById(R.id.editListItem);
@@ -304,21 +255,11 @@ public class GroupListsFragment extends Fragment
             public void onClick(View view)
             {
 
-                //Save recycler view and the model list
-                Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
-                Bundle out = new Bundle();
-                out.putSerializable("rvData", (Serializable) theModel.getGroupList());
-                out.putParcelable("rvState", rvState);
-
                 //Fragment manager to open new AddListItemFrag
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 //AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
-                AddButtonFragment addBtn = new AddButtonFragment();
-
-                //Set the arguments to grab in the new fragment
-                addBtn.setArguments(out);
-
+                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter, hAdapter);
                 ft.setReorderingAllowed(true);
 
                 ft.add(addBtn, "TAG").addToBackStack("TAG");
@@ -328,8 +269,55 @@ public class GroupListsFragment extends Fragment
 
             }//Add item onClick
         });
+
+        //Get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Get current user instance
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
+        db.collection("Items")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            //List<String> identifiers = sqlDb.testDao().getDistinctIdentifiers();
+
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
+                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
+                                brand = document.getString("brand");
+                                name = document.getString("name");
+                                //quantity = document.getDouble("quantity");
+                                if (Objects.equals(document.getString("user"), email))
+                                {
+                                    theModel.addItem(name, brand);
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                        else
+                        {
+                            Log.w("MYDEBUG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
+    // Clears the recyclerview each time the fragment is paused, as each time the fragment opens it is filled with new data
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        theModel.dumpList();
+        rvGroupList.getAdapter().notifyDataSetChanged();
+    }
 
     @Override
     public void onDestroy()

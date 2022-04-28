@@ -1,15 +1,32 @@
 package com.example.ezmeal.FindRecipes.FindRecipesViewModels;
 
+import android.app.Application;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
+import com.example.ezmeal.FindRecipes.FindRecipesRespositories.FeaturedFragmentRepository;
+import com.example.ezmeal.FindRecipes.FindRecipesRespositories.FeaturedFragmentRoomRepository;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.TestDao;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
-public class FeaturedFragmentViewModel extends ViewModel
+import javax.annotation.Nullable;
+
+public class FeaturedFragmentViewModel extends AndroidViewModel
 {
     private MutableLiveData<Integer> numOfRetrievedRecipes;
     private MutableLiveData<Integer> numOfRetrievedHighRatedRecipes;
@@ -24,10 +41,33 @@ public class FeaturedFragmentViewModel extends ViewModel
     private MutableLiveData<Task<QuerySnapshot>> taskPopularRecipesLess;
     private MutableLiveData<Task<QuerySnapshot>> taskFeatured;
 
+    //private FeaturedFragmentRepository repository = FeaturedFragmentRepository.getInstance(); //new FeaturedFragmentRepository();
+    private FeaturedFragmentRepository repository;// = new FeaturedFragmentRepository();
+    @NonNull
+    private FeaturedFragmentRoomRepository roomRepository;
 
+    private MediatorLiveData<List<String>> mediatorLiveData = new MediatorLiveData<>();
 
-    public FeaturedFragmentViewModel()
+    private MutableLiveData<List<String>> lastActiveCategories = new MutableLiveData<>();
+
+    @NonNull
+    private LiveData<List<String>> returnList;
+
+    private MutableLiveData<List<String>> allNotes;
+
+    private MutableLiveData<List<HorizontalRecipe>> horizontalList;
+
+    private Observer<List<HorizontalRecipe>> testObserver;
+    private TestDao testDao;
+
+    public FeaturedFragmentViewModel(@NonNull Application application)
     {
+        super(application);
+        repository = new FeaturedFragmentRepository(application);
+        roomRepository = new FeaturedFragmentRoomRepository(application);
+        EZMealDatabase roomDatabase = EZMealDatabase.getInstance(application);
+        testDao = roomDatabase.testDao();
+
         numOfRetrievedRecipes = new MutableLiveData<>(0);
 
         numOfRetrievedHighRatedRecipes = new MutableLiveData<>(0);
@@ -37,187 +77,43 @@ public class FeaturedFragmentViewModel extends ViewModel
 
         Set<Integer> initialHighRatedSet = new HashSet<>();
         setOfUniqueHighRatedRecipes = new MutableLiveData<Set<Integer>>(initialHighRatedSet);
+
+        //allNotes = roomRepository.getAllNotes();
+        //returnList = roomRepository.getActiveCategoriesFromIdentifier();
+
     }
 
-
-    // taskFeatured
-    public MutableLiveData<Task<QuerySnapshot>> getTaskFeatured()
+    public void setLastActiveCategories(List<String> lastActiveCategories)
     {
-        if (taskFeatured == null)
+        this.lastActiveCategories.setValue(lastActiveCategories);
+    }
+
+    public MutableLiveData<List<String>> getLastActiveCategories()
+    {
+        return lastActiveCategories;
+    }
+
+    public LiveData<List<String>> getActiveCategoriesFromIdentifier()
+    {
+        return roomRepository.getActiveCategoriesFromIdentifier();
+    }
+
+    public MutableLiveData<List<HorizontalRecipe>> getHorizontalList(List<String> categoryList)
+    {
+        if (horizontalList == null || categoryList != lastActiveCategories)
         {
-            taskFeatured = new MutableLiveData<>();
+            horizontalList = new MutableLiveData<List<HorizontalRecipe>>();
+
+            repository.getHorizontalLists(categoryList).observeForever(list ->
+            {
+                horizontalList.setValue(list);
+                lastActiveCategories.setValue(categoryList);
+            });
         }
 
-        return taskFeatured;
-    }
 
-    public void setTaskFeatured(Task<QuerySnapshot> retrievedTask)
-    {
-        this.taskFeatured.setValue(retrievedTask);
-    }
-
-    // taskFeaturedRandomNum
-    public void setTaskFeaturedRandomNum(int randomNum)
-    {
-        this.taskFeaturedRandomNum.setValue(randomNum);
-    }
-
-    public MutableLiveData<Integer> getTaskFeaturedRandomNum()
-    {
-        if (taskFeaturedRandomNum == null)
-        {
-            taskFeaturedRandomNum = new MutableLiveData<>();
-        }
-
-        return taskFeaturedRandomNum;
-    }
-
-
-
-
-    // horizontalRecipeRandomNum
-    public void setHorizontalRecipeRandomNum(int randomNum)
-    {
-        this.horizontalRecipeRandomNum.setValue(randomNum);
-    }
-
-    public MutableLiveData<Integer> getHorizontalRecipeRandomNum()
-    {
-        if (horizontalRecipeRandomNum == null)
-        {
-            horizontalRecipeRandomNum = new MutableLiveData<>();
-        }
-
-        return horizontalRecipeRandomNum;
-    }
-
-    // taskPopularRecipesGreater
-    public MutableLiveData<Task<QuerySnapshot>> getTaskPopularRecipesGreater()
-    {
-        if (taskPopularRecipesGreater == null)
-        {
-            taskPopularRecipesGreater = new MutableLiveData<>();
-        }
-
-        return taskPopularRecipesGreater;
-    }
-
-    public void setTaskPopularRecipesGreater(Task<QuerySnapshot> retrievedTask)
-    {
-        this.taskPopularRecipesGreater.setValue(retrievedTask);
-    }
-
-
-    // taskPopularRecipesLess
-    public MutableLiveData<Task<QuerySnapshot>> getTaskPopularRecipesLess()
-    {
-        if (taskPopularRecipesLess == null)
-        {
-            taskPopularRecipesLess = new MutableLiveData<>();
-        }
-
-        return taskPopularRecipesLess;
-    }
-
-    public void setTaskPopularRecipesLess(Task<QuerySnapshot> retrievedTask)
-    {
-        this.taskPopularRecipesLess.setValue(retrievedTask);
-    }
-
-
-    // setOfUniqueRecipes
-    public Set<Integer> getSetOfUniqueRecipes()
-    {
-        if (setOfUniqueRecipes == null)
-        {
-            setOfUniqueRecipes = new MutableLiveData<Set<Integer>>();
-        }
-
-        return setOfUniqueRecipes.getValue();
-    }
-
-    public void setSetOfUniqueRecipes(Set<Integer> uniqueRecipes)
-    {
-        setOfUniqueRecipes.setValue(uniqueRecipes);
-    }
-
-    public void addToSetOfUniqueRecipes(Integer newRecipeId)
-    {
-        Set<Integer> uniqueRecipes = setOfUniqueRecipes.getValue();
-        uniqueRecipes.add(newRecipeId);
-
-        setOfUniqueRecipes.setValue(uniqueRecipes);
-    }
-
-
-
-    // setOfUniqueHighRatedRecipes
-    public Set<Integer> getSetOfUniqueHighRatedRecipes()
-    {
-        if (setOfUniqueHighRatedRecipes == null)
-        {
-            setOfUniqueHighRatedRecipes = new MutableLiveData<Set<Integer>>();
-        }
-
-        return setOfUniqueHighRatedRecipes.getValue();
-    }
-
-    public void setSetOfUniqueHighRatedRecipes(Set<Integer> uniqueRecipes)
-    {
-        setOfUniqueHighRatedRecipes.setValue(uniqueRecipes);
-    }
-
-    public void addToSetOfUniqueHighRatedRecipes(Integer newRecipeId)
-    {
-        Set<Integer> uniqueRecipes = setOfUniqueHighRatedRecipes.getValue();
-        uniqueRecipes.add(newRecipeId);
-
-        setOfUniqueHighRatedRecipes.setValue(uniqueRecipes);
-    }
-
-
-
-    // numOfRetrievedRecipes
-    public Integer getNumOfRetrievedRecipes()
-    {
-        if (numOfRetrievedRecipes == null)
-        {
-            numOfRetrievedRecipes = new MutableLiveData<>();
-        }
-
-        return numOfRetrievedRecipes.getValue();
-    }
-
-    public void setNumOfRetrievedRecipes(Integer numOfRecipes)
-    {
-        numOfRetrievedRecipes.setValue(numOfRecipes);
-    }
-
-    public void incrementNumOfRetrievedRecipesBy(Integer numIncrement)
-    {
-        numOfRetrievedRecipes.setValue(numOfRetrievedRecipes.getValue() + numIncrement);
-    }
-
-
-
-    // numOfRetrievedHighRatedRecipes
-    public MutableLiveData<Integer> getNumOfRetrievedHighRatedRecipes()
-    {
-        if (numOfRetrievedHighRatedRecipes == null)
-        {
-            numOfRetrievedHighRatedRecipes = new MutableLiveData<>();
-        }
-
-        return numOfRetrievedHighRatedRecipes;
-    }
-
-    public void setNumOfRetrievedHighRatedRecipes(Integer numOfRecipes)
-    {
-        numOfRetrievedHighRatedRecipes.setValue(numOfRecipes);
-    }
-
-    public void incrementNumOfRetrievedHighRatedRecipes(Integer numIncrement)
-    {
-        numOfRetrievedHighRatedRecipes.setValue(numOfRetrievedHighRatedRecipes.getValue() + numIncrement);
+        //repository.getHorizontalLists().removeObserver(testObserver);
+        //horizontalList = repository.getHorizontalLists();
+        return horizontalList;
     }
 }
