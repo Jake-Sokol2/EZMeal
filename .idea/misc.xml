@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.3546195652173913" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_group_settings.xml" value="0.3546195652173913" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.23692307692307693" />
+        <entry key="app/src/main/res/layout/fragment_group_lists.xml" value="0.16982421874999998" />
+        <entry key="app/src/main/res/layout/fragment_group_settings.xml" value="0.240625" />
       </map>
     </option>
   </component>

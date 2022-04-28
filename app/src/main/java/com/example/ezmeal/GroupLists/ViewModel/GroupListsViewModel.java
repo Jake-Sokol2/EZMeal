@@ -1,7 +1,9 @@
 package com.example.ezmeal.GroupLists.ViewModel;
+import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,10 +25,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class GroupListsViewModel extends ViewModel {
+public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<String>> groupList;
     public MutableLiveData<List<List<String>>> shoppingList;
-    private AddListItemRepository theRepo = new AddListItemRepository();
+    Application application;
+    private AddListItemRepository theRepo;
     private GroupListRepository glRepo = new GroupListRepository();
 
     private GroupListsFragmentModel theModel;
@@ -41,12 +44,15 @@ public class GroupListsViewModel extends ViewModel {
     String groupListName;
     public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
 
-    public GroupListsViewModel()
+    public GroupListsViewModel(@NonNull Application application)
     {
+        super(application);
+        this.application = application;
         //groupList = new MutableLiveData<>();
         isSelectedList = new ArrayList<Boolean>();
         //shoppingList = itemRepo.getShoppingList();
         theModel = new GroupListsFragmentModel();
+        theRepo = new AddListItemRepository(application);
     }
 
     public void addItem(String itemName, String itemBrand){

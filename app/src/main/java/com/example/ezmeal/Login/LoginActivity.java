@@ -105,6 +105,12 @@ public class LoginActivity extends AppCompatActivity {
                                     openActivityMain();
                                 } else {
                                     // Put unsuccessful log in code here
+
+                                    /*
+                                        TODO
+                                            Distinguish between failed password attempt or not meeting
+                                            hardening criteria
+                                    */
                                     Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
                                 }
                             }

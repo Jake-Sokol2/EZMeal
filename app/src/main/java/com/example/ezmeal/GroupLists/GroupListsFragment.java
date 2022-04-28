@@ -28,7 +28,7 @@ import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Model.Item;
 import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.Rating;
+import com.example.ezmeal.roomDatabase.Rating;
 import com.example.ezmeal.SwipeDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -136,7 +136,7 @@ public class GroupListsFragment extends Fragment
             }
         }
 
-        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+      
 
 
 
@@ -196,7 +196,7 @@ public class GroupListsFragment extends Fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
-
+        adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
 
         //Observe live data and update grocery list
         theVM.updateShoppingList(listName).observe(getViewLifecycleOwner(), shoppingList ->
@@ -297,7 +297,7 @@ public class GroupListsFragment extends Fragment
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 //AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
-                AddButtonFragment addBtn = new AddButtonFragment();
+                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter);
 
                 //Set the arguments to grab in the new fragment
                 addBtn.setArguments(out);

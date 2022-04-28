@@ -1,5 +1,4 @@
-<<<<<<< HEAD:app/src/main/java/com/example/ezmeal/RoomDatabase/TextRatings.java
-=======
+
 package com.example.ezmeal.roomDatabase;
 
 public class TextRatings
@@ -45,4 +44,4 @@ public class TextRatings
         this.textRating3 = textRating3;
     }
 }
->>>>>>> dd0d8037da93aa6844472c72982db51af1786c51:app/src/main/java/com/example/ezmeal/roomDatabase/TextRatings.java
+

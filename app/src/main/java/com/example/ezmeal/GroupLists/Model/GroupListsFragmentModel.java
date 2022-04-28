@@ -1,6 +1,7 @@
 package com.example.ezmeal.GroupLists.Model;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -42,9 +43,9 @@ public class GroupListsFragmentModel
 
     public GroupListsFragmentModel()
     {
-        //groupList = new ArrayList<String>();
-        //isSelectedList = new ArrayList<Boolean>();
-       // shoppingList = new ArrayList<List<String>>();
+        groupList = new ArrayList<String>();
+        isSelectedList = new ArrayList<Boolean>();
+        shoppingList = new ArrayList<List<String>>();
        // getListData();
 
     }
@@ -160,6 +161,7 @@ public class GroupListsFragmentModel
     }
 
     public void addDataToFirestore(String itemName, String brandName) {
+        /*
 
         tmpName = "";
         //The list is empty for some reason so we're not getting the correct list later on
@@ -201,6 +203,34 @@ public class GroupListsFragmentModel
                         }
                     }
                 });
+
+         */
+
+        //Code to make retrieval of items user specific
+        //Get FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Get current user instance
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
+        CollectionReference dbItems = db.collection("Items");
+        Item item = new Item(itemName, brandName, email);
+        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                //Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

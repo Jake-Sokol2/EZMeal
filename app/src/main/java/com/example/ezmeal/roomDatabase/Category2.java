@@ -1,5 +1,4 @@
-<<<<<<< HEAD:app/src/main/java/com/example/ezmeal/RoomDatabase/Category2.java
-=======
+
 package com.example.ezmeal.roomDatabase;
 
 import androidx.annotation.NonNull;
@@ -48,4 +47,3 @@ public class Category2
     }
 }
 
->>>>>>> dd0d8037da93aa6844472c72982db51af1786c51:app/src/main/java/com/example/ezmeal/roomDatabase/Category2.java

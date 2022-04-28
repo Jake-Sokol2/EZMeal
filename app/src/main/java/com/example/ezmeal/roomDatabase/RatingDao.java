@@ -1,5 +1,4 @@
-<<<<<<< HEAD:app/src/main/java/com/example/ezmeal/RoomDatabase/RatingDao.java
-=======
+
 package com.example.ezmeal.roomDatabase;
 
 import androidx.room.Dao;
@@ -91,4 +90,3 @@ public interface RatingDao
 
 }
 
->>>>>>> dd0d8037da93aa6844472c72982db51af1786c51:app/src/main/java/com/example/ezmeal/roomDatabase/RatingDao.java

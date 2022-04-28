@@ -1,5 +1,4 @@
-<<<<<<< HEAD:app/src/main/java/com/example/ezmeal/RoomDatabase/RecyclerRecipe2.java
-=======
+
 package com.example.ezmeal.roomDatabase;
 
 import androidx.annotation.NonNull;
@@ -133,4 +132,4 @@ public class RecyclerRecipe2
         this.totalRatings = totalRatings;
     }
 }
->>>>>>> dd0d8037da93aa6844472c72982db51af1786c51:app/src/main/java/com/example/ezmeal/roomDatabase/RecyclerRecipe2.java
+

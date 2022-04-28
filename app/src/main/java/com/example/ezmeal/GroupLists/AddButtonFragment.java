@@ -30,10 +30,10 @@ public class AddButtonFragment extends BottomSheetDialogFragment implements View
 
     }
 
-    public AddButtonFragment(GroupListsFragmentModel theModel, GroupListsFragmentRecyclerAdapter adapter, GroupListFragHorizontalRecyclerAdapter hAdapter) {
+    public AddButtonFragment(GroupListsFragmentModel theModel, GroupListsFragmentRecyclerAdapter adapter) {
         this.theModel = theModel;
         this.adapter = adapter;
-        this.hAdapter = hAdapter;
+        //this.hAdapter = hAdapter;
     }
 
 

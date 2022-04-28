@@ -36,9 +36,9 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1, mParam2;
-    private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
+    public GroupListsFragmentModel theModel;
     private List<GroupListsFragmentModel> toSave = new ArrayList<GroupListsFragmentModel>();
-    private GroupListsFragmentRecyclerAdapter adapter;
+    public GroupListsFragmentRecyclerAdapter adapter;
     private GroupListsViewModel theVM;
     private EditText editItemName, editBrandName;
 
@@ -47,7 +47,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     }
 
     public AddListItemFragment(GroupListsFragmentModel theModel, GroupListsFragmentRecyclerAdapter adapter) {
-        //this.theModel = theModel;
+        this.theModel = theModel;
         this.adapter = adapter;
 
     }
@@ -85,6 +85,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
+        /*
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
         //Update the local model with the live shopping list
@@ -114,7 +115,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                 }
             }
         });
-
+        */
 
         editItemName = view.findViewById(R.id.rbRateRecipeDialog);
         editBrandName = view.findViewById(R.id.editBrandName);
@@ -144,7 +145,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                     theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
-                    //adapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
 
                     dismiss();
                 }
