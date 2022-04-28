@@ -18,8 +18,9 @@
         android:layout_marginTop="48dp"
         android:elevation="20dp"
         android:text="Find Recipes"
+        android:fontFamily="@font/sonsie_one"
         android:textColor="#000000"
-        android:textSize="25sp"
+        android:textSize="15sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="224dp" />
 
@@ -28,11 +29,13 @@
         android:layout_width="0dp"
         android:layout_height="135dp"
         android:background="@drawable/half_rounded"
+        android:backgroundTint="@color/EzGreen"
         android:elevation="6dp"
         android:gravity="bottom|center"
         android:paddingStart="15dp"
         android:paddingBottom="20dp"
         android:textColor="#000000"
+        android:fontFamily="@font/sonsie_one"
         android:textSize="25sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4"
@@ -67,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:background="@drawable/long_rectangle"
+        android:backgroundTint="@color/EzGreen"
         tools:layout_editor_absoluteX="35dp"
         tools:layout_editor_absoluteY="14dp" />
 

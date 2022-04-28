@@ -38,7 +38,7 @@
         app:layout_constraintHorizontal_bias="0.357"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:layout_marginTop="27dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="108dp"
-        android:backgroundTint="#5FA32D"
+        android:background="@drawable/custom_button"
         android:text="Log in"
         app:layout_constraintBottom_toTopOf="@+id/registerTextView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="153dp"
         android:layout_marginBottom="104dp"
-        android:backgroundTint="#5FA32D"
+        android:background="@drawable/custom_button"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,9 +82,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="133dp"
-        android:layout_height="225dp"
-        android:layout_marginStart="152dp"
+        android:layout_width="181dp"
+        android:layout_height="229dp"
+        android:layout_marginStart="136dp"
         android:layout_marginBottom="88dp"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="parent"
