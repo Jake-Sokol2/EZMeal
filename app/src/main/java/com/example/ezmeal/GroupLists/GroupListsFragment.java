@@ -311,47 +311,6 @@ public class GroupListsFragment extends Fragment
 
             }//Add item onClick
         });
-    /*
-        //Get FirebaseAuth instance
-        mAuth = FirebaseAuth.getInstance();
-
-        //Get current user instance
-        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-        String email = mCurrentUser.getEmail();
-
-        //Code to display database items
-        db = FirebaseFirestore.getInstance();
-
-        db.collection("Items")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                Log.d("MYDEBUG", document.getId() + " => " + document.getData());
-                                brand = document.getString("brand");
-                                name = document.getString("name");
-                                //quantity = document.getDouble("quantity");
-                                if (Objects.equals(document.getString("user"), email))
-                                {
-                                    theModel.addItem(name, brand);
-
-                                }
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                        else
-                        {
-                            Log.w("MYDEBUG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-        */
     }
 
 

@@ -108,9 +108,9 @@ public class AddButtonFragment extends BottomSheetDialogFragment implements View
             ft = fm.beginTransaction();
             AddGroupListFragment addGListFrag = new AddGroupListFragment();
 
-            Bundle blunt = new Bundle();
-            blunt.putSerializable("GroupList", (Serializable) theModel.getGroupList());
-            addGListFrag.setArguments(blunt);
+            //Bundle blunt = new Bundle();
+            //blunt.putSerializable("GroupList", (Serializable) theModel.getGroupList());
+            //addGListFrag.setArguments(blunt);
 
 
             ft.add(addGListFrag, "gListFrag");

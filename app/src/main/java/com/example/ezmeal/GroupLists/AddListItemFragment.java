@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.ViewModel.AddListItemFragmentViewModel;
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -27,7 +28,7 @@ import java.util.List;
 //handling the buttons instead of rewriting the same onClick function.
 public class AddListItemFragment extends BottomSheetDialogFragment
         implements View.OnClickListener{
-    AddListItemFragmentViewModel theViewModel;
+
 
     private static final String ITEM_NAME = "item_name";
     private static final String BRAND_NAME = "brand_name";
@@ -35,9 +36,10 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1, mParam2;
-    private GroupListsFragmentModel theModel;
+    private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
     private List<GroupListsFragmentModel> toSave = new ArrayList<GroupListsFragmentModel>();
     private GroupListsFragmentRecyclerAdapter adapter;
+    private GroupListsViewModel theVM;
     private EditText editItemName, editBrandName;
 
     public AddListItemFragment() {
@@ -45,7 +47,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     }
 
     public AddListItemFragment(GroupListsFragmentModel theModel, GroupListsFragmentRecyclerAdapter adapter) {
-        this.theModel = theModel;
+        //this.theModel = theModel;
         this.adapter = adapter;
 
     }
@@ -83,7 +85,39 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_list_item, container, false);
-        theViewModel = new ViewModelProvider(requireActivity()).get(AddListItemFragmentViewModel.class);
+        theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
+        //Update the local model with the live shopping list
+        theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
+        {
+            if(shoppingList != null) {
+                for (int i = 0; i < shoppingList.size(); i++) {
+                    theModel.addItem(shoppingList.get(i));
+                }
+
+            }
+        });
+
+        //Get current group lists
+        theVM.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        {
+            if(groupList.size() > 0)
+            {
+                for(int i = 0; i < groupList.size(); i++)
+                {
+                    if(i==0)
+                    {
+                        theModel.addList(groupList.get(i), true);
+                    }
+                    else
+                    {
+                        theModel.addList(groupList.get(i), false);
+                    }
+                }
+
+            }
+        });
+
 
         editItemName = view.findViewById(R.id.rbRateRecipeDialog);
         editBrandName = view.findViewById(R.id.editBrandName);
@@ -99,6 +133,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     //Handles button interactions
     @Override
     public void onClick(View view){
+        theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
         switch (view.getId()){
             case R.id.btnConfirmRating:
                 if(TextUtils.isEmpty(editItemName.getText().toString()) ) {
@@ -109,10 +144,11 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     editBrandName.setError("Empty field");
                 }
                 else {
-                    //theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
+                    theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                     theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
-                    adapter.notifyDataSetChanged();
+                    //adapter.notifyDataSetChanged();
+
                     dismiss();
                 }
                 break;
@@ -126,20 +162,6 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         }
     }
 
-    @Override
-    public void onDismiss(final DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
-        /*
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof DialogInterface.OnDismissListener) {
-            ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
-        }
-        */
-        FragmentManager fm = getParentFragmentManager();
-
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState){
