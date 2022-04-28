@@ -30,7 +30,7 @@
             android:background="@android:color/transparent"
             android:text="+  Add Items to List"
             android:textAllCaps="false"
-            android:textColor="#034f17"
+            android:textColor="@color/EzGreen"
             android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

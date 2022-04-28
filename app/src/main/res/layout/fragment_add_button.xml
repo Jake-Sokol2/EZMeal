@@ -9,51 +9,53 @@
     android:padding="16dp"
     tools:context=".GroupLists.AddButtonFragment">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancelBtn"
         android:layout_width="374dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#5FA32D"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_button3"
         android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addNewItem"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/createNewList" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addNewItem"
         android:layout_width="374dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#5FA32D"
+        android:layout_height="40dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/custom_button"
+
         android:text="Add New Item"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createNewList"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
 
     <TextView
         android:id="@+id/titleTxt"
         android:layout_width="256dp"
         android:layout_height="46dp"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+
         android:text="Choose an item to add:"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/createNewList"
         android:layout_width="374dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="25dp"
-        android:backgroundTint="#5FA32D"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_button"
         android:text="Create New List"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.567"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/addNewItem" />
 </androidx.constraintlayout.widget.ConstraintLayout>
