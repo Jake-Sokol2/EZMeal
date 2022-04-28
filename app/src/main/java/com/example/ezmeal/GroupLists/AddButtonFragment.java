@@ -61,7 +61,6 @@ public class AddButtonFragment extends BottomSheetDialogFragment implements View
         super.onCreate(savedInstanceState);
         /*
         Bundle args = this.getArguments();
-
         if(args != null)
         {
             theModel.setGroupList((List<String>) args.getSerializable("rvData"));
