@@ -28,6 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="135dp"
         android:background="@drawable/half_rounded"
+        android:backgroundTint="@color/EzGreen"
         android:elevation="6dp"
         android:gravity="bottom|center"
         android:paddingStart="15dp"
@@ -67,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:background="@drawable/long_rectangle"
+        android:backgroundTint="@color/EzGreen"
         tools:layout_editor_absoluteX="35dp"
         tools:layout_editor_absoluteY="14dp" />
 

@@ -9,11 +9,11 @@
     android:padding="16dp"
     tools:context=".GroupLists.AddButtonFragment">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancelBtn"
         android:layout_width="374dp"
         android:layout_height="50dp"
-        android:backgroundTint="#5FA32D"
+       android:background="@drawable/custom_button"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,11 +22,11 @@
         app:layout_constraintTop_toBottomOf="@+id/addNewItem"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addNewItem"
         android:layout_width="374dp"
         android:layout_height="50dp"
-        android:backgroundTint="#5FA32D"
+        android:background="@drawable/custom_button"
         android:text="Add New Item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,12 +46,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/createNewList"
         android:layout_width="374dp"
         android:layout_height="50dp"
         android:layout_marginTop="25dp"
-        android:backgroundTint="#5FA32D"
+        android:background="@drawable/custom_button"
         android:text="Create New List"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

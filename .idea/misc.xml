@@ -3,6 +3,53 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/add_list_item_dialog.xml" value="0.14" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/backgroundmain_background.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/circle.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/custom_button.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/custom_button2.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/half_rounded.xml" value="0.2985" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/drawable/recipe_title_shadow.xml" value="0.196" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/activity_find_recipes_specific_recipe.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/activity_main_recycler_item_rounded.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/activity_registration.xml" value="0.22" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/directions_recycler_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_add_button.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_add_group_list.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_add_list_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_find_recipes_category.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_group_list_category.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_group_lists.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_group_recipes.xml" value="0.25" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_group_settings.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_high_rated_bubble.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_low_rated_bubble.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_mid_rated_bubble.xml" value="0.33" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_my_recipe_recycler_category_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_my_recipes_category.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_my_recipes_nutrition_recycler_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_my_recipes_specific_recipe.xml" value="0.14629629629629629" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_new_group_list.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_rate_recipe.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_rate_recipe_fragments.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_rating_bubble.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_recipe_directions.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_recipe_ingredients.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_recipe_nutrition.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/fragment_specific_recipe.xml" value="0.14629629629629629" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/horizontal_selector_find_recipes.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/ingredients_recycler_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/nutrition_recycler_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/recipe_recycler_recipe_horizontal_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/recipe_recycler_recipe_horizontal_parent_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/recipe_recycler_recipe_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/layout/tab_name.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/mipmap-anydpi-v26/backgroundmain.xml" value="0.196" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/ezez/app/src/main/res/mipmap-anydpi-v26/backgroundmain_round.xml" value="0.196" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable-xhdpi/halfRoundedCorners.xml" value="0.2775" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.309" />
         <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/drawable/circle.xml" value="0.223" />
