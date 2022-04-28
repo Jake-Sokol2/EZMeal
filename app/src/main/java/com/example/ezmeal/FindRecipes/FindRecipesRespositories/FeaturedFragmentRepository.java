@@ -10,9 +10,9 @@ import androidx.room.Room;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.Test;
 import com.example.ezmeal.roomDatabase.EZMealDatabase;
-import com.example.ezmeal.roomDatabase.EZMealDatabaseKotlin;
+
 import com.example.ezmeal.roomDatabase.RecyclerRecipe2;
-import com.example.ezmeal.roomDatabase.TestDaoKotlin;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

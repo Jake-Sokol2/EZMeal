@@ -24,7 +24,7 @@ public class FeaturedFragmentRoomRepository
 
     public FeaturedFragmentRoomRepository(Application application)
     {
-        sqlDb = Room.databaseBuilder(application.getApplicationContext(), EZMealDatabase.class, "user").build();
+        sqlDb = Room.databaseBuilder(application.getApplicationContext(), EZMealDatabase.class, "user").fallbackToDestructiveMigration().build();
         //EZMealDatabase roomDatabase = EZMealDatabase.getInstance(application);
         //testDao = roomDatabase.testDao();
         //allNotes = testDao.getActiveCategoriesFromIdentifier();

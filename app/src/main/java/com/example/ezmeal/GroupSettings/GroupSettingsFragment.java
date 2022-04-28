@@ -16,13 +16,11 @@ import androidx.room.Room;
 
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
-import com.example.ezmeal.roomDatabase.AppDatabase;
 import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.example.ezmeal.roomDatabase.Recipe;
 import com.example.ezmeal.roomDatabase.RecipeItems;
 import com.example.ezmeal.roomDatabase.RecyclerRecipe2;
-import com.example.ezmeal.roomDatabase.User;
-import com.example.ezmeal.roomDatabase.UserDao;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
@@ -107,7 +105,7 @@ public class GroupSettingsFragment extends Fragment {
 
 
         EZMealDatabase sqlDb;
-        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().build();
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().fallbackToDestructiveMigration().build();
         RecyclerRecipe2 rec = new RecyclerRecipe2("btewr", "a", "a", "a", 2.0, "a", false, 2);
         //sqlDb.testDao().insertRecyclerRecipe2(rec);
         //sqlDb.testDao().deleteAllCategories();
