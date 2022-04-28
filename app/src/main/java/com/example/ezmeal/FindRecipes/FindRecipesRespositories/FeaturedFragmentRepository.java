@@ -30,7 +30,7 @@ import java.util.Set;
 public class FeaturedFragmentRepository
 {
     private FeaturedFragmentRoomRepository roomRepository;
-
+    // fuck you github
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
 
