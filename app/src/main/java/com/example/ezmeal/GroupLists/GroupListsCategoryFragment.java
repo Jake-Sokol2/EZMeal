@@ -1,6 +1,7 @@
 package com.example.ezmeal.GroupLists;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,12 @@ import com.example.ezmeal.FindRecipes.FindRecipesAdapters.FindRecipesFragmentHor
 import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListSelectionAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,10 +35,17 @@ public class GroupListsCategoryFragment extends Fragment
     private GroupListFragHorizontalRecyclerAdapter glFragAdapter;
     private List<String> grpListBubbles = new ArrayList<String>();
     private int currentSelectedCategoryPosition = 0;
+    private GroupListsViewModel glViewModel;
 
 
 
     String groupName;
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(glCatModel.getGroupList(), glCatModel.getIsSelectedList());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,20 +53,50 @@ public class GroupListsCategoryFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_new_group_list, container,
                 false);
+        FragmentManager grpListMgr = getChildFragmentManager();
+        Fragment frag = new GroupListsFragment();
+        grpListMgr.beginTransaction().replace(R.id.grpListContainerView, frag).commit();
 
+        glViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
+        glViewModel.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        {
+           if (groupList != null)
+           {
+               if(groupList.size() > 0)
+               {
+                   for(int i = 0; i < groupList.size(); i++)
+                   {
+                       if(i == 0)
+                       {
+                           glCatModel.addList(groupList.get(i), true);
+                       }
+                       else
+                       {
+                           glCatModel.addList(groupList.get(i), false);
+                       }
+                       grpListBubbles.add(groupList.get(i));
+                   }
+               }
+           }
+           glFragAdapter.notifyDataSetChanged();
+           Log.d("glFragAdapter", "adapter se actualizo");
+        });
+
+        //TODO: replace with view model
+        /*
         grpListBubbles.add("My List");
         grpListBubbles.add("Jake's List");
         grpListBubbles.add("Tristan's List");
         glCatModel.addList(grpListBubbles.get(0), true);
         glCatModel.addList(grpListBubbles.get(1), false);
         glCatModel.addList(grpListBubbles.get(2), false);
+        */
 
-        FragmentManager grpListMgr = getChildFragmentManager();
-        Fragment frag = new GroupListsFragment();
-        grpListMgr.beginTransaction().replace(R.id.grpListContainerView, frag).commit();
+
 
         rvGroupListBubbles = (RecyclerView) view.findViewById(R.id.rvGrpHorizontalSelector);
-        glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(glCatModel.getGroupList(), glCatModel.getIsSelectedList());
+
         rvGroupListBubbles.setAdapter(glFragAdapter);
         RecyclerView.LayoutManager hLayoutMgr = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvGroupListBubbles.setLayoutManager(hLayoutMgr);
@@ -99,11 +139,4 @@ public class GroupListsCategoryFragment extends Fragment
         return view;
     }
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        glCatModel.dumpGroupList();
-        rvGroupListBubbles.getAdapter().notifyDataSetChanged();
-    }
 }
