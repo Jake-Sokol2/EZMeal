@@ -73,6 +73,9 @@ public class GroupListsFragment extends Fragment
     private double quantity;
     public String email;
     private View view;
+    private List<Boolean> selectedList = new ArrayList<Boolean>();
+    private List<String> groupListNames = new ArrayList<String>();
+    private String listName;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -195,11 +198,8 @@ public class GroupListsFragment extends Fragment
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
 
-
-
-
         //Observe live data and update grocery list
-        theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
+        theVM.updateShoppingList(listName).observe(getViewLifecycleOwner(), shoppingList ->
         {
             if(shoppingList != null)
             {

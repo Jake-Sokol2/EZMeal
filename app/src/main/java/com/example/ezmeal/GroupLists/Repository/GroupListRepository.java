@@ -25,6 +25,7 @@ public class GroupListRepository {
 
     String listName;
 
+
     public MutableLiveData<List<String>> getGroupList()
     {
         SomeCallBack asyncBB = new SomeCallBack() {
@@ -35,6 +36,8 @@ public class GroupListRepository {
         return repoGroupList;
     }
 
+
+
     public MutableLiveData<List<Boolean>> getSelected()
     {
         AnotherCallBack asyncBB = new AnotherCallBack() {
@@ -44,6 +47,7 @@ public class GroupListRepository {
         return isSelectedList;
     }
 
+    //Gets data from Firebase
     public void getListData(SomeCallBack beep)
     {
         String email = mAuth.getCurrentUser().getEmail();
@@ -80,38 +84,8 @@ public class GroupListRepository {
 
     }
 
-    public void getSelectedData(AnotherCallBack boop)
-    {
-        String email = mAuth.getCurrentUser().getEmail();
-        db.collection("SelectedGroups")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task)
-                    {
-                        //Now I need to get the selected lists for a given user
-                        //we've got a collection where every user is document, and each user
-                        //has a collection of lists, and each individual list is a document with
-                        //a boolean to denote if it is selected or not.
-                        if(task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                //If we have the correct user's doc, get selected and update list
-                                if(Objects.equals(document.getId(), email))
-                                {
-                                    //for(Query)
-                                }
 
 
-                            }
-                        }
-
-
-                    }
-
-                });
-    }
 
     public interface SomeCallBack
     {
@@ -122,6 +96,7 @@ public class GroupListRepository {
     {
         public void callback(List<Boolean> selectedList);
     }
+
 }
 
 

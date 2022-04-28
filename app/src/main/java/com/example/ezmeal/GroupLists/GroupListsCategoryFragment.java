@@ -32,7 +32,7 @@ public class GroupListsCategoryFragment extends Fragment
     private FirebaseFirestore db;
     private GroupListsFragmentModel glCatModel = new GroupListsFragmentModel();
     private RecyclerView rvGroupListBubbles;
-    private GroupListFragHorizontalRecyclerAdapter glFragAdapter;
+    private GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(glCatModel.getGroupList(), glCatModel.getIsSelectedList());
     private List<String> grpListBubbles = new ArrayList<String>();
     private int currentSelectedCategoryPosition = 0;
     private GroupListsViewModel glViewModel;
@@ -44,7 +44,7 @@ public class GroupListsCategoryFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(glCatModel.getGroupList(), glCatModel.getIsSelectedList());
+        //glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(glCatModel.getGroupList(), glCatModel.getIsSelectedList());
     }
 
     @Override
@@ -59,12 +59,13 @@ public class GroupListsCategoryFragment extends Fragment
 
         glViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
-        glViewModel.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        glViewModel.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
            if (groupList != null)
            {
-               if(groupList.size() > 0)
+               if(groupList.size() > glCatModel.groupListLength())
                {
+
                    for(int i = 0; i < groupList.size(); i++)
                    {
                        if(i == 0)
@@ -138,5 +139,15 @@ public class GroupListsCategoryFragment extends Fragment
 
         return view;
     }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        glCatModel.dumpGroupList();
+        glFragAdapter.notifyDataSetChanged();
+
+    }
+
 
 }

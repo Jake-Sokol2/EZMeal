@@ -88,7 +88,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
         //Update the local model with the live shopping list
-        theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
+        theVM.updateShoppingList("").observe(getViewLifecycleOwner(), shoppingList ->
         {
             if(shoppingList != null) {
                 for (int i = 0; i < shoppingList.size(); i++) {
@@ -99,22 +99,19 @@ public class AddListItemFragment extends BottomSheetDialogFragment
         });
 
         //Get current group lists
-        theVM.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        theVM.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
-            if(groupList.size() > 0)
-            {
-                for(int i = 0; i < groupList.size(); i++)
-                {
-                    if(i==0)
-                    {
-                        theModel.addList(groupList.get(i), true);
+            if(groupList != null) {
+                if (groupList.size() > 0) {
+                    for (int i = 0; i < groupList.size(); i++) {
+                        if (i == 0) {
+                            theModel.addList(groupList.get(i), true);
+                        } else {
+                            theModel.addList(groupList.get(i), false);
+                        }
                     }
-                    else
-                    {
-                        theModel.addList(groupList.get(i), false);
-                    }
-                }
 
+                }
             }
         });
 

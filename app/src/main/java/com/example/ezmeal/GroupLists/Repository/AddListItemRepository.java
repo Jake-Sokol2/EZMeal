@@ -12,6 +12,8 @@ import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,19 +37,23 @@ public class AddListItemRepository{
 
 
 
-    public MutableLiveData<List<List<String>>> getShoppingList()
+    public MutableLiveData<List<List<String>>> getShoppingList(String name)
     {
+        String groupListName = "";
+        if(name != "" )
+            groupListName = name;
+
         GetItemCallBack aCallback = new GetItemCallBack() {
             @Override
             public void callback(List<List<String>> someList) {
                 aList.setValue(someList);
             }
         };
-        getDataFirebase(aCallback);
+        getDataFirebase(aCallback, groupListName);
         return aList;
     }
 
-    public void getDataFirebase(GetItemCallBack beep)
+    public void getDataFirebase(GetItemCallBack beep, String groupListName)
     {
 
         String email = mAuth.getCurrentUser().getEmail();
@@ -86,6 +92,53 @@ public class AddListItemRepository{
                         beep.callback(tmpListList);
                     }
                 });
+
+
+        /*
+        String email = mAuth.getCurrentUser().getEmail();
+        db.collection("Groups").whereEqualTo("Creator", email).whereEqualTo("ListName", groupListName).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
+                            String tmpDocName = tmpDoc.getId();
+
+                            CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
+                            dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    List<String> tmpList = new ArrayList<>();
+                                    List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
+                                    if(task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot docBoi : task.getResult()) {
+                                            //add the items (sub documents) to a list and return it as the shopping list
+                                            brandName = docBoi.getString("brand");
+                                            itemName = docBoi.getString("name");
+
+                                            tmpList.add(itemName);
+                                            tmpList.add(brandName);
+                                            tmpList.add("1");
+                                            tmpListOfLists.add(tmpList);
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Log.i("Retrieval", "Error getting documents", task.getException());
+                                    }
+
+                                    beep.callback(tmpListOfLists);
+                                }
+                            });
+
+                        }
+                    }
+                });
+            */
     }
+
+
 
 }

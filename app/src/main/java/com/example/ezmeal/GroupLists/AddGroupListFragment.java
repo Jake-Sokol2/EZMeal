@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,11 +21,20 @@ import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddGroupListFragment extends BottomSheetDialogFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
@@ -38,6 +48,17 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
     private EditText editListName;
     private View view;
+
+    //Variable to hold the group name
+    private String groupNameString;
+
+    private String currentUserEmail;
+
+    //Firebase and Firestore variables
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
+    private String documentID1;
 
 
 
@@ -82,6 +103,18 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
         }
 
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        db = FirebaseFirestore.getInstance();
+
+
+        //Get the email address of the currently logged in user
+        //FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        //currentUserEmail = currentUser.getEmail();
+        //Toast.makeText(getContext(), "Username of current user is: " + currentUserEmail, Toast.LENGTH_SHORT).show();
+
+
     }
 
     @Override
@@ -91,7 +124,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
         theViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
         //Observer
-        theViewModel.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        theViewModel.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
             if(groupList.size() > 0)
             {
@@ -109,8 +142,6 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
             }
         });
-
-
 
         return view;
     }
@@ -133,6 +164,8 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     //Handles button interactions
     @Override
     public void onClick(View view){
+        theViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
         switch (view.getId()){
             case R.id.btnConfirmList:
                 if(TextUtils.isEmpty(editListName.getText().toString()))
@@ -142,7 +175,54 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
                     theModel.addList(editListName.getText().toString(), false);
                     //TODO data needs to be added to firestore
+                    //Get the name of the group
+                    groupNameString = editListName.getText().toString();
 
+                    //Get the email address of the currently logged in user
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    currentUserEmail = currentUser.getEmail();
+
+                    //Create an array of all the users associated with the group
+                    //ArrayList<String> users = new ArrayList<String>();
+                    //users.add(currentUserEmail);
+
+                    String users[] = new String[]{currentUserEmail};
+
+                    Map<String, Object> docData1 = new HashMap<>();
+                    docData1.put("Creator", currentUserEmail);
+                    docData1.put("ListName", groupNameString);
+                    docData1.put("SharedUsers", Arrays.asList(users));
+
+                    db.collection("Groups").add(docData1).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference){
+                            documentID1 = documentReference.getId();
+
+                            Map<String, Object> docData2 = new HashMap<>();
+                            docData2.put("Creator", currentUserEmail);
+                            docData2.put("ItemBrand", "");
+                            docData2.put("ItemName", "Welcome to group " + groupNameString);
+                            docData2.put("ItemQuantity", 0);
+                            docData2.put("ItemChecked", false);
+
+                            db.collection("Groups").document(documentID1).collection("Items").add(docData2).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    //Debug code
+                                    //Toast.makeText(getApplicationContext(), documentID2, Toast.LENGTH_SHORT).show();
+
+
+                                }
+                            });
+
+
+                            //Debug code
+                            //Log.i("DEBUG", "Printing document ID in the onSuccess: " + documentID1);
+                            //Toast.makeText(getActivity(), "Creation of group " + groupNameString + " success!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    //theViewModel.updateGroupList()
+                    //theViewModel.glFragAdapter.notifyDataSetChanged();
                     dismiss();
                 }
                 break;
@@ -155,5 +235,6 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                 break;
         }
     }
+
 
 }

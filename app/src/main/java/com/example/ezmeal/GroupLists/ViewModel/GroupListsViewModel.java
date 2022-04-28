@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Repository.AddListItemRepository;
 import com.example.ezmeal.GroupLists.Repository.GroupListRepository;
@@ -30,12 +31,15 @@ public class GroupListsViewModel extends ViewModel {
 
     private GroupListsFragmentModel theModel;
 
-    private List<Boolean> isSelectedList;
+    public List<Boolean> isSelectedList;
+    public List<String> groupListNames;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String itemName;
     String brandName;
     String docID;
+    String groupListName;
+    public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
 
     public GroupListsViewModel()
     {
@@ -108,13 +112,16 @@ public class GroupListsViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<List<List<String>>> updateShoppingList()
+    public MutableLiveData<List<List<String>>> updateShoppingList(String name)
     {
+        if(name != "")
+            groupListName = name;
+
         if(shoppingList == null)
         {
             shoppingList = new MutableLiveData<List<List<String>>>();
 
-            theRepo.getShoppingList().observeForever(aList ->
+            theRepo.getShoppingList(groupListName).observeForever(aList ->
             {
                 shoppingList.setValue(aList);
             });
@@ -123,7 +130,7 @@ public class GroupListsViewModel extends ViewModel {
         return shoppingList;
     }
 
-    public MutableLiveData<List<String>> updateGroupList()
+    public MutableLiveData<List<String>> getGroupList()
     {
         if(groupList == null)
         {
@@ -136,6 +143,11 @@ public class GroupListsViewModel extends ViewModel {
         }
         return groupList;
     }
+
+
+
+
+
 
 
 

@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -117,6 +118,11 @@ public class GroupListsFragmentModel
         return shoppingList.size();
     }
 
+    public int groupListLength()
+    {
+        return groupList.size();
+    }
+
     public void dumpList()
     {
         shoppingList.clear();
@@ -159,7 +165,7 @@ public class GroupListsFragmentModel
         //The list is empty for some reason so we're not getting the correct list later on
         Log.i("Lists", "There are " + isSelectedList.size() + " bools and " + groupList.size()
         + " strings");
-        for(int i = 0; i <= isSelectedList.size(); i++)
+        for(int i = 0; i < isSelectedList.size(); i++)
         {
             if(isSelectedList.get(i) == true)
                 tmpName = groupList.get(i);
@@ -175,8 +181,7 @@ public class GroupListsFragmentModel
         Item item = new Item(itemName, brandName, email);
 
         //CollectionReference dbItems = db.collection("Items");
-        db.collection("Groups")
-                .get()
+        db.collection("Groups").whereEqualTo("Creator", email).whereEqualTo("ListName", tmpName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                 {
                     @Override
@@ -184,37 +189,15 @@ public class GroupListsFragmentModel
                     {
                         if(task.isSuccessful())
                         {
-                            //Loop through available docs until we get the list we want
-                            for(QueryDocumentSnapshot document: task.getResult())
-                            {
-                                if(Objects.equals(document.getString("Creator"), email)) {
-                                    Log.i("Email", "We are getting a list for " + email + " " +
-                                            "and comparing it to " + tmpName);
-                                    if (Objects.equals(document.getString("ListName"), tmpName))
-                                    {
-                                        CollectionReference dbItems = db.collection("Groups").document(tmpName)
-                                                .collection("Items");
-                                        dbItems.add(item)
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentReference documentReference) {
-                                                        Log.i("Success", "Item Added");
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.i("Failure", "Item failed to add");
-                                            }
-                                        });
-                                        break;
+                            DocumentSnapshot tmp = task.getResult().getDocuments().get(0);
+                            String tmpDocName = tmp.getId();
 
-                                    }
-                                    else
-                                    {
-                                        Log.i("Oops", "We didn't get the correct list");
-                                    }
-                                }
-                            }
+                            db.collection("Groups").document(tmpDocName).collection("Items").add(item);
+
+                        }
+                        else
+                        {
+                            Log.i("AddItem", "didn't get the correct list");
                         }
                     }
                 });
