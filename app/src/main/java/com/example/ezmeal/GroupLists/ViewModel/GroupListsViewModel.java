@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.Repository.AddListItemRepository;
+import com.example.ezmeal.GroupLists.Repository.GroupListRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +26,7 @@ public class GroupListsViewModel extends ViewModel {
     public MutableLiveData<List<String>> groupList;
     public MutableLiveData<List<List<String>>> shoppingList;
     private AddListItemRepository theRepo = new AddListItemRepository();
+    private GroupListRepository glRepo = new GroupListRepository();
 
     private GroupListsFragmentModel theModel;
 
@@ -37,7 +39,7 @@ public class GroupListsViewModel extends ViewModel {
 
     public GroupListsViewModel()
     {
-        groupList = new MutableLiveData<>();
+        //groupList = new MutableLiveData<>();
         isSelectedList = new ArrayList<Boolean>();
         //shoppingList = itemRepo.getShoppingList();
         theModel = new GroupListsFragmentModel();
@@ -120,6 +122,21 @@ public class GroupListsViewModel extends ViewModel {
 
         return shoppingList;
     }
+
+    public MutableLiveData<List<String>> updateGroupList()
+    {
+        if(groupList == null)
+        {
+            groupList = new MutableLiveData<List<String>>();
+            glRepo.getGroupList().observeForever(repoGroupList ->
+            {
+                groupList.setValue(repoGroupList);
+            });
+
+        }
+        return groupList;
+    }
+
 
 
 

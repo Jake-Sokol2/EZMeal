@@ -12,10 +12,12 @@ import android.widget.EditText;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,8 +30,9 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private GroupListsFragmentModel theModel;
+    private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
     private GroupListFragHorizontalRecyclerAdapter hAdapter;
+    private GroupListsViewModel theViewModel;
     private static List<GroupListsFragmentModel> toSave = new ArrayList<GroupListsFragmentModel>();
     private static List<GroupListFragHorizontalRecyclerAdapter> saveAdapter = new ArrayList<>();
 
@@ -45,7 +48,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
     public AddGroupListFragment(GroupListsFragmentModel theModel, GroupListFragHorizontalRecyclerAdapter hAdapter)
     {
-        this.theModel = theModel;
+        //this.theModel = theModel;
         this.hAdapter = hAdapter;
         //boolean isItNull = this.hAdapter == null;
         Log.d("AddGroupListFragment", "hAdapter is theoretically not null?");
@@ -85,6 +88,27 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.fragment_add_group_list, container, false);
+        theViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
+        //Observer
+        theViewModel.updateGroupList().observe(getViewLifecycleOwner(), groupList ->
+        {
+            if(groupList.size() > 0)
+            {
+                for(int i = 0; i < groupList.size(); i++)
+                {
+                    if(i==0)
+                    {
+                        theModel.addList(groupList.get(i), true);
+                    }
+                    else
+                    {
+                        theModel.addList(groupList.get(i), false);
+                    }
+                }
+
+            }
+        });
 
 
 
@@ -115,14 +139,10 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                     editListName.setError("Empty field");
                 else
                 {
-                    //TODO create mutable live data for group lists
-                        //1 pass new list information back to the recycler view
-                        //2 store that list in firebase under users group lists
-                        //3 group lists need to also be stored in RoomDB
 
                     theModel.addList(editListName.getText().toString(), false);
                     //TODO data needs to be added to firestore
-                    //hAdapter.notifyDataSetChanged();
+
                     dismiss();
                 }
                 break;

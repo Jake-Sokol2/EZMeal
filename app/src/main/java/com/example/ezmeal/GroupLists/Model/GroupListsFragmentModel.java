@@ -4,7 +4,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.ezmeal.GroupLists.Repository.GroupListRepository;
 import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,21 +26,23 @@ import java.util.Objects;
 
 public class GroupListsFragmentModel
 {
-    private List<String> groupList; //This represents a list you share with other people
-    private List<Boolean> isSelectedList; //Marker that a given list is selected
+    private List<String> groupList = new ArrayList<String>(); //This represents a list you share with other people
+    private List<Boolean> isSelectedList = new ArrayList<Boolean>(); //Marker that a given list is selected
 
     private List<List<String>> shoppingList = new ArrayList<List<String>>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private GroupListRepository glRepo;
     String itemName;
     String brandName;
     String docID;
+    String tmpName;
 
 
     public GroupListsFragmentModel()
     {
-        groupList = new ArrayList<String>();
-        isSelectedList = new ArrayList<Boolean>();
+        //groupList = new ArrayList<String>();
+        //isSelectedList = new ArrayList<Boolean>();
        // shoppingList = new ArrayList<List<String>>();
        // getListData();
 
@@ -76,6 +80,7 @@ public class GroupListsFragmentModel
 
     public void removeItem(int position)
     {
+
         itemName = shoppingList.get(position).get(0);
         brandName = shoppingList.get(position).get(1);
 
@@ -85,6 +90,7 @@ public class GroupListsFragmentModel
 
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
+
         CollectionReference dbItems = db.collection("Items");
         dbItems.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -149,6 +155,16 @@ public class GroupListsFragmentModel
 
     public void addDataToFirestore(String itemName, String brandName) {
 
+        tmpName = "";
+        //The list is empty for some reason so we're not getting the correct list later on
+        Log.i("Lists", "There are " + isSelectedList.size() + " bools and " + groupList.size()
+        + " strings");
+        for(int i = 0; i <= isSelectedList.size(); i++)
+        {
+            if(isSelectedList.get(i) == true)
+                tmpName = groupList.get(i);
+        }
+
         //Code to make retrieval of items user specific
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -156,22 +172,52 @@ public class GroupListsFragmentModel
         //Get current user instance
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
-
-        CollectionReference dbItems = db.collection("Items");
         Item item = new Item(itemName, brandName, email);
-        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                //Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
-                Log.i("Item added", "success");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
-                Log.i("Item failed to add.", "failure");
-            }
-        });
+
+        //CollectionReference dbItems = db.collection("Items");
+        db.collection("Groups")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            //Loop through available docs until we get the list we want
+                            for(QueryDocumentSnapshot document: task.getResult())
+                            {
+                                if(Objects.equals(document.getString("Creator"), email)) {
+                                    Log.i("Email", "We are getting a list for " + email + " " +
+                                            "and comparing it to " + tmpName);
+                                    if (Objects.equals(document.getString("ListName"), tmpName))
+                                    {
+                                        CollectionReference dbItems = db.collection("Groups").document(tmpName)
+                                                .collection("Items");
+                                        dbItems.add(item)
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        Log.i("Success", "Item Added");
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.i("Failure", "Item failed to add");
+                                            }
+                                        });
+                                        break;
+
+                                    }
+                                    else
+                                    {
+                                        Log.i("Oops", "We didn't get the correct list");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
 
