@@ -15,7 +15,8 @@
         android:layout_height="70dp"
         android:gravity="center_horizontal"
         android:text="Add New List"
-        android:textColor="#5FA32D"
+        android:textColor="@color/EzGreen"
+        android:fontFamily="@font/sonsie_one"
         android:textSize="35sp"
         android:textStyle="bold" />
 
@@ -43,11 +44,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCancel"
             android:layout_width="113dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#5FA32D"
+            android:background="@drawable/custom_button"
             android:text="Cancel"
             android:textColor="#040404" />
 
@@ -57,12 +58,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConfirmList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="#5FA32D"
+            android:background="@drawable/custom_button"
             android:text="Add List"
             android:textColor="#000000" />
     </LinearLayout>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ezmeal.R;
@@ -19,7 +20,6 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
     //private List<String> url;
     private MainAdapterListener listener;
     private List<Boolean> isSelectedList;
-
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -57,6 +57,8 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
             });
         }
     }
+
+    public FindRecipesFragmentHorizontalRecyclerAdapter(){}
 
     public FindRecipesFragmentHorizontalRecyclerAdapter(List<String> list, List<Boolean> isSelected)//, List<String> url)
     {
@@ -99,12 +101,20 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
     @Override
     public int getItemCount()
     {
-        return list.size();
+        if (list == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return list.size();
+        }
     }
 
-    public void setData(List<String> list)
+    public void setData(List<String> list, List<Boolean> isSelectedList)
     {
         this.list = list;
+        this.isSelectedList = isSelectedList;
         notifyDataSetChanged();
     }
 

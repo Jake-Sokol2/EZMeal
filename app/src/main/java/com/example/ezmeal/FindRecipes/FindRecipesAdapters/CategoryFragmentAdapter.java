@@ -19,12 +19,16 @@ import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentChildHorizontalRecyclerModel;
+import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
+import com.example.ezmeal.FindRecipes.FindRecipesModels.VerticalRecipe;
 import com.example.ezmeal.FindRecipes.RecipeActivity;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+//import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -40,6 +44,8 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<Integer> totalRatingCountList;
     private List<Double> avgRatingList;
     private List<Double> avgPopularRatingList;
+    private ArrayList<List<HorizontalRecipe>> horizontalLists;
+    private List<VerticalRecipe> verticalRecipes;
 
     private MainAdapterListener listener;
     private String uri;
@@ -142,28 +148,12 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public CategoryFragmentAdapter(List<String> list, List<String> uriList, List<String> popularRecipesTitleList, List<String> popularRecipesImageList,
-                                   List<String> highRatedRecipeIdList, List<Integer> totalRatingCountList, List<Double> avgRatingList, List<Double> avgPopularRatingList)
+    public CategoryFragmentAdapter(List<VerticalRecipe> verticalRecipes, ArrayList<List<HorizontalRecipe>> horizontalLists)
     {
-        this.list = list;
-        this.uriList = uriList;
-        this.popularRecipesTitleList = popularRecipesTitleList;
-        this.popularRecipesImageList = popularRecipesImageList;
-        this.highRatedRecipeIdList = highRatedRecipeIdList;
-        this.totalRatingCountList = totalRatingCountList;
-        this.avgRatingList = avgRatingList;
-        this.avgPopularRatingList = avgPopularRatingList;
+        this.verticalRecipes = verticalRecipes;
+        this.horizontalLists = horizontalLists;
     }
 
-    // todo: get rid of this?  Not sure if we're actually using the Context
-    public CategoryFragmentAdapter(List<String> list, List<String> uriList, Context context, List<String> popularRecipesTitleList, List<String> popularRecipesImageList)
-    {
-        this.list = list;
-        this.uriList = uriList;
-        this.context = context;
-        this.popularRecipesTitleList = popularRecipesTitleList;
-        this.popularRecipesImageList = popularRecipesImageList;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -197,6 +187,8 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     {
         final int itemType = getItemViewType(position);
 
+
+
         if (position == 6)
         {
             db = FirebaseFirestore.getInstance();
@@ -223,8 +215,9 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             horizontalModel = new CategoryFragmentChildHorizontalRecyclerModel(popularRecipesTitleList, popularRecipesImageList, avgPopularRatingList);
 
-            CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
-                    horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());
+            CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(0));
+            /*CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
+                    horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());*/
 
             highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
             {
@@ -234,7 +227,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
                     Bundle bundle = new Bundle();
 
-                    bundle.putString("id", highRatedRecipeIdList.get(position));
+                    bundle.putString("id", horizontalLists.get(0).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
                     intent.putExtras(bundle);
                     holder.itemView.getContext().startActivity(intent);
                 }
@@ -253,16 +246,16 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
 
-            String recipeTitle = list.get(position);
-            uri = uriList.get(position);
+            String recipeTitle = verticalRecipes.get(position).getTitle();
+            uri = verticalRecipes.get(position).getImage();
 
             verticalHolder.txtTitle.setText(recipeTitle);
             Glide.with(verticalHolder.itemView.getContext()).load(uri).into(verticalHolder.recipeImage);
 
-            Double avgRatingDouble = avgRatingList.get(position);
+            Double avgRatingDouble = verticalRecipes.get(position).getAvgRating();
             float avgRatingFloat = avgRatingDouble.floatValue();
 
-            if (totalRatingCountList.get(position) >= COUNT_THRESHOLD_TO_SHOW_RECIPES)
+            if (verticalRecipes.get(position).getTotalCountOfRatings() >= COUNT_THRESHOLD_TO_SHOW_RECIPES)
             {
                 // todo: there is an underlying issue here - we shouldn't need to set this to VISIBLE as it should never be set INVISIBLE.  For some reason the recyclerview sets it invisible anyway
                 verticalHolder.ratingBar.setVisibility(View.VISIBLE);
@@ -278,12 +271,12 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount()
     {
-        return list.size();
+        return verticalRecipes.size();
     }
 
-    public void setData(List<String> list)
+    public void setData(List<VerticalRecipe> verticalRecipes)
     {
-        this.list = list;
+        this.verticalRecipes = verticalRecipes;
         notifyDataSetChanged();
     }
 

@@ -1,7 +1,6 @@
 package com.example.ezmeal.GroupLists;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.Button;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ezmeal.GroupLists.Adapter.GroupListFragHorizontalRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
@@ -17,20 +15,16 @@ import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.io.Serializable;
-import java.util.List;
-
 public class AddButtonFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1, mParam2;
     private GroupListsFragmentRecyclerAdapter adapter;
-    public GroupListsFragmentModel theModel;
+    private GroupListsFragmentModel theModel;
     private FragmentManager fm;
     private FragmentTransaction ft;
-    public GroupListFragHorizontalRecyclerAdapter hAdapter;
-    public RecyclerView rvGroupList;
+    private GroupListFragHorizontalRecyclerAdapter hAdapter;
 
     public AddButtonFragment() {
 
@@ -59,13 +53,7 @@ public class AddButtonFragment extends BottomSheetDialogFragment implements View
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        /*
-        Bundle args = this.getArguments();
-        if(args != null)
-        {
-            theModel.setGroupList((List<String>) args.getSerializable("rvData"));
-        }
-        */
+
     }
 
     @Override
@@ -106,12 +94,7 @@ public class AddButtonFragment extends BottomSheetDialogFragment implements View
             //launch the CreateNewList
             fm = getParentFragmentManager();
             ft = fm.beginTransaction();
-            AddGroupListFragment addGListFrag = new AddGroupListFragment();
-
-            //Bundle blunt = new Bundle();
-            //blunt.putSerializable("GroupList", (Serializable) theModel.getGroupList());
-            //addGListFrag.setArguments(blunt);
-
+            AddGroupListFragment addGListFrag = new AddGroupListFragment(theModel, hAdapter);
 
             ft.add(addGListFrag, "gListFrag");
             getParentFragmentManager().popBackStack("TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);

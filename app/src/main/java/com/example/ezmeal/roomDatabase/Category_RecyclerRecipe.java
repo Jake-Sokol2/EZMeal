@@ -1,9 +1,8 @@
-package com.example.ezmeal.RoomDatabase;
+package com.example.ezmeal.roomDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 @Entity(primaryKeys = {"category", "recipeId"})
 public class Category_RecyclerRecipe

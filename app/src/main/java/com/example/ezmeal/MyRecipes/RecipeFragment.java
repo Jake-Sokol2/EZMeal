@@ -22,8 +22,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.MyRecipes.RecipeAdapters.RecipeFragmentViewPagerAdapter;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
-import com.example.ezmeal.RoomDatabase.RecipeCategoryTuple;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.RecipeCategoryTuple;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

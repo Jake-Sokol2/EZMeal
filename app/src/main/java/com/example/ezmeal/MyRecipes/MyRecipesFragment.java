@@ -17,7 +17,7 @@ import androidx.room.Room;
 import com.example.ezmeal.MyRecipes.RecipeAdapters.MyRecipesFragmentRecyclerAdapter;
 import com.example.ezmeal.MyRecipes.RecipeModels.MyRecipesFragmentModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class MyRecipesFragment extends Fragment
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
         // retrieve list of categories and some random images from Room
-        cat = sqlDb.testDao().getCategories();
+        cat = sqlDb.testDao().getCategoriesCategoryEntity();
         //List<String> urls = sqlDb.testDao().getCatUrl();
         for (int i = 0; i < cat.size(); i++)
         {

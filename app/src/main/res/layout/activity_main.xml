@@ -24,14 +24,17 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragContainer"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="415dp"
+        android:layout_height="732dp"
+android:background="@drawable/ezezea"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.034"
+        app:layout_constraintVertical_bias="0.0"
         app:navGraph="@navigation/ezmeal_nav" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

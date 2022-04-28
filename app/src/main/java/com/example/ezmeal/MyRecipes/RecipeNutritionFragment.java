@@ -14,7 +14,7 @@ import androidx.room.Room;
 import com.example.ezmeal.MyRecipes.RecipeAdapters.RecipeNutritionFragmentRecyclerAdapter;
 import com.example.ezmeal.MyRecipes.RecipeModels.RecipeNutritionFragmentModel;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 
 import java.util.List;
 

@@ -1,0 +1,61 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.example.ezmeal\">\n\n    <uses-permission android:name=\"android.permission.INTERNET\"/>\n\n\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/Theme.EZMeal\">\n        <activity\n            android:name=\".Login\"\n            android:exported=\"true\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n        <activity\n            android:name=\".MainActivity\"\n            android:exported=\"true\"></activity>\n\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision b5ab6778534fa32d27ef81531cf020af1405bc8a)
++++ b/app/src/main/AndroidManifest.xml	(date 1648308685239)
+@@ -2,9 +2,8 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="com.example.ezmeal">
+ 
+-    <uses-permission android:name="android.permission.INTERNET"/>
++    <uses-permission android:name="android.permission.INTERNET" />
+ 
+-
+     <application
+         android:allowBackup="true"
+         android:icon="@mipmap/ic_launcher"
+@@ -13,6 +12,9 @@
+         android:supportsRtl="true"
+         android:theme="@style/Theme.EZMeal">
+         <activity
++            android:name=".MyRecipesSingleCategory"
++            android:exported="false" />
++        <activity
+             android:name=".Login"
+             android:exported="true">
+             <intent-filter>
+@@ -23,8 +25,7 @@
+         </activity>
+         <activity
+             android:name=".MainActivity"
+-            android:exported="true"></activity>
+-
++            android:exported="true" />
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/res/anim/fade_out.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/anim/fade_out.xml b/app/src/main/res/anim/fade_out.xml
+new file mode 100644
+--- /dev/null	(date 1648308680315)
++++ b/app/src/main/res/anim/fade_out.xml	(date 1648308680315)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="utf-8"?>
++<set xmlns:android="http://schemas.android.com/apk/res/android" android:interpolator="@android:anim/linear_interpolator">
++    <alpha
++        android:duration="200"
++        android:fromAlpha="1.0"
++        android:toAlpha="0.1">
++    </alpha>
++</set>
+\ No newline at end of file

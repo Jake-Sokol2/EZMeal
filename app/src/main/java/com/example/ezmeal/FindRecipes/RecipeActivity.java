@@ -29,11 +29,11 @@ import com.example.ezmeal.FindRecipes.FindRecipesAdapters.RecipeActivityViewPage
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.MyRecipes.RecipeAdapters.RecipeFragmentRecyclerAdapter;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.CategoryEntity;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
-import com.example.ezmeal.RoomDatabase.Rating;
-import com.example.ezmeal.RoomDatabase.Recipe;
-import com.example.ezmeal.RoomDatabase.TextRatings;
+import com.example.ezmeal.roomDatabase.CategoryEntity;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.Rating;
+import com.example.ezmeal.roomDatabase.Recipe;
+import com.example.ezmeal.roomDatabase.TextRatings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

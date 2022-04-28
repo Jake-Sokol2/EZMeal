@@ -39,14 +39,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerFinalButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="152dp"
         android:layout_marginEnd="153dp"
         android:layout_marginBottom="152dp"
-        android:backgroundTint="@color/EzGreen"
+       android:background="@drawable/custom_button"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,11 +55,13 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="192dp"
-        android:layout_height="288dp"
+        android:layout_width="236dp"
+        android:layout_height="314dp"
         app:layout_constraintBottom_toTopOf="@+id/emailRegisterTextField"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.071"
         app:srcCompat="@drawable/transparentlogo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

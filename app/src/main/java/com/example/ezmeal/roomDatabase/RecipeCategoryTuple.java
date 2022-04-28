@@ -1,10 +1,13 @@
-package com.example.ezmeal.RoomDatabase;
+package com.example.ezmeal.roomDatabase;
 
-public class recipePathTitle
+import androidx.room.ColumnInfo;
+
+public class RecipeCategoryTuple
 {
+    @ColumnInfo (name = "pathToImage")
     public String pathToImage;
+    @ColumnInfo (name = "title")
     public String title;
-    public String recipeId;
 
     public String getPathToImage()
     {
@@ -24,15 +27,5 @@ public class recipePathTitle
     public void setTitle(String title)
     {
         this.title = title;
-    }
-
-    public String getRecipeId()
-    {
-        return recipeId;
-    }
-
-    public void setRecipeId(String recipeId)
-    {
-        this.recipeId = recipeId;
     }
 }
