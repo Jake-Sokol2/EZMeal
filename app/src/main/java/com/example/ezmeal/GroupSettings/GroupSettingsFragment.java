@@ -1,7 +1,11 @@
 package com.example.ezmeal.GroupSettings;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -11,11 +15,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,9 +33,12 @@ import com.example.ezmeal.FindRecipes.Recipe;
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
 import com.example.ezmeal.RoomDatabase.EZMealDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -73,6 +83,7 @@ public class GroupSettingsFragment extends Fragment {
 
 
 
+
     private FirebaseFirestore db;
     private StorageReference mStorageRef;
 
@@ -82,6 +93,12 @@ public class GroupSettingsFragment extends Fragment {
     public GroupSettingsFragment() {
         // Required empty public constructor
     }
+
+
+
+
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -110,7 +127,15 @@ public class GroupSettingsFragment extends Fragment {
         }
 
 
+
+
+        // click on forget password text
+
+
     }
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,10 +163,24 @@ public class GroupSettingsFragment extends Fragment {
             }
         });
 
+        Button deleteBtn = (Button) rootView.findViewById(R.id.deleteAccountbtn);
+        // click on forget password text
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                //deleteBtn.setEnabled(false);
+                //deleteUser();
+                //Log.i("TAG", "anything");
+                //openActivityLogin();
+                showRecoverPasswordDialog();
+            }
+        });
         //int randomNum = ThreadLocalRandom.current().nextInt(1, 24);
 
         int randomNum = new Random().nextInt(10) + 1;
         Log.i("myRand", String.valueOf(randomNum));
+
+
+
 
         /*String image = "cookies.webp";
         int id = getContext().getResources().getIdentifier("drawable/cookies", null, getContext().getPackageName());
@@ -199,6 +238,24 @@ public class GroupSettingsFragment extends Fragment {
         }
 
         return rootView;
+
+    }
+
+
+    public void deleteUser() {
+        // [START delete_user]
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.i(TAG, "User account deleted.");
+                        }
+                    }
+                });
+        // [END delete_user]
     }
 
     public void openActivityLogin(){
@@ -219,8 +276,41 @@ public class GroupSettingsFragment extends Fragment {
         //AsyncClass ac = new AsyncClass();
         //ac.execute();
 
-
     }
+
+    private void showRecoverPasswordDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Delete Your Account");
+        LinearLayout linearLayout = new LinearLayout(this.getContext());
+        final TextView deleteQuestion = new TextView(this.getContext());
+
+        // write the email using which you registered
+        deleteQuestion.setText("Are you sure? This will delete your account");
+        deleteQuestion.setTextSize(18);
+        //deleteQuestion.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        linearLayout.addView(deleteQuestion);
+        linearLayout.setPadding(10, 20, 10, 20);
+        builder.setView(linearLayout);
+
+        // Click on Recover and a email will be sent to your registered email id
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteUser();
+                openActivityLogin();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+
 
     /*public class AsyncClass extends AsyncTask<Void, Void, Void>
     {
@@ -424,5 +514,4 @@ public class GroupSettingsFragment extends Fragment {
 
         }
     }*/
-
 }
