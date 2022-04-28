@@ -7,16 +7,21 @@ import androidx.room.PrimaryKey;
 
 
 @Entity
-public class Category
+public class UsersCategory
 {
     @PrimaryKey
     @NonNull
     @ColumnInfo (name = "category")
     public String category;
 
-    public Category(String category)
+    // Room does not support Date variables
+    @ColumnInfo (name = "dateRetrieved")
+    public long dateRetrieved;
+
+    public UsersCategory(String category, long dateRetrieved)
     {
         this.category = category;
+        this.dateRetrieved = dateRetrieved;
     }
 
     @NonNull

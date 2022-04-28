@@ -1,65 +1,41 @@
 package com.example.ezmeal.GroupSettings;
 
-import static android.content.ContentValues.TAG;
-
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
-import com.example.ezmeal.FindRecipes.Recipe;
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
-import com.example.ezmeal.RoomDatabase.EZMealDatabase;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.ezmeal.roomDatabase.AppDatabase;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
+import com.example.ezmeal.roomDatabase.Recipe;
+import com.example.ezmeal.roomDatabase.RecipeItems;
+import com.example.ezmeal.roomDatabase.RecyclerRecipe2;
+import com.example.ezmeal.roomDatabase.User;
+import com.example.ezmeal.roomDatabase.UserDao;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,7 +57,7 @@ public class GroupSettingsFragment extends Fragment {
     public Bitmap[] bitmapList;
     public String[] titleList;
 
-
+    private List<String> testList;
 
 
     private FirebaseFirestore db;
@@ -93,12 +69,6 @@ public class GroupSettingsFragment extends Fragment {
     public GroupSettingsFragment() {
         // Required empty public constructor
     }
-
-
-
-
-
-
 
     /**
      * Use this factory method to create a new instance of
@@ -127,15 +97,7 @@ public class GroupSettingsFragment extends Fragment {
         }
 
 
-
-
-        // click on forget password text
-
-
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -143,13 +105,85 @@ public class GroupSettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_settings, container, false);
 
+
         EZMealDatabase sqlDb;
-        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
-                .allowMainThreadQueries().enableMultiInstanceInvalidation().build();
+        sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user").allowMainThreadQueries().build();
+        RecyclerRecipe2 rec = new RecyclerRecipe2("btewr", "a", "a", "a", 2.0, "a", false, 2);
+        //sqlDb.testDao().insertRecyclerRecipe2(rec);
+        //sqlDb.testDao().deleteAllCategories();
+        //sqlDb.testDao().deleteALlRecyclerRecipes();
 
-        sqlDb.testDao().deleteAllCategories();
+        List<RecipeItems> r = sqlDb.testDao().getRecipeItemsLive().getValue();
+
         sqlDb.testDao().deleteALlRecyclerRecipes();
+        /*for (int i = 0; i < 500000; i++)
+        {
+            Log.i("a", r.get(i).recipe.title.toString());
+        }*/
+        long a = new Date().getTime();
+        Log.i("a", String.valueOf(a));
 
+
+        //testList; //= sqlDb.testDao().getActiveCategoriesFromIdentifier2();
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                testList = sqlDb.testDao().getActiveCategoriesFromIdentifier2();
+            }
+        });
+
+        /*try
+        {
+            executor.wait();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }*/
+
+        /*Callable callable = new Callable()
+        {
+            @Override
+            public Object call() throws Exception
+            {
+                sqlDb.testDao().insertRecyclerRecipe2(rec);
+                return this;
+            }
+        };
+
+        Future future = Executors.newSingleThreadExecutor().submit(callable);*/
+
+
+        try
+        {
+            Thread.sleep(10000);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        Log.i("a", "a");
+        // Kotlin room test
+        /*AppDatabase db = Room.databaseBuilder(getContext().getApplicationContext(),
+                AppDatabase.class, "database-name").allowMainThreadQueries().build();
+
+        UserDao userDao = db.userDao();
+
+        User u1 = new User(1, "aa", "bb");
+        User u2 = new User(2, "cc", "dd");
+        userDao.insertAll(u1, u2);
+        List<User> users = userDao.getAll();
+
+        String s = "";
+        for (int i = 0; i < users.size(); i++)
+        {
+            s = s + "   " + users.get(i);
+        }
+        Log.i("a", s);*/
 
         //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
         //Log.w("TRACK BACKSTACK", "Group Settings opened: " + numOfBackstack);
@@ -163,24 +197,10 @@ public class GroupSettingsFragment extends Fragment {
             }
         });
 
-        Button deleteBtn = (Button) rootView.findViewById(R.id.deleteAccountbtn);
-        // click on forget password text
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //deleteBtn.setEnabled(false);
-                //deleteUser();
-                //Log.i("TAG", "anything");
-                //openActivityLogin();
-                showRecoverPasswordDialog();
-            }
-        });
         //int randomNum = ThreadLocalRandom.current().nextInt(1, 24);
 
         int randomNum = new Random().nextInt(10) + 1;
         Log.i("myRand", String.valueOf(randomNum));
-
-
-
 
         /*String image = "cookies.webp";
         int id = getContext().getResources().getIdentifier("drawable/cookies", null, getContext().getPackageName());
@@ -225,7 +245,7 @@ public class GroupSettingsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        try
+        /*try
         {
             AssetManager assetManager = getContext().getAssets();
             InputStream inputStream = getContext().getAssets().open("cookies2.jpg");
@@ -235,27 +255,9 @@ public class GroupSettingsFragment extends Fragment {
         catch (IOException e)
         {
             e.printStackTrace();
-        }
+        }*/
 
         return rootView;
-
-    }
-
-
-    public void deleteUser() {
-        // [START delete_user]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        user.delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.i(TAG, "User account deleted.");
-                        }
-                    }
-                });
-        // [END delete_user]
     }
 
     public void openActivityLogin(){
@@ -276,41 +278,8 @@ public class GroupSettingsFragment extends Fragment {
         //AsyncClass ac = new AsyncClass();
         //ac.execute();
 
+
     }
-
-    private void showRecoverPasswordDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Delete Your Account");
-        LinearLayout linearLayout = new LinearLayout(this.getContext());
-        final TextView deleteQuestion = new TextView(this.getContext());
-
-        // write the email using which you registered
-        deleteQuestion.setText("Are you sure? This will delete your account");
-        deleteQuestion.setTextSize(18);
-        //deleteQuestion.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        linearLayout.addView(deleteQuestion);
-        linearLayout.setPadding(10, 20, 10, 20);
-        builder.setView(linearLayout);
-
-        // Click on Recover and a email will be sent to your registered email id
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteUser();
-                openActivityLogin();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-
 
     /*public class AsyncClass extends AsyncTask<Void, Void, Void>
     {
@@ -514,4 +483,5 @@ public class GroupSettingsFragment extends Fragment {
 
         }
     }*/
+
 }

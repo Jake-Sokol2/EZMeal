@@ -12,9 +12,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.R;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.Adapter<CategoryFragmentChildHorizontalRecylerAdapter.MainViewHolder>
@@ -25,6 +27,7 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
     private MainAdapterListener listener;
     private String uri;
     public TextView txtTitle;
+    private List<HorizontalRecipe> horizontalList;
     Context context;
 
     public void setOnItemClickListener(CategoryFragmentAdapter.MainAdapterListener id)
@@ -73,12 +76,13 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
         }
     }
 
-    public CategoryFragmentChildHorizontalRecylerAdapter(List<String> list, List<String> uriList, Context context, List<Double> avgRatingList)
+    public CategoryFragmentChildHorizontalRecylerAdapter(List<HorizontalRecipe> horizontalList)
     {
-        this.list = list;
-        this.context = context;
+        //this.list = list;
+        this.horizontalList = horizontalList;
+        /*this.context = context;
         this.uriList = uriList;
-        this.avgRatingList = avgRatingList;
+        this.avgRatingList = avgRatingList;*/
     }
 
     @Override
@@ -91,8 +95,10 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
-        String recipeTitle = list.get(position);
-        uri = uriList.get(position);
+        //String recipeTitle = list.get(position);
+        String recipeTitle = horizontalList.get(position).getTitle();
+        uri = horizontalList.get(position).getImage();
+        //uri = uriList.get(position);
         //String recipeImageUrl = list.get(position).get(1);
         //Bitmap bitmap =  bitmapList.get(position).get(0);
 
@@ -100,7 +106,7 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
         holder.txtTitle.setText(recipeTitle);
         Glide.with(holder.itemView.getContext()).load(uri).into(holder.recipeImage);
 
-        Double avgRatingDouble = avgRatingList.get(position);
+        Double avgRatingDouble = horizontalList.get(position).getAvgRating();
         float avgRatingFloat = avgRatingDouble.floatValue();
 
         holder.card.setStrokeColor(Color.parseColor("#2dba73"));
@@ -186,12 +192,12 @@ public class CategoryFragmentChildHorizontalRecylerAdapter extends RecyclerView.
     @Override
     public int getItemCount()
     {
-        return list.size();
+        return horizontalList.size();
     }
 
-    public void setData(List<String> list)
+    public void setData(List<HorizontalRecipe> horizontalList)
     {
-        this.list = list;
+        this.horizontalList = horizontalList;
         notifyDataSetChanged();
     }
 

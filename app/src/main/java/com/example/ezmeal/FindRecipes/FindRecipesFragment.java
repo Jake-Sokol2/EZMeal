@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,15 +18,14 @@ import com.example.ezmeal.FindRecipes.FindRecipesAdapters.CategoryFragmentAdapte
 import com.example.ezmeal.FindRecipes.FindRecipesAdapters.FindRecipesFragmentHorizontalRecyclerAdapter;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentModel;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.FindRecipesFragmentModel;
+import com.example.ezmeal.FindRecipes.FindRecipesViewModels.FindRecipesViewModel;
 import com.example.ezmeal.R;
+import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -45,6 +43,7 @@ public class FindRecipesFragment extends Fragment
 {
     private FirebaseFirestore db;
     private StorageReference mStorageRef;
+    private EZMealDatabase sqlDb;
 
     private ArrayList<List<String>> recipeList = new ArrayList<List<String>>();
     List<String> list = new ArrayList<String>();
@@ -57,7 +56,12 @@ public class FindRecipesFragment extends Fragment
     private FindRecipesFragmentHorizontalRecyclerAdapter horizontalAdapter;
 
     private List<String> recipeId = new ArrayList<String>();
+
     public List<String> categories = new ArrayList<String>();
+    private List<Boolean> isSelected = new ArrayList<>();
+    private Integer lastSelectedCategory = 0;
+
+    private FindRecipesViewModel viewModel;
 
     private int currentSelectedCategoryPosition = 0;
     public ImageView imageView;
@@ -113,41 +117,85 @@ public class FindRecipesFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_recipes, container, false);
-
-        categories.add("Featured");
-        findRecipesFragmentModel.addItem(categories.get(0), true);
-
-        FragmentManager categoryFragManager = getChildFragmentManager();
-        Fragment frag = new CategoryFragment();
-        categoryFragManager.beginTransaction().replace(R.id.fragmentContainerView4, frag).commit();
+        viewModel = new ViewModelProvider(requireActivity()).get(FindRecipesViewModel.class);
 
         rvHorizontal = (RecyclerView) view.findViewById(R.id.rvHorizontalSelector);
-        horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(findRecipesFragmentModel.getCategoryList(), findRecipesFragmentModel.getIsSelectedList());
-        rvHorizontal.setAdapter(horizontalAdapter);
         RecyclerView.LayoutManager horizontalLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvHorizontal.setLayoutManager(horizontalLayoutManager);
 
-        db = FirebaseFirestore.getInstance();
+        //horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(findRecipesFragmentModel.getCategoryList(), findRecipesFragmentModel.getIsSelectedList());
+        horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(categories, isSelected);
+        //horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
+        rvHorizontal.setAdapter(horizontalAdapter);
 
-        // todo: RecipesRating
-        CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
-
-        db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        viewModel.getHorizontalRecyclerModel().observe(getViewLifecycleOwner(), model ->
         {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                categories = (ArrayList<String>) task.getResult().get("categories");
-
-                for (int i = 0; i < categories.size(); i++)
-                {
-                    findRecipesFragmentModel.addItem(categories.get(i), false);
-                }
-
-
-                horizontalAdapter.notifyDataSetChanged();
-            }
+            categories = model.getCategoryList();
+            isSelected = model.getIsSelectedList();
+            horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
+            horizontalAdapter.notifyDataSetChanged();
         });
+
+        if (savedInstanceState == null)
+        {
+            FindRecipesFragmentModel fm = new FindRecipesFragmentModel();
+            List<String> categoryList = new ArrayList<String>();
+            List<Boolean> isSelectedList = new ArrayList<Boolean>();
+            fm.setCategoryList(categoryList);
+            fm.setIsSelectedList(isSelectedList);
+            viewModel.setHorizontalRecyclerModel(fm);
+         /*Fragment oldFragment = getChildFragmentManager().findFragmentById(R.id.fragmentContainerView4);
+                if (oldFragment instanceof FeaturedFragment)
+                {
+                    ((FeaturedFragment) oldFragment).cleanUpFragmentInstanceState();
+                }*/
+
+            //categories.add("Featured");
+            //findRecipesFragmentModel.addItem(categories.get(0), true);
+
+
+
+
+
+
+            db = FirebaseFirestore.getInstance();
+
+            // todo: RecipesRating
+            CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+
+            db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+            {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                {
+                    viewModel.addItem("Featured", true);
+                    categories = (ArrayList<String>) task.getResult().get("categories");
+
+                    for (int i = 0; i < categories.size(); i++)
+                    {
+                        viewModel.addItem(categories.get(i), false);
+                        //findRecipesFragmentModel.addItem(categories.get(i), false);
+                    }
+
+
+                    // retrieve categories from SQL here
+
+
+                    horizontalAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+        else
+        {
+            //viewModel.getListSize();
+
+
+            //horizontalAdapter = viewModel.getHorizontalRecyclerModel().getValue();
+        }
+
+
+
+
 
         /*// todo: find
         db.collection("RecipeCategoryRatingList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
@@ -176,44 +224,103 @@ public class FindRecipesFragment extends Fragment
             }
         });*/
 
+        /*viewModel.getHorizontalRecyclerAdapter().observe(getViewLifecycleOwner(), adapter ->
+        {
+            if (adapter != null)
+            {
+                horizontalAdapter = adapter;
+                rvHorizontal.setAdapter(horizontalAdapter);
+            }
+        });*/
+
+
+
+        return view;
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        /*FragmentManager categoryFragManager = getChildFragmentManager();
+        Fragment frag = new FeaturedFragment();
+        categoryFragManager.beginTransaction().replace(R.id.fragmentContainerView4, frag).commit();*/
+
+        //getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();getChildFragmentManager().popBackStackImmediate();
+
+
+        viewModel.getLastSelectedCategory().observe(getViewLifecycleOwner(), categoryPosition ->
+        {
+            lastSelectedCategory = categoryPosition;
+        });
+
         horizontalAdapter.setOnItemClickListener(new FindRecipesFragmentHorizontalRecyclerAdapter.MainAdapterListener()
         {
             @Override
             public void onItemClick(int position)
             {
 
-                Fragment fragCategoryClick = new CategoryFragment();
+                Fragment fragCategoryClick;
+
+                /*Fragment oldFragment = getChildFragmentManager().findFragmentById(R.id.fragmentContainerView4);
+                if (oldFragment instanceof CategoryFragment)
+                {
+                    ((CategoryFragment) oldFragment).cleanUpFragmentInstanceState();
+
+                }*/
+
+                FragmentTransaction fragmentTransaction;
 
                 // position 0 is "featured" section, which is not stored as a category in the database and would cause a crash if passed in as one
                 // only pass a bundle if the user selects a card other than featured
                 if (position != 0)
                 {
-                    findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
-                    findRecipesFragmentModel.setSelected(position);
-                    currentSelectedCategoryPosition = position;
-                    horizontalAdapter.notifyDataSetChanged();
+                    fragCategoryClick = new CategoryFragment();
+
+                    viewModel.setSelected(lastSelectedCategory, false);
+                    viewModel.setSelected(position, true);
+                    viewModel.setLastSelectedCategory(position);
+
+                    //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
+                    //findRecipesFragmentModel.setSelected(position);
+
+                    //currentSelectedCategoryPosition = position;
 
                     Bundle categoryBundleClick = new Bundle();
                     categoryBundleClick.putString("cat", categories.get(position - 1));
                     fragCategoryClick.setArguments(categoryBundleClick);
+
+                    fragmentTransaction = getChildFragmentManager().beginTransaction();
+                    getChildFragmentManager().popBackStack();
+
+                    getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
                 }
                 else
                 // featured was clicked, set last category to unclicked (visually) and set featured to clicked
                 {
-                    findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
-                    findRecipesFragmentModel.setSelected(0);
-                    currentSelectedCategoryPosition = 0;
-                    horizontalAdapter.notifyDataSetChanged();
-                }
+                    fragCategoryClick = new FeaturedFragment();
 
-                getChildFragmentManager().popBackStack();
-                getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
+                    viewModel.setSelected(lastSelectedCategory, false);
+                    viewModel.setSelected(0, true);
+                    viewModel.setLastSelectedCategory(0);
+                    //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
+                    //findRecipesFragmentModel.setSelected(0);
+
+                    //currentSelectedCategoryPosition = 0;
+
+                    fragmentTransaction = getChildFragmentManager().beginTransaction();
+
+                    getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
+                }
+                horizontalAdapter.notifyDataSetChanged();
+
+                //getChildFragmentManager().popBackStackImmediate();
+
             }
         });
-
-        return view;
     }
-
 /*    @Override
     public void onStop()
     {
@@ -408,4 +515,35 @@ public class FindRecipesFragment extends Fragment
 
         }
     }*/
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        //getChildFragmentManager().popBackStackImmediate();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        // close Room
+        if ((sqlDb != null) && (sqlDb.isOpen()))
+        {
+            sqlDb.close();
+        }
+
+
+    }
+
 }

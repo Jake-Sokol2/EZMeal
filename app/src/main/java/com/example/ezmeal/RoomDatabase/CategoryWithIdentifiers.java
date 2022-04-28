@@ -5,12 +5,12 @@ import androidx.room.Relation;
 
 import java.util.List;
 
-public class CategoryWithRecipes
+public class CategoryWithIdentifiers
 {
-    @Embedded public Category2 category2;
+    @Embedded public Category category;
     @Relation(
             parentColumn = "category",
             entityColumn = "category"
     )
-    public List<RecyclerRecipe2> recyclerRecipe2List;
+    public List<Identifier> identifiers;
 }

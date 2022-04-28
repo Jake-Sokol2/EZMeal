@@ -1,6 +1,7 @@
-package com.example.ezmeal.RoomDatabase;
+package com.example.ezmeal.roomDatabase;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,6 +9,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Transaction;
+import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import java.util.List;
@@ -37,6 +39,9 @@ public interface TestDao {
 
     @Query("SELECT * FROM Recipe")
     public List<RecipeItems> getRecipeItems();
+
+    @Query("SELECT * FROM Recipe")
+    public LiveData<List<RecipeItems>> getRecipeItemsLive();
 
     @Query("SELECT pathToImage FROM Recipe r INNER JOIN CategoryEntity ce ON r.RecipeId = ce.RecipeId WHERE category = :cat")
     public List<String> getImagesForCategories(String cat);
@@ -75,7 +80,7 @@ public interface TestDao {
     public boolean isRecipeExists(String rid);
 
     @Query("SELECT DISTINCT category FROM CategoryEntity WHERE category NOT NULL")
-    public List<String> getCategories();
+    public List<String> getCategoriesCategoryEntity();
 
     @Query("SELECT Recipe.recipeID, Recipe.pathToImage, Recipe.title FROM Recipe join CategoryEntity on Recipe.recipeId = CategoryEntity.recipeId WHERE category = :cat")
     public List<recipePathTitle> getCategoryRecipes(String cat);
@@ -112,31 +117,51 @@ public interface TestDao {
     public void BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM();
 
 
-    // Category, RecyclerRecipe
-
-    @Transaction
-    @Query("SELECT * FROM Category WHERE category = :cat")
-    public List<CategoryWithRecyclerRecipes> getCategoriesWithRecyclerRecipes(String cat);
 
     @Transaction
     @Query("SELECT * FROM Category2 WHERE category = :cat")
     public List<CategoryWithRecipes> getCategoriesWithRecipes(String cat);
 
+    @Transaction
+    @Query("SELECT * FROM Category WHERE category = :cat")
+    public List<CategoryWithIdentifiers> getCategoriesWithIdentifiers(String cat);
+
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    void insertCategory(Category category);
+
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    void insertAllCategory(List<Category> categories);
+
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    void insertIdentifier(Identifier identifier);
+
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    void insertAllIdentifier(List<Identifier> identifiers);
+
+    @Query("SELECT * FROM Category")
+    public List<Category> categories();
+
+    @Query("DELETE FROM Category")
+    public void deleteAllFromCategory();
+
+    @Query("DELETE FROM Identifier")
+    public void deleteAllFromIdentifier();
+
     //@Transaction
     //@Query("SELECT * FROM RecyclerRecipe WHERE isHorizontal != 1")
     //public List<CategoryWithRecyclerRecipes> getRecipesWithCategories(String cat);
-
-    @Insert
-    void insertCategory(Category category);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insertCategory2(Category2 category2);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllRecyclerRecipe2(List<RecyclerRecipe2> recyclerRecipeList2);
+    void insertRecyclerRecipe2(RecyclerRecipe2 recyclerRecipe2);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRecyclerRecipe2(RecyclerRecipe2 recyclerRecipe2);
+    void insertAllRecyclerRecipe2(List<RecyclerRecipe2> recyclerRecipe2);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertRecyclerRecipe2Live(RecyclerRecipe2 recyclerRecipe2);
 
     @Query("DELETE FROM Category2")
     public void deleteCategory2();
@@ -144,18 +169,9 @@ public interface TestDao {
     @Query("DELETE FROM RecyclerRecipe2")
     public void deleteRecyclerRecipe2();
 
-    // todo: look into other options, such as ABORT
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllRecyclerRecipe(List<RecyclerRecipe> recyclerRecipeList);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRecyclerRecipe(RecyclerRecipe recyclerRecipe);
 
     @Query("DELETE FROM Category")
     public void deleteCategory();
-
-    @Query("DELETE FROM RecyclerRecipe")
-    public void deleteRecyclerRecipe();
 
     @Query("DELETE FROM Category2 WHERE category = :cat")
     public void deleteFromCategory2SpecificCategory(String cat);
@@ -177,5 +193,28 @@ public interface TestDao {
 
     @Query("DELETE FROM RecyclerRecipe2")
     void deleteALlRecyclerRecipes();
-}
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insertUsersCategory(UsersCategory usersCategory);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insertAllUsersCategory(List<UsersCategory> usersCategoryList);
+
+    @Query("SELECT DISTINCT identifier FROM Identifier")
+    public List<String> getDistinctIdentifiers();
+
+    @Query("UPDATE IDENTIFIER SET isActive = 1 WHERE identifier = :identifier")
+    public void updateIdentifierIsActive(String identifier);
+
+    @Query("UPDATE IDENTIFIER SET isActive = 0 WHERE identifier = :identifier")
+    public void updateIdentifierIsNotActive(String identifier);
+
+    @Query("UPDATE IDENTIFIER SET isActive = 0")
+    public void updateAllIdentifiersIsNotActive();
+
+    @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
+    public LiveData<List<String>> getActiveCategoriesFromIdentifier();
+
+    @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
+    public List<String> getActiveCategoriesFromIdentifier2();
+}

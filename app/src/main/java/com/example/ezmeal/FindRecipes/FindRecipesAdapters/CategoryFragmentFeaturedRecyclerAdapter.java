@@ -20,9 +20,9 @@ import androidx.room.Room;
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentChildHorizontalRecyclerModel;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
-import com.example.ezmeal.FindRecipes.FindRecipesModels.VerticalRecipe;
 import com.example.ezmeal.FindRecipes.RecipeActivity;
 import com.example.ezmeal.R;
+// todo:
 //import com.example.ezmeal.RoomDatabase.EZMealDatabase;
 import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -31,12 +31,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private FirebaseFirestore db;
     public CollectionReference dbRecipes;
 
-    private List<String> list;
+    private List<String> verticalTitleList;
     private List<String> uriList;
     private List<String> popularRecipesTitleList;
     private List<String> popularRecipesImageList;
@@ -45,7 +45,6 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<Double> avgRatingList;
     private List<Double> avgPopularRatingList;
     private ArrayList<List<HorizontalRecipe>> horizontalLists;
-    private List<VerticalRecipe> verticalRecipes;
 
     private MainAdapterListener listener;
     private String uri;
@@ -127,6 +126,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
             childHorizontalRecyclerView = itemView.findViewById(R.id.rvChildHorizontalRecipes);
             ratingBar = view.findViewById(R.id.rbCard);
             horizontalRecipes = view.findViewById(R.id.rvChildHorizontalRecipes);
+            txtTitle = view.findViewById(R.id.txtChildHorizontalTitle);
             //CardView cardView = (CardView) view.findViewById(R.id.cardCategory);
 
             view.setOnClickListener(new View.OnClickListener()
@@ -148,12 +148,18 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public CategoryFragmentAdapter(List<VerticalRecipe> verticalRecipes, ArrayList<List<HorizontalRecipe>> horizontalLists)
+    public CategoryFragmentFeaturedRecyclerAdapter(List<String> verticalTitleList, ArrayList<List<HorizontalRecipe>> horizontalLists)
     {
-        this.verticalRecipes = verticalRecipes;
+        this.verticalTitleList = verticalTitleList;
         this.horizontalLists = horizontalLists;
-    }
 
+        //this.popularRecipesTitleList = popularRecipesTitleList;
+        //this.popularRecipesImageList = popularRecipesImageList;
+        //this.highRatedRecipeIdList = highRatedRecipeIdList;
+        //this.totalRatingCountList = totalRatingCountList;
+        //this.avgRatingList = avgRatingList;
+        //this.avgPopularRatingList = avgPopularRatingList;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -175,7 +181,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
         // based on you list you will return the ViewType
-        if (position == 6) {
+        if (position == 0) {
             return HORIZONTAL_VIEW;
         } else {
             return VERTICAL_VIEW;
@@ -185,12 +191,10 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-        final int itemType = getItemViewType(position);
-
-
-
-        if (position == 6)
+        if (position == 0)
         {
+            final int itemType = getItemViewType(position);
+
             db = FirebaseFirestore.getInstance();
             // todo: RecipesRating
             dbRecipes = db.collection("RecipesRatingBigInt");
@@ -215,68 +219,45 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             horizontalModel = new CategoryFragmentChildHorizontalRecyclerModel(popularRecipesTitleList, popularRecipesImageList, avgPopularRatingList);
 
-            CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(0));
-            /*CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
-                    horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());*/
+            //CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalModel.getRecipeList(),
+            //        horizontalModel.getUriList(), horizontalHolder.childHorizontalRecyclerView.getContext(), horizontalModel.getAvgRatingList());
 
-            highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
+            horizontalHolder.txtTitle.setText(verticalTitleList.get(position));
+
+            if (horizontalLists.size() > 0)
             {
-                @Override
-                public void onItemClick(int position)
+                CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(position));
+
+                highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
                 {
-                    Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
-                    Bundle bundle = new Bundle();
+                    @Override
+                    public void onItemClick(int position)
+                    {
+                        Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
+                        Bundle bundle = new Bundle();
 
-                    bundle.putString("id", horizontalLists.get(0).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
-                    intent.putExtras(bundle);
-                    holder.itemView.getContext().startActivity(intent);
-                }
-            });
+                        //bundle.putString("id", highRatedRecipeIdList.get(position));
+                        //intent.putExtras(bundle);
+                        //holder.itemView.getContext().startActivity(intent);
+                    }
+                });
 
-            horizontalHolder.childHorizontalRecyclerView.setAdapter(highRatedRecipesAdapter);
-
-        }
-        else
-        {
-            MainViewHolder verticalHolder = (MainViewHolder) holder;
-
-            StaggeredGridLayoutManager.LayoutParams staggeredLayout = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-            staggeredLayout.setFullSpan(false);
-            holder.itemView.setLayoutParams(staggeredLayout);
-
-
-
-            String recipeTitle = verticalRecipes.get(position).getTitle();
-            uri = verticalRecipes.get(position).getImage();
-
-            verticalHolder.txtTitle.setText(recipeTitle);
-            Glide.with(verticalHolder.itemView.getContext()).load(uri).into(verticalHolder.recipeImage);
-
-            Double avgRatingDouble = verticalRecipes.get(position).getAvgRating();
-            float avgRatingFloat = avgRatingDouble.floatValue();
-
-            if (verticalRecipes.get(position).getTotalCountOfRatings() >= COUNT_THRESHOLD_TO_SHOW_RECIPES)
-            {
-                // todo: there is an underlying issue here - we shouldn't need to set this to VISIBLE as it should never be set INVISIBLE.  For some reason the recyclerview sets it invisible anyway
-                verticalHolder.ratingBar.setVisibility(View.VISIBLE);
-                verticalHolder.ratingBar.setRating(avgRatingFloat);
-            }
-            else
-            {
-                verticalHolder.ratingBar.setVisibility(View.INVISIBLE);
+                horizontalHolder.childHorizontalRecyclerView.setAdapter(highRatedRecipesAdapter);
             }
         }
+
+
     }
 
     @Override
     public int getItemCount()
     {
-        return verticalRecipes.size();
+        return verticalTitleList.size();
     }
 
-    public void setData(List<VerticalRecipe> verticalRecipes)
+    public void setData(List<String> verticalTitleList)
     {
-        this.verticalRecipes = verticalRecipes;
+        this.verticalTitleList = verticalTitleList;
         notifyDataSetChanged();
     }
 
