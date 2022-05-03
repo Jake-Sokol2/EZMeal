@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                                             Distinguish between failed password attempt or not meeting
                                             hardening criteria
                                     */
-                                    Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
