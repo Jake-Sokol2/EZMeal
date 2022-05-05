@@ -161,7 +161,7 @@ public class GroupListsFragmentModel
     }
 
     public void addDataToFirestore(String itemName, String brandName) {
-        /*
+
 
         tmpName = "";
         //The list is empty for some reason so we're not getting the correct list later on
@@ -204,8 +204,9 @@ public class GroupListsFragmentModel
                     }
                 });
 
-         */
 
+
+        /*
         //Code to make retrieval of items user specific
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -231,6 +232,7 @@ public class GroupListsFragmentModel
                 //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
             }
         });
+        */
     }
 
 

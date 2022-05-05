@@ -127,7 +127,7 @@ public class GroupListsViewModel extends AndroidViewModel {
         {
             shoppingList = new MutableLiveData<List<List<String>>>();
 
-            theRepo.getShoppingList(groupListName).observeForever(aList ->
+            theRepo.getShoppingList("Tristan").observeForever(aList ->
             {
                 shoppingList.setValue(aList);
             });

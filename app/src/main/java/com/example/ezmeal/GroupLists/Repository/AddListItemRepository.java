@@ -143,7 +143,7 @@ public class AddListItemRepository{
 
     public void getDataFirebase(GetItemCallBack beep, String groupListName)
     {
-
+        /*
         sqlDb.testDao().updateAllIdentifiersIsNotActive();
 
         String email = mAuth.getCurrentUser().getEmail();
@@ -194,15 +194,17 @@ public class AddListItemRepository{
                     }
                 });
 
+        */
 
-        /*
         String email = mAuth.getCurrentUser().getEmail();
-        db.collection("Groups").whereEqualTo("Creator", email).whereEqualTo("ListName", groupListName).get()
+        db.collection("Groups").whereEqualTo("ListName", groupListName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful())
                         {
+                            if(task.getResult().getDocuments().size() > 0)
+                            {
                             DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
                             String tmpDocName = tmpDoc.getId();
 
@@ -210,11 +212,12 @@ public class AddListItemRepository{
                             dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    List<String> tmpList = new ArrayList<>();
+
                                     List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
-                                    if(task.isSuccessful()) {
+                                    if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot docBoi : task.getResult()) {
                                             //add the items (sub documents) to a list and return it as the shopping list
+                                            List<String> tmpList = new ArrayList<>();
                                             brandName = docBoi.getString("brand");
                                             itemName = docBoi.getString("name");
 
@@ -222,22 +225,29 @@ public class AddListItemRepository{
                                             tmpList.add(brandName);
                                             tmpList.add("1");
                                             tmpListOfLists.add(tmpList);
+                                            //tmpList.clear();
 
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         Log.i("Retrieval", "Error getting documents", task.getException());
                                     }
 
                                     beep.callback(tmpListOfLists);
                                 }
+
+
                             });
+
+                        }
+                        else
+                        {
+                            Log.i("Retrieval", "There are no lists for some reason.");
+                        }
 
                         }
                     }
                 });
-            */
+
     }
 
 

@@ -136,8 +136,6 @@ public class GroupListsFragment extends Fragment
             }
         }
 
-      
-
 
 
         /*
@@ -158,36 +156,6 @@ public class GroupListsFragment extends Fragment
     private String itemName, brandName, userName;
 
 
-    private void addDataToFirestore(String itemName, String brandName, String userName)
-    {
-
-        //Code to make retrieval of items user specific
-        //Get FirebaseAuth instance
-        mAuth = FirebaseAuth.getInstance();
-
-        //Get current user instance
-        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
-        String email = mCurrentUser.getEmail();
-
-        CollectionReference dbItems = db.collection("Items");
-        Item item = new Item(itemName, brandName, userName);
-        dbItems.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -195,8 +163,52 @@ public class GroupListsFragment extends Fragment
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
-        theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+
+        theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+
+        //Get the current selected list name.
+        theVM.getGroupList().observe(getViewLifecycleOwner(), groupList ->
+        {
+            if(groupList != null)
+            {
+                if(groupList.size() > theModel.groupListLength())
+                {
+                    for(int i = 0; i < groupList.size(); i++)
+                    {
+                        if(i==0)
+                        {
+                            theModel.addList(groupList.get(i), true);
+                            listName = groupList.get(i);
+                        }
+                        else
+                        {
+                            theModel.addList(groupList.get(i), false);
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
+        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
+        // back stack logs
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+
+        return view;
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
 
         //Observe live data and update grocery list
         theVM.updateShoppingList(listName).observe(getViewLifecycleOwner(), shoppingList ->
@@ -221,24 +233,6 @@ public class GroupListsFragment extends Fragment
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
-
-        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
-        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
-
-        return view;
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
         // back stack logs
 
         //adapter = new MainRecyclerAdapter(groceryList);
@@ -316,31 +310,6 @@ public class GroupListsFragment extends Fragment
 
 }
 
-
-
-/*
-=======
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        adapter.notifyDataSetChanged();
-    }
-
-
->>>>>>> Stashed changes
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState){
-        Parcelable rvState = rvGroupList.getLayoutManager().onSaveInstanceState();
-        super.onSaveInstanceState(outState);
-        //I need to save the grocery list here
-        //save recycler view position?
-        outState.putParcelable(RECYCLER_VIEW_KEY, rvState);
-        //save recycler view items?
-        outState.putSerializable(RV_DATA, (Serializable) theModel.getGroceryList());
-        //getChildFragmentManager().putFragment(outState, "bottom_dialog", bottomSheetDialogFrag);
-    }
-*/
 
 
 
