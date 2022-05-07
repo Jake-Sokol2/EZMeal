@@ -191,27 +191,7 @@ public class GroupListsFragment extends Fragment
             }
         });
 
-
-
-        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
-        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
-
-        return view;
-    }
-
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        //Observe live data and update grocery list
-        theVM.updateShoppingList(listName).observe(getViewLifecycleOwner(), shoppingList ->
+        theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
         {
             if(shoppingList != null)
             {
@@ -233,6 +213,29 @@ public class GroupListsFragment extends Fragment
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
+
+        theVM.setShoppingList("Tristan");
+
+
+        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
+        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
+        // back stack logs
+        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
+        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
+
+        return view;
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        //Observe live data and update grocery list
+
         // back stack logs
 
         //adapter = new MainRecyclerAdapter(groceryList);

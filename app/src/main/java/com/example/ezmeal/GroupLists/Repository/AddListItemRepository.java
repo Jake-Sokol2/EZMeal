@@ -125,7 +125,7 @@ public class AddListItemRepository{
 
     }
 
-    public MutableLiveData<List<List<String>>> getShoppingList(String name)
+    public void setShoppingList(String name)
     {
         String groupListName = "";
         if(name != "" )
@@ -133,15 +133,20 @@ public class AddListItemRepository{
 
         GetItemCallBack aCallback = new GetItemCallBack() {
             @Override
-            public void callback(List<List<String>> someList) {
+            public void onCallback(List<List<String>> someList) {
                 aList.setValue(someList);
             }
         };
+
         getDataFirebase(aCallback, groupListName);
+    }
+
+    public MutableLiveData<List<List<String>>> getShoppingList()
+    {
         return aList;
     }
 
-    public void getDataFirebase(GetItemCallBack beep, String groupListName)
+    public void getDataFirebase(GetItemCallBack aCallback, String groupListName)
     {
         /*
         sqlDb.testDao().updateAllIdentifiersIsNotActive();
@@ -169,7 +174,7 @@ public class AddListItemRepository{
                                     for (String identifier:identifiers)
                                     {
                                         if(brandName!= null) {
-                                            if (brandName.toLowerCase().contains(identifier)) {
+                       Í                     if (brandName.toLowerCase().contains(identifier)) {
                                                 // mark the identifier as active - tells Find Recipes to query recipes for the category belonging to this identifier
                                                 sqlDb.testDao().updateIdentifierIsActive(identifier);
 
@@ -195,7 +200,7 @@ public class AddListItemRepository{
                 });
 
         */
-
+        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
         String email = mAuth.getCurrentUser().getEmail();
         db.collection("Groups").whereEqualTo("ListName", groupListName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -213,7 +218,7 @@ public class AddListItemRepository{
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                                    List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
+
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot docBoi : task.getResult()) {
                                             //add the items (sub documents) to a list and return it as the shopping list
@@ -232,7 +237,7 @@ public class AddListItemRepository{
                                         Log.i("Retrieval", "Error getting documents", task.getException());
                                     }
 
-                                    beep.callback(tmpListOfLists);
+                                    aCallback.onCallback(tmpListOfLists);
                                 }
 
 
@@ -247,6 +252,7 @@ public class AddListItemRepository{
                         }
                     }
                 });
+        //return tmpListOfLists;
 
     }
 

@@ -118,20 +118,23 @@ public class GroupListsViewModel extends AndroidViewModel {
         });
     }
 
-    public MutableLiveData<List<List<String>>> updateShoppingList(String name)
+    public void setShoppingList(String name)
     {
         if(name != "")
             groupListName = name;
 
-        if(shoppingList == null)
-        {
-            shoppingList = new MutableLiveData<List<List<String>>>();
+        theRepo.setShoppingList("Tristan");
+    }
 
-            theRepo.getShoppingList("Tristan").observeForever(aList ->
-            {
+    public MutableLiveData<List<List<String>>> updateShoppingList()
+    {
+
+
+        theRepo.getShoppingList().observeForever(aList ->
+        {
+            if(aList != null && shoppingList.getValue() != aList)
                 shoppingList.setValue(aList);
-            });
-        }
+        });
 
         return shoppingList;
     }
