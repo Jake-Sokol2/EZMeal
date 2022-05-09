@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<String>> groupList;
-    public MutableLiveData<List<List<String>>> shoppingList;
+    public MutableLiveData<List<List<String>>> shoppingList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
     private GroupListRepository glRepo = new GroupListRepository();
@@ -128,7 +128,6 @@ public class GroupListsViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<List<String>>> updateShoppingList()
     {
-
 
         theRepo.getShoppingList().observeForever(aList ->
         {

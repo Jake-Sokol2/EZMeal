@@ -196,8 +196,9 @@ public class GroupListsFragment extends Fragment
             if(shoppingList != null)
             {
 
-                if (shoppingList.size() > 0)
+                if (shoppingList.size() > theModel.getGroceryList().size())
                 {
+                    theModel.dumpList();
                     for(int i = 0; i < shoppingList.size(); i++)
                         theModel.addItem(shoppingList.get(i));
                 }
@@ -233,6 +234,9 @@ public class GroupListsFragment extends Fragment
     public void onResume()
     {
         super.onResume();
+
+
+
 
         //Observe live data and update grocery list
 
