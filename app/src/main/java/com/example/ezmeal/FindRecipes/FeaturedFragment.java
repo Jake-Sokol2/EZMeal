@@ -84,7 +84,17 @@ public class FeaturedFragment extends Fragment
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
-        // Firebase
+        RecyclerRecipe2 test = new RecyclerRecipe2("Cookies", "D1ccah7inhNbzXfLk04C", "Lace Cookies (Florentine Cookies)", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test);
+        RecyclerRecipe2 test2 = new RecyclerRecipe2("Breakfast", "9rDucWsmgDgfVam3cdqp", "Best Buckwheat Pancakes", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test2);
+        RecyclerRecipe2 test3 = new RecyclerRecipe2("Breakfast", "V2IQKIBoxP5WFwqYGzuh", "Oatmeal Pancakes II", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test3);
+
+
+
+
+            // Firebase
         db = FirebaseFirestore.getInstance();
         dbRecipes = db.collection("RecipesRatingBigInt");
 

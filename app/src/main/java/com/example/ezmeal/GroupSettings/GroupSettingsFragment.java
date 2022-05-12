@@ -26,12 +26,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 
 import com.example.ezmeal.FindRecipes.Recipe;
+import com.example.ezmeal.GroupLists.GroupListsFragment;
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
+import com.example.ezmeal.Registration.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -163,7 +170,7 @@ public class GroupSettingsFragment extends Fragment {
                 //deleteUser();
                 //Log.i("TAG", "anything");
                 //openActivityLogin();
-                showRecoverPasswordDialog();
+                showDeleteUserDialog();
             }
         });
         //int randomNum = ThreadLocalRandom.current().nextInt(1, 24);
@@ -171,6 +178,44 @@ public class GroupSettingsFragment extends Fragment {
         int randomNum = new Random().nextInt(10) + 1;
         Log.i("myRand", String.valueOf(randomNum));
 
+        CardView emailSetting = (CardView)  rootView.findViewById(R.id.emailSetting);
+
+        emailSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupSettingsFragment_to_emailSettingFragment2, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+            }
+        });
+
+
+        CardView passwordSetting = (CardView)  rootView.findViewById(R.id.passwordSetting);
+
+        passwordSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupSettingsFragment_to_fragmentPasswordSetting, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+            }
+        });
 
 
 
@@ -268,7 +313,7 @@ public class GroupSettingsFragment extends Fragment {
 
     }
 
-    private void showRecoverPasswordDialog() {
+    private void showDeleteUserDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Delete Your Account");
@@ -299,6 +344,7 @@ public class GroupSettingsFragment extends Fragment {
         });
         builder.create().show();
     }
+
 
 
 
