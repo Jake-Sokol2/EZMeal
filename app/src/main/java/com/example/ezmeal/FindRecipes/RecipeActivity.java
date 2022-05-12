@@ -42,6 +42,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -49,13 +55,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RecipeActivity extends AppCompatActivity implements RateRecipeDialogInterface
+public class RecipeActivity extends AppCompatActivity
 {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -92,6 +99,13 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
 
     ArrayList<String> categories;
     ArrayList<String> directions;
+    String calories;
+    String protein;
+    String carbohydrates;
+    String fat;
+    String cholesterol;
+    String sodium;
+
     ArrayList<String> nutrition;
     ArrayList<String> ingredients;
     String imageUrl;
@@ -115,6 +129,8 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
     float ratingValue;
     String tempRating;
 
+    //DatabaseReference realtimeDb = FirebaseDatabase.getInstance().getReference("Recipes");
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -128,7 +144,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_specific_recipe);
 
-        rateRecipeInterface = this;
+        //rateRecipeInterface = this;
 
         Bundle extras = getIntent().getExtras();
         recipeId = extras.getString("id");
@@ -136,11 +152,12 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
         ImageView imageRecipe = findViewById(R.id.imageRecipeImage);
         TextView txtRecipeTitle = findViewById(R.id.txtRecipeTitle);
 
-        rateRecipe = findViewById(R.id.rateRecipe);
+        //rateRecipe = findViewById(R.id.rateRecipe);
 
-        vmRateRecipeBubble = new ViewModelProvider(this).get(RateRecipeBubbleViewModel.class);
-        vmRateRecipe = new ViewModelProvider(this).get(RateRecipeViewModel.class);
+        //vmRateRecipeBubble = new ViewModelProvider(this).get(RateRecipeBubbleViewModel.class);
+        //vmRateRecipe = new ViewModelProvider(this).get(RateRecipeViewModel.class);
 
+        /*
         Observer<Float> ratingObserver = new Observer<Float>()
         {
             @Override
@@ -152,7 +169,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                 }
             }
         };
-        vmRateRecipe.getStarRating().observe(this, ratingObserver);
+        vmRateRecipe.getStarRating().observe(this, ratingObserver);*/
 
         // Room database instance
         //ratingsDb = Room.databaseBuilder(getApplicationContext(), RatingsDatabase.class, "user")
@@ -164,7 +181,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
         // retrieve current rating for this recipe (if one exists for this user) from Room to display in bottom rating bar
         Rating userRating = sqlDb.testDao().getSpecificRatingObject(recipeId);
 
-        rateRecipe.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener()
+        /*rateRecipe.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener()
         {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float value, boolean fromUser)
@@ -181,13 +198,13 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                     ft.commit();
                 }
             }
-        });
+        });*/
 
 
         db = FirebaseFirestore.getInstance();
 
         // todo: RecipesRating
-        CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+        CollectionReference dbRecipes = db.collection("Recipes");
 
 
         tv1 = findViewById(R.id.textRating1);
@@ -200,8 +217,179 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
 
         float avgRating = 0f;
 
+        // working update code
+        //DatabaseReference testRef = FirebaseDatabase.getInstance().getReference().child("Recipes").child("0");
+        //testRef.child("numClicked").setValue(ServerValue.increment(1));
+
+        // working update code
+/*        DatabaseReference testRef = FirebaseDatabase.getInstance().getReference().child("Recipes").child("0");
+        testRef.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                //for (DataSnapshot ds: snapshot.getChildren())
+                //{
+                    Long s = (Long) snapshot.child("week").getValue();
+                    Log.i("test", String.valueOf(s));
+
+                    if (s < 1000)
+                    {
+                        snapshot.child("week").getRef().setValue(1000);
+                        snapshot.child("numClicked").getRef().setValue(1);
+                    }
+                    else
+                    {
+                        snapshot.child("numClicked").getRef().setValue(ServerValue.increment(1));
+                    }
+                //}
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });*/
+
+        // order by numClicks where week equalTo 1000
+        /*DatabaseReference queryRef = FirebaseDatabase.getInstance().getReference().child("Recipes");
+        queryRef.orderByChild("week").equalTo(1000).orderByChild("numClicked").addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Log.i("t", "t");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });*/
+
+        /*DatabaseReference queryRef = FirebaseDatabase.getInstance().getReference().child("Recipes");
+        queryRef.child("week").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                Log.i("test", "week new : " + String.valueOf(task.getResult().getValue()));
+
+                if ((int) task.getResult().getValue() != 1000)
+                {
+
+                }
+            }
+        });*/
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+        String currentWeek = String.valueOf(cal.getTimeInMillis());
+        Long currentTimeLong = cal.getTimeInMillis();
+        String removeLastWeek = String.valueOf(cal.getTimeInMillis() - 1);
+
+
+        // WORKING 5/8/22
+        DatabaseReference testRef = FirebaseDatabase.getInstance().getReference().child("Recipes").child(currentWeek).child(recipeId);
+        testRef.child("numClicked").setValue(ServerValue.increment(1));
+
+
+        // querying code that wipes database if current week isnt active
+        // WORKING 5/8/22
+        DatabaseReference queryRef = FirebaseDatabase.getInstance().getReference().child("Recipes");
+        queryRef.keepSynced(true);
+
+        queryRef.orderByChild("week").startAt(0).endAt(currentTimeLong - 1).addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                // If a week exists in the database and it isn't this week, delete all data
+                if (snapshot.getValue() != null)
+                {
+                    for (DataSnapshot ds: snapshot.getChildren())
+                    {
+                        queryRef.child(ds.getKey()).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });
+
+        /*queryRef.child(currentWeek).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                if (snapshot.getValue() == null)
+                {
+                    Log.i("a", "snapshot was null");
+
+                    queryRef.removeValue();
+                }
+                else
+                {
+                    Log.i("a", "snapshot was NOT null");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });*/
+
+        /*DatabaseReference queryRef = FirebaseDatabase.getInstance().getReference().child("Recipes");
+        queryRef.startAt(0).endAt(1).addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });*/
+
+
+        //Log.i("week value", String.valueOf(testRef.child("week").get().getResult().getValue()));
+        /*realtimeDb.orderByChild("recipeId").equalTo("0").addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot ds: snapshot.getChildren())
+                {
+                    String week = (String) ds.child("week").getValue();
+                    Log.i("a", "week + " + week);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                throw error.toException();
+            }
+        });*/
+
         // todo: RecipesRating
-        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
@@ -212,7 +400,22 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                 categories = (ArrayList<String>) task.getResult().get("categories");
                 directions = (ArrayList<String>) task.getResult().get("directions");
                 ingredients = (ArrayList<String>) task.getResult().get("ingredients");
-                nutrition = (ArrayList<String>) task.getResult().get("nutrition");
+
+                calories = (String) task.getResult().get("calories");
+                protein = (String) task.getResult().get("protein");
+                carbohydrates = (String) task.getResult().get("carbohydrates");
+                fat = (String) task.getResult().get("fat");
+                cholesterol = (String) task.getResult().get("cholesterol");
+                sodium = (String) task.getResult().get("sodium");
+
+                nutrition = new ArrayList<>();//(ArrayList<String>) task.getResult().get("nutrition");
+                nutrition.add("Calories - " + calories);
+                nutrition.add("Protein - " + protein);
+                nutrition.add("Carbohydrates - " + carbohydrates);
+                nutrition.add("Fat - " + fat);
+                nutrition.add("Cholesterol - " + cholesterol);
+                nutrition.add("Sodium - " + sodium);
+
                 imageUrl = task.getResult().getString("imageUrl");
                 title = task.getResult().getString("title");
 
@@ -373,7 +576,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
 
 
                 // todo: RecipesRating
-                db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
@@ -544,6 +747,12 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                         nestedScrollView = findViewById(R.id.nestedScrollNutrition);
                         tab.setCustomView(txtNutrition);
                         break;
+                    case 3:
+                        TextView txtRatings = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_name, null);
+                        txtRatings.setText("Ratings");
+                        nestedScrollView = findViewById(R.id.nestedScrollRatings);
+                        tab.setCustomView(txtRatings);
+                        break;
                 }
             }
         }).attach();
@@ -710,7 +919,10 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                 }
             }
         };*/
-        MutableLiveData<List<String>> test = vmRateRecipeBubble.getRatingBubbleList();
+
+
+        // working rating code
+        /*MutableLiveData<List<String>> test = vmRateRecipeBubble.getRatingBubbleList();
         chosenBubbles = test.getValue();
 
         // even though it is initialized in the ViewModel, getRatingBubbleList will return null if a value has not been set yet by the user
@@ -741,7 +953,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
         {
             db = FirebaseFirestore.getInstance();
             // todo: RecipesRating
-            CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+            CollectionReference dbRecipes = db.collection("Recipes");
 
             // if user has never left a review on this recipe before, increment number of ratings in firestore
             if (oldRating == 0)
@@ -838,7 +1050,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
             {
                 // delete the rating in firebase
                 // todo: RecipesRating
-                db.collection("RecipesRatingBigInt").document(recipeId).update("textRatings." + previousRatingsList.get(i), FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                db.collection("Recipes").document(recipeId).update("textRatings." + previousRatingsList.get(i), FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)
@@ -862,7 +1074,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
             {
                 // delete the rating in firebase
                 // todo: RecipesRating
-                db.collection("RecipesRatingBigInt").document(recipeId).update("textRatings." + chosenBubbles.get(i), FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
+                db.collection("Recipes").document(recipeId).update("textRatings." + chosenBubbles.get(i), FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)
@@ -872,12 +1084,7 @@ public class RecipeActivity extends AppCompatActivity implements RateRecipeDialo
                 });
             }
         }
-    }
-
-    @Override
-    public void recipeCallback(float rating)
-    {
-
+    }*/
     }
 }
 

@@ -47,6 +47,13 @@ public class RecipeNutritionFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private String calories;
+    private String protein;
+    private String carbohydrates;
+    private String fat;
+    private String cholesterol;
+    private String sodium;
+
     public RecipeNutritionFragment() {
         // Required empty public constructor
     }
@@ -99,12 +106,25 @@ public class RecipeNutritionFragment extends Fragment {
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         // todo: RecipesRating
-        db.collection("RecipesRatingBigInt").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        db.collection("Recipes").document(recipeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                nutrition = (ArrayList<String>) task.getResult().get("nutrition");
+                calories = (String) task.getResult().get("calories");
+                protein = (String) task.getResult().get("protein");
+                carbohydrates = (String) task.getResult().get("carbohydrates");
+                fat = (String) task.getResult().get("fat");
+                cholesterol = (String) task.getResult().get("cholesterol");
+                sodium = (String) task.getResult().get("sodium");
+
+                nutrition = new ArrayList<>(); //ArrayList<String>) task.getResult().get("nutrition");
+                nutrition.add("Calories - " + calories);
+                nutrition.add("Protein - " + protein);
+                nutrition.add("Carbohydrates - " + carbohydrates);
+                nutrition.add("Fat - " + fat);
+                nutrition.add("Cholesterol - " + cholesterol);
+                nutrition.add("Sodium - " + sodium);
 
                 for (int i = 0; i < nutrition.size(); i++)
                 {

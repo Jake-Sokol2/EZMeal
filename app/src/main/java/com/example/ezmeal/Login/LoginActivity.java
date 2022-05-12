@@ -62,7 +62,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+        // skip login
+        mAuth.signInWithEmailAndPassword("merge@email.com", "testmerge")
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+                        // Was the sign in successful?
+                        if (task.isSuccessful()) {
+                            // Put successful log in code here...
+                            Toast.makeText(LoginActivity.this, "Login success.", Toast.LENGTH_SHORT).show();
+                            openActivityMain();
+                        } else {
+                            // Put unsuccessful log in code here
+                            Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+            }
+        });
 
 
 

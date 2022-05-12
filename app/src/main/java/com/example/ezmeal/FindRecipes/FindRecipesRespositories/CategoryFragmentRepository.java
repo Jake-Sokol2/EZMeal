@@ -37,7 +37,7 @@ public class CategoryFragmentRepository
     private CategoryFragmentRoomRepository roomRepository;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+    private CollectionReference dbRecipes = db.collection("Recipes");
 
     private int numOfRetrievedHighRatedRecipes = 0;
     private Set<Integer> setOfUniqueHighlyRatedRecipes = new HashSet<>();

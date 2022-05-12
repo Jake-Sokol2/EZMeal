@@ -41,6 +41,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -64,10 +65,14 @@ public class FeaturedFragment extends Fragment
     public List<Double> ratings;
     public EZMealDatabase sqlDb;
 
+    private boolean isPopulated;
+
     private FeaturedFragmentRoomRepository testR;
 
     private ArrayList<List<HorizontalRecipe>> horizontalLists = new ArrayList<List<HorizontalRecipe>>();
     private FeaturedFragmentViewModel viewModel;
+
+    private List<String> activeCategoryList;
 
     private final int RECIPE_RESET_TIME = 5;
 
@@ -84,9 +89,17 @@ public class FeaturedFragment extends Fragment
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
+        // public RecyclerRecipe2(String category, String recipeId, String title, String imageUrl, double averageRating, String typeOfItem, boolean isHorizontal, Integer totalRatings)
+        RecyclerRecipe2 test = new RecyclerRecipe2("Cookies", "D1ccah7inhNbzXfLk04C", "Lace Cookies (Florentine Cookies)", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test);
+        RecyclerRecipe2 test2 = new RecyclerRecipe2("Breakfast", "9rDucWsmgDgfVam3cdqp", "Best Buckwheat Pancakes", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test);
+        RecyclerRecipe2 test3 = new RecyclerRecipe2("Breakfast", "V2IQKIBoxP5WFwqYGzuh", "Oatmeal Pancakes II", "test", 4, "test", true, 1);
+        sqlDb.testDao().insertRecyclerRecipe2(test);
+
         // Firebase
         db = FirebaseFirestore.getInstance();
-        dbRecipes = db.collection("RecipesRatingBigInt");
+        dbRecipes = db.collection("Recipes");
 
         testR = new FeaturedFragmentRoomRepository(getActivity().getApplication());
 
@@ -127,56 +140,119 @@ public class FeaturedFragment extends Fragment
             }
         });
 
-            viewModel.getActiveCategoriesFromIdentifier().observe(getViewLifecycleOwner(), new Observer<List<String>>()
-            {
-                @Override
-                public void onChanged(List<String> activeCategories)
-                {
-                    if (activeCategories != null)// && list.size() > 0)
-                    {
-                        if (activeCategories.size() > 0)
-                        {
-                            //getActivity().getSharedPreferences("FeaturedRecipes", 0).edit().clear().commit();
+        viewModel.getIsPopulated().observe(getViewLifecycleOwner(), returnIsPopulated ->
+        {
+            isPopulated = returnIsPopulated;
+        });
 
-                            SharedPreferences sp;
-                            sp = getActivity().getSharedPreferences("FirstRunAfterUpdate", Context.MODE_PRIVATE);
 
-                            SharedPreferences.Editor editor = sp.edit();
-                            long timeLastEntered = sp.getLong("FeaturedRecipes", 0);
 
-                            if ((timeLastEntered != 0) && (new Date().getTime()) < timeLastEntered + RECIPE_RESET_TIME)
-                            {
-                                //List<RecyclerRecipe2> listOfRecyclerRecipes2 = categoryWithRecipes.get(0).recyclerRecipe2List;
-                                //addToRecycler(listOfRecyclerRecipes2);
-                            }
-                            else
-                            {
-                                // keep track of last time user retrieved featured recipes
-                                editor.putLong("FeaturedRecipes", new Date().getTime());
-                                verticalTitleList.add("Recommended for you");
 
-                                viewModel.getHorizontalList(activeCategories).observe(getViewLifecycleOwner(), list ->
-                                {
-                                    if (list != null)// && list.size() > 0)
-                                    {
-                                        horizontalLists.add(list);
-                                        categoryFragmentFeaturedAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-            });
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
 
+        viewModel.getHorizontalList(activeCategoryList).observe(getViewLifecycleOwner(), list ->
+        {
+                Log.i("active categories", "Fragment - observer");
+                Log.i("active categories", String.valueOf(list));
+                Log.i("active categories", "size before - " + String.valueOf(list.size()));
+                if (list != null)// && list.size() > 0)
+                {
+                    Log.i("active categories", "Fragment - observer - list not null");
+                    if (list.size() != 0)
+                    {
+                        Log.i("active categories", "Fragment - observer - list not empty");
+                        Log.i("active categories", String.valueOf(list));
+                        Log.i("active categories", "size after - " + String.valueOf(list.size()));
+                        horizontalLists.add(list);
+                        verticalTitleList.add("Recommended for you");
+                        categoryFragmentFeaturedAdapter.notifyDataSetChanged();
+                    }
+
+                }
+        });
+
+        viewModel.getNewRecipesList().observe(getViewLifecycleOwner(), list ->
+        {
+            if (list != null && list.size() > 0)
+            {
+                horizontalLists.add(list);
+                verticalTitleList.add("New Recipes this Week");
+                categoryFragmentFeaturedAdapter.notifyDataSetChanged();
+            }
+        });
+
+        viewModel.getPopularRecipesThisWeekList().observe(getViewLifecycleOwner(), list ->
+        {
+            if (list != null && list.size() > 0)
+            {
+                horizontalLists.add(list);
+                verticalTitleList.add("Popular Recipes this Week");
+                categoryFragmentFeaturedAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 
     @Override
     public void onResume()
     {
         super.onResume();
+
+        viewModel.getActiveCategoriesFromIdentifier().observe(getViewLifecycleOwner(), new Observer<List<String>>()
+        {
+            @Override
+            public void onChanged(List<String> activeCategories)
+            {
+                // todo: remove, this is hardcoded
+
+                activeCategoryList = new ArrayList<>(Arrays.asList("Pancakes", "Cookies"));
+                activeCategories = activeCategoryList;
+
+                if (activeCategories != null && !isPopulated)// && list.size() > 0)
+                {
+                    if (activeCategories.size() > 0)
+                    {
+                        //getActivity().getSharedPreferences("FeaturedRecipes", 0).edit().clear().commit();
+
+                        SharedPreferences sp;
+                        sp = getActivity().getSharedPreferences("FirstRunAfterUpdate", Context.MODE_PRIVATE);
+
+                        SharedPreferences.Editor editor = sp.edit();
+                        long timeLastEntered = sp.getLong("FeaturedRecipes", 0);
+
+                        if ((timeLastEntered != 0) && (new Date().getTime()) < timeLastEntered + RECIPE_RESET_TIME)
+                        {
+                            //List<RecyclerRecipe2> listOfRecyclerRecipes2 = categoryWithRecipes.get(0).recyclerRecipe2List;
+                            //addToRecycler(listOfRecyclerRecipes2);
+                        }
+                        else
+                        {
+                            // keep track of last time user retrieved featured recipes
+                            editor.putLong("FeaturedRecipes", new Date().getTime());
+                            //verticalTitleList.add("Recommended for you");
+
+                            if (!isPopulated)
+                            {
+                                viewModel.setHorizontalList(activeCategoryList);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        if (!isPopulated)
+        {
+            viewModel.setNewRecipesList();
+            viewModel.setPopularRecipesThisWeekList();
+        }
+
 
     }
 
@@ -184,6 +260,9 @@ public class FeaturedFragment extends Fragment
     public void onStop()
     {
         super.onStop();
+
+        viewModel.setPopulated(true);
+
         categoryFragmentModel.dumpList();
     }
 
