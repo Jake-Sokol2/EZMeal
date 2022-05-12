@@ -37,6 +37,7 @@ import java.util.Objects;
 
 public class AddListItemRepository{
     final MutableLiveData<List<List<String>>> aList = new MutableLiveData<List<List<String>>>();
+    final MutableLiveData<List<Boolean>> selectList = new MutableLiveData<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public List<String> identifiers = new ArrayList<String>();
@@ -125,7 +126,7 @@ public class AddListItemRepository{
 
     }
 
-    public MutableLiveData<List<List<String>>> getShoppingList(String name)
+    public void setShoppingList(String name)
     {
         String groupListName = "";
         if(name != "" )
@@ -133,17 +134,24 @@ public class AddListItemRepository{
 
         GetItemCallBack aCallback = new GetItemCallBack() {
             @Override
-            public void callback(List<List<String>> someList) {
+            public void onCallback(List<List<String>> someList) {
                 aList.setValue(someList);
             }
         };
+
         getDataFirebase(aCallback, groupListName);
+    }
+
+    public MutableLiveData<List<Boolean>> getSelectList() { return selectList; }
+
+    public MutableLiveData<List<List<String>>> getShoppingList()
+    {
         return aList;
     }
 
-    public void getDataFirebase(GetItemCallBack beep, String groupListName)
+    public void getDataFirebase(GetItemCallBack aCallback, String groupListName)
     {
-
+        /*
         sqlDb.testDao().updateAllIdentifiersIsNotActive();
 
         String email = mAuth.getCurrentUser().getEmail();
@@ -169,7 +177,7 @@ public class AddListItemRepository{
                                     for (String identifier:identifiers)
                                     {
                                         if(brandName!= null) {
-                                            if (brandName.toLowerCase().contains(identifier)) {
+                       Í                     if (brandName.toLowerCase().contains(identifier)) {
                                                 // mark the identifier as active - tells Find Recipes to query recipes for the category belonging to this identifier
                                                 sqlDb.testDao().updateIdentifierIsActive(identifier);
 
@@ -194,15 +202,17 @@ public class AddListItemRepository{
                     }
                 });
 
-
-        /*
+        */
+        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
         String email = mAuth.getCurrentUser().getEmail();
-        db.collection("Groups").whereEqualTo("Creator", email).whereEqualTo("ListName", groupListName).get()
+        db.collection("Groups").whereEqualTo("ListName", groupListName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful())
                         {
+                            if(task.getResult().getDocuments().size() > 0)
+                            {
                             DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
                             String tmpDocName = tmpDoc.getId();
 
@@ -210,11 +220,12 @@ public class AddListItemRepository{
                             dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    List<String> tmpList = new ArrayList<>();
-                                    List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
-                                    if(task.isSuccessful()) {
+
+
+                                    if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot docBoi : task.getResult()) {
                                             //add the items (sub documents) to a list and return it as the shopping list
+                                            List<String> tmpList = new ArrayList<>();
                                             brandName = docBoi.getString("brand");
                                             itemName = docBoi.getString("name");
 
@@ -222,22 +233,30 @@ public class AddListItemRepository{
                                             tmpList.add(brandName);
                                             tmpList.add("1");
                                             tmpListOfLists.add(tmpList);
+                                            //tmpList.clear();
 
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         Log.i("Retrieval", "Error getting documents", task.getException());
                                     }
 
-                                    beep.callback(tmpListOfLists);
+                                    aCallback.onCallback(tmpListOfLists);
                                 }
+
+
                             });
+
+                        }
+                        else
+                        {
+                            Log.i("Retrieval", "There are no lists for some reason.");
+                        }
 
                         }
                     }
                 });
-            */
+        //return tmpListOfLists;
+
     }
 
 

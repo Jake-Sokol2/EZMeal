@@ -32,7 +32,14 @@
         android:id="@+id/groupSettingsFragment"
         android:name="com.example.ezmeal.GroupSettings.GroupSettingsFragment"
         android:label="Group Settings"
-        tools:layout="@layout/fragment_group_settings" />
+        tools:layout="@layout/fragment_group_settings" >
+        <action
+            android:id="@+id/action_groupSettingsFragment_to_emailSettingFragment2"
+            app:destination="@id/emailSettingFragment2" />
+        <action
+            android:id="@+id/action_groupSettingsFragment_to_fragmentPasswordSetting"
+            app:destination="@id/fragmentPasswordSetting" />
+    </fragment>
     <fragment
         android:id="@+id/specificRecipeFragment"
         android:name="com.example.ezmeal.FindRecipes.RecipeActivity"
@@ -49,5 +56,15 @@
         android:id="@+id/myRecipesSpecificRecipeFragment"
         android:name="com.example.ezmeal.MyRecipes.RecipeFragment"
         android:label="MyRecipesSpecificRecipeFragment" />
+    <fragment
+        android:id="@+id/emailSettingFragment2"
+        android:name="com.example.ezmeal.GroupSettings.EmailSettingFragment"
+        android:label="fragment_email_setting"
+        tools:layout="@layout/fragment_email_setting" />
+    <fragment
+        android:id="@+id/fragmentPasswordSetting"
+        android:name="com.example.ezmeal.FragmentPasswordSetting"
+        android:label="fragment_password_setting"
+        tools:layout="@layout/fragment_password_setting" />
 
 </navigation>

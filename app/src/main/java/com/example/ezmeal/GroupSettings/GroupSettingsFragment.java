@@ -26,15 +26,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 import androidx.room.util.StringUtil;
 
 import com.example.ezmeal.FindRecipes.FindRecipesModels.RecipeClicks;
 import com.example.ezmeal.FindRecipes.Recipe;
+import com.example.ezmeal.GroupLists.GroupListsFragment;
 import com.example.ezmeal.Login.LoginActivity;
 import com.example.ezmeal.R;
 import com.example.ezmeal.roomDatabase.Identifier;
+import com.example.ezmeal.Registration.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -181,7 +188,7 @@ public class GroupSettingsFragment extends Fragment {
                 //deleteUser();
                 //Log.i("TAG", "anything");
                 //openActivityLogin();
-                showRecoverPasswordDialog();
+                showDeleteUserDialog();
             }
         });
         //int randomNum = ThreadLocalRandom.current().nextInt(1, 24);
@@ -203,54 +210,44 @@ public class GroupSettingsFragment extends Fragment {
         long a = new Date().getTime();
         Log.i("now", String.valueOf(a));
 
-        //realtimeDb.child("Recipes").child("Week").child("1").child("RecipeId").child("0").child("numClicks").setValue(ServerValue.increment(1));
+        CardView emailSetting = (CardView)  rootView.findViewById(R.id.emailSetting);
 
-        /*realtimeDb.child("Recipes").child("0").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-        {
+        emailSetting.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    Log.i("a", String.valueOf(task.getResult().getValue()));
-                    RecipeClicks rc = task.getResult().getValue(RecipeClicks.class);
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
 
-                    Log.i("a", String.valueOf("recipeId " + rc.getRecipeId()));
-                    Log.i("a", String.valueOf("numClicked " + rc.getNumClicked()));
-                    Log.i("a", String.valueOf("week " + rc.getWeek()));
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "");
 
-
-                }
-                else
-                {
-                    Log.i("a", "error getting realtime data");
-                }
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupSettingsFragment_to_emailSettingFragment2, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
             }
         });
-*/
-      /*  long cutoff = test;
-        Query updateRecipeClicks = realtimeDb.child("Recipes").orderByChild("recipeId").equalTo(0);
-        updateRecipeClicks.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                for (DataSnapshot itemSnapshot: snapshot.getChildren())
-                {
-                    //itemSnapshot.getRef().removeValue();
-                    if (itemSnapshot.ge< 1)
-                    {
 
-                    }
-                }
-            }
 
+        CardView passwordSetting = (CardView)  rootView.findViewById(R.id.passwordSetting);
+
+        passwordSetting.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-                throw error.toException();
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupSettingsFragment_to_fragmentPasswordSetting, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
             }
-        });*/
+        });
 
 
 
@@ -348,7 +345,7 @@ public class GroupSettingsFragment extends Fragment {
 
     }
 
-    private void showRecoverPasswordDialog() {
+    private void showDeleteUserDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Delete Your Account");
@@ -382,6 +379,8 @@ public class GroupSettingsFragment extends Fragment {
 
 
 
+
+    /*public class AsyncClass extends AsyncTask<Void, Void, Void>
     public class AsyncClass extends AsyncTask<Void, Void, Void>
     {
         private Random rand;

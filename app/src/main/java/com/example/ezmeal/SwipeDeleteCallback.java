@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ezmeal.GroupLists.Adapter.GroupListsFragmentRecyclerAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 
 //Following tutorial from https://medium.com/@zackcosborn/step-by-step-recyclerview-swipe-to-delete-and-undo-7bbae1fce27e
 
@@ -21,8 +22,9 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private final ColorDrawable background;
     private GroupListsFragmentRecyclerAdapter mAdapter;
     private GroupListsFragmentModel theModel;
+    private GroupListsViewModel theVM;
 
-    public SwipeDeleteCallback(GroupListsFragmentRecyclerAdapter adapter, GroupListsFragmentModel theModel)
+    public SwipeDeleteCallback(GroupListsFragmentRecyclerAdapter adapter, GroupListsFragmentModel theModel, GroupListsViewModel theVM)
     {
         super(0, ItemTouchHelper.LEFT);
         mAdapter = adapter;
@@ -31,6 +33,7 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
         //        R.drawable.ic_delete_white_36);
         background = new ColorDrawable(Color.RED);
         this.theModel = theModel;
+        this.theVM = theVM;
     }
 
 
@@ -39,6 +42,7 @@ public class SwipeDeleteCallback extends ItemTouchHelper.SimpleCallback {
     {
         theModel.removeItem(viewHolder.getAbsoluteAdapterPosition());
         mAdapter.notifyDataSetChanged();
+        //theVM.setShoppingList("Tristan");
     }
 
     @Override

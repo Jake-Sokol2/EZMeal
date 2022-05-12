@@ -35,8 +35,8 @@ public class GroupListsFragmentModel
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private GroupListRepository glRepo;
-    String itemName;
-    String brandName;
+    public String itemName;
+    public String brandName;
     String docID;
     String tmpName;
 
@@ -54,7 +54,11 @@ public class GroupListsFragmentModel
     {
         groupList.add(listName);
         isSelectedList.add(isSelected);
+    }
 
+    public void addList(String listName)
+    {
+        groupList.add(listName);
     }
 
     public void addItem(String itemName, String itemBrand){
@@ -86,6 +90,8 @@ public class GroupListsFragmentModel
         itemName = shoppingList.get(position).get(0);
         brandName = shoppingList.get(position).get(1);
 
+        String groupName = "Tristan";
+
         shoppingList.remove(position);
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,6 +99,7 @@ public class GroupListsFragmentModel
         FirebaseUser mCurrentUser = mAuth.getCurrentUser();
         String email = mCurrentUser.getEmail();
 
+        /*
         CollectionReference dbItems = db.collection("Items");
         dbItems.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -111,6 +118,41 @@ public class GroupListsFragmentModel
             } //end onComplete
 
         });
+        */
+
+        CollectionReference dbItems = db.collection("Groups");
+        dbItems.whereEqualTo("ListName", groupName).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            if(task.getResult().getDocuments().size() > 0)
+                            {
+                                DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
+                                String tmpDocName = tmpDoc.getId();
+
+                                CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
+                                dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                   {
+                                       if(task.isSuccessful()) {
+                                           for(QueryDocumentSnapshot aDoc : task.getResult())
+                                           {
+                                               if(Objects.equals(itemName, aDoc.getString("name")))
+                                               {
+                                                   docID = aDoc.getId();
+                                                   dbShoppingList.document(docID).delete();
+                                               }
+                                           }
+                                       }
+                                   }
+                                });
+                            }
+                        }
+                    }
+                });
 
     }
 
@@ -142,6 +184,10 @@ public class GroupListsFragmentModel
 
     public void setSelected(int position)
     {
+        for(int i = 0; i < isSelectedList.size(); i++)
+        {
+            isSelectedList.set(i, false);
+        }
         isSelectedList.set(position, true);
     }
 
@@ -160,8 +206,15 @@ public class GroupListsFragmentModel
         return isSelectedList;
     }
 
+    public int getCurrentSelected() {
+        for(int i = 0; i < isSelectedList.size(); i++)
+            if(isSelectedList.get(i))
+                return i;
+            return 0;
+    }
+
     public void addDataToFirestore(String itemName, String brandName) {
-        /*
+
 
         tmpName = "";
         //The list is empty for some reason so we're not getting the correct list later on
@@ -204,8 +257,9 @@ public class GroupListsFragmentModel
                     }
                 });
 
-         */
 
+
+        /*
         //Code to make retrieval of items user specific
         //Get FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -231,17 +285,67 @@ public class GroupListsFragmentModel
                 //Toast.makeText(getContext(), "Item not added", Toast.LENGTH_SHORT).show();
             }
         });
+        */
+    }
+
+    public List<List<String>> getGroceryList()
+    {
+        return shoppingList;
     }
 
 
-    public List<List<String>> getGroceryList() {
-        return shoppingList;
+    public void fillGroceryList() {
+
+        //String currentListName = groupList.get(getCurrentSelected());
+        String currentListName = "Tristan";
+        //List<List<String>> tmpListOfLists = new ArrayList<>();
+        String email = mAuth.getCurrentUser().getEmail();
+        db.collection("Groups").whereEqualTo("ListName", currentListName).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       if(task.isSuccessful())
+                       {
+                           if(task.getResult().getDocuments().size() > 0)
+                           {
+                               DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
+                               String tmpDocName = tmpDoc.getId();
+
+                               CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
+                               dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                  @Override
+                                  public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                      if(task.isSuccessful()) {
+                                          for(QueryDocumentSnapshot docBoi : task.getResult()) {
+                                              List<String> tmpList = new ArrayList<>();
+                                              brandName = docBoi.getString("brand");
+                                              itemName = docBoi.getString("name");
+
+                                              tmpList.add(itemName);
+                                              tmpList.add(brandName);
+                                              tmpList.add("1");
+                                              shoppingList.add(tmpList);
+                                          }
+                                          Log.i("Query", "Finished filling shopping list");
+                                      }
+                                  }
+                               });
+                           }
+                       }
+                   }
+                });
+
+
     }
 
     public void restoreGroceryList(List<List<String>> theList) {
         shoppingList = theList;
     }
 
+    public void restoreSelectList(List<Boolean> theList)
+    {
+        isSelectedList = theList;
+    }
 
 
 }

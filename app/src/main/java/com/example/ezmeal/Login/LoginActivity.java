@@ -1,10 +1,14 @@
 package com.example.ezmeal.Login;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -16,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.ezmeal.MainActivity;
 import com.example.ezmeal.R;
@@ -53,6 +59,13 @@ public class LoginActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
 
         forgotpass = findViewById(R.id.forgotPasswordTextView);
+
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            NotificationChannel channel = new NotificationChannel("my notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            manager.createNotificationChannel(channel);
+//        }
+
 
         // click on forget password text
         forgotpass.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +136,10 @@ public class LoginActivity extends AppCompatActivity {
                                     // Put successful log in code here...
                                     Toast.makeText(LoginActivity.this, "Login success.", Toast.LENGTH_SHORT).show();
                                     openActivityMain();
+
+
+
+
                                 } else {
                                     // Put unsuccessful log in code here
 
@@ -131,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                                             Distinguish between failed password attempt or not meeting
                                             hardening criteria
                                     */
-                                    Toast.makeText(LoginActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -148,6 +165,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loginActivityStart();
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(LoginActivity.this, "my notification")
+//                        .setSmallIcon(R.drawable.ezmeals)
+//                        .setContentTitle("Login notification")
+//                        .setContentText("You succesfully logged in")
+//                        .setStyle(new NotificationCompat.BigTextStyle()
+//                                .bigText("You succesfully logged in"))
+//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(LoginActivity.this);
+//                managerCompat.notify(1,builder.build());
             }
         });
 
@@ -233,7 +260,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText emailet = new EditText(this);
 
         // write the email using which you registered
-        emailet.setText("Email");
+        emailet.setHint("Email");
         emailet.setMinEms(16);
         emailet.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         linearLayout.addView(emailet);

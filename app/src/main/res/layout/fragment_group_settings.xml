@@ -4,17 +4,115 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    android:background="#F1F2F5"
     tools:context=".GroupSettings.GroupSettingsFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/emailSetting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="92dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Email"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:rotation="180"
+            android:src="?attr/homeAsUpIndicator" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="284dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/twoFactSetting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="220dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:rotation="180"
+            android:src="?attr/homeAsUpIndicator" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="193dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Two-Factor Authentication"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/passwordSetting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="156dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:rotation="180"
+            android:src="?attr/homeAsUpIndicator" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Password"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="group settings fragment"
+        android:text="Settings"
+        android:textColor="@color/EzGreen"
+        android:textSize="48sp"
+        android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022" />
 
     <Button
         android:id="@+id/logoutButton"
