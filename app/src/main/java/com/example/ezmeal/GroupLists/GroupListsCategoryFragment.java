@@ -68,6 +68,7 @@ public class GroupListsCategoryFragment extends Fragment
 
                    for(int i = 0; i < groupList.size(); i++)
                    {
+
                        if(i == 0)
                        {
                            glCatModel.addList(groupList.get(i), true);
@@ -76,8 +77,11 @@ public class GroupListsCategoryFragment extends Fragment
                        {
                            glCatModel.addList(groupList.get(i), false);
                        }
+
+                       //glCatModel.addList(groupList.get(i));
                        grpListBubbles.add(groupList.get(i));
                    }
+                   //glViewModel.setSelectList(glCatModel.groupListLength());
                }
            }
            glFragAdapter.notifyDataSetChanged();
@@ -116,6 +120,8 @@ public class GroupListsCategoryFragment extends Fragment
                 {
                     glCatModel.setNotSelected(currentSelectedCategoryPosition);
                     glCatModel.setSelected(position);
+                    glViewModel.updateSelList(glCatModel.getIsSelectedList());
+                    glViewModel.updateSelectList().setValue(glCatModel.getIsSelectedList());
                     currentSelectedCategoryPosition = position;
                     glFragAdapter.notifyDataSetChanged();
 

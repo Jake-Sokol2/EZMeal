@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface GetItemCallBack {
 
-    public void callback(List<List<String>> aList);
+    public void onCallback(List<List<String>> aList);
 
 }
