@@ -340,8 +340,8 @@ public class GroupSettingsFragment extends Fragment {
     {
         super.onViewCreated(view, savedInstanceState);
 
-        AsyncClass ac = new AsyncClass();
-        ac.execute();
+        //AsyncClass ac = new AsyncClass();
+        //ac.execute();
 
     }
 
@@ -575,7 +575,7 @@ public class GroupSettingsFragment extends Fragment {
                             title, 0, 0, false,
                             calories, protein, carbohydrates, fat, cholesterol, sodium);*/
 
-                    recipe = new HashMap<>();
+                    /*recipe = new HashMap<>();
                     recipe.put("recipeId", rand.nextInt(Integer.MAX_VALUE - 2));
                     recipe.put("categories", categoryList);
                     recipe.put("directions", directionsList);
@@ -654,7 +654,7 @@ public class GroupSettingsFragment extends Fragment {
                     Thread.sleep(15000);
 
                     i++;
-                }
+                }*/
 
                     /*Map<String, String> identifiers = new HashMap<>();
                     identifiers.put("calories", "calories");
@@ -759,7 +759,8 @@ public class GroupSettingsFragment extends Fragment {
                         i++;
                     }*/
 
-                }
+               // }
+/*
             catch (MalformedURLException malformedURLException)
             {
                 malformedURLException.printStackTrace();
@@ -772,6 +773,7 @@ public class GroupSettingsFragment extends Fragment {
             {
                 e.printStackTrace();
             }
+*/
 
 
             // original working code
@@ -868,7 +870,7 @@ public class GroupSettingsFragment extends Fragment {
                     titleList[i] = e.select("h3").text();
                     i++;*/
 
-            return null;
+ /*           return null;
         }
         // everything in this method is performed on the main thread!
         @Override
@@ -883,5 +885,5 @@ public class GroupSettingsFragment extends Fragment {
             Log.i("asynctask", "FINISHED");
             //progressDialog.dismiss();
         }
-    }
+    }*/
 }

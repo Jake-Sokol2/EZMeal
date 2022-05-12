@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // skip login
-        mAuth.signInWithEmailAndPassword("merge@email.com", "testmerge")
+        /*mAuth.signInWithEmailAndPassword("merge@email.com", "testmerge")
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-
+*/
 
 
         /*ImageView img = findViewById(R.id.imageTest);

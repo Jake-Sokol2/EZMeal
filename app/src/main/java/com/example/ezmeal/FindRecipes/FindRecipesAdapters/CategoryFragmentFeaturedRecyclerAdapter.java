@@ -245,9 +245,9 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
                     Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
                     Bundle bundle = new Bundle();
 
-                    //bundle.putString("id", highRatedRecipeIdList.get(position));
-                    //intent.putExtras(bundle);
-                    //holder.itemView.getContext().startActivity(intent);
+                    bundle.putString("id", horizontalLists.get(0).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
+                    intent.putExtras(bundle);
+                    holder.itemView.getContext().startActivity(intent);
                 }
             });
 
