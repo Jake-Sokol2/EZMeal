@@ -37,6 +37,7 @@ import java.util.Objects;
 
 public class AddListItemRepository{
     final MutableLiveData<List<List<String>>> aList = new MutableLiveData<List<List<String>>>();
+    final MutableLiveData<List<Boolean>> selectList = new MutableLiveData<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public List<String> identifiers = new ArrayList<String>();
@@ -140,6 +141,8 @@ public class AddListItemRepository{
 
         getDataFirebase(aCallback, groupListName);
     }
+
+    public MutableLiveData<List<Boolean>> getSelectList() { return selectList; }
 
     public MutableLiveData<List<List<String>>> getShoppingList()
     {

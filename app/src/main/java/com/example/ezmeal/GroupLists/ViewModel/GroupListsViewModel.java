@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -28,6 +29,7 @@ import java.util.Objects;
 public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<String>> groupList;
     public MutableLiveData<List<List<String>>> shoppingList = new MutableLiveData<>();
+    public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
     private GroupListRepository glRepo = new GroupListRepository();
@@ -44,8 +46,7 @@ public class GroupListsViewModel extends AndroidViewModel {
     String groupListName;
     public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
 
-    public GroupListsViewModel(@NonNull Application application)
-    {
+    public GroupListsViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
         //groupList = new MutableLiveData<>();
@@ -55,7 +56,7 @@ public class GroupListsViewModel extends AndroidViewModel {
         theRepo = new AddListItemRepository(application);
     }
 
-    public void addItem(String itemName, String itemBrand){
+    public void addItem(String itemName, String itemBrand) {
         List<String> tmp = new ArrayList<String>();
         List<List<String>> tmpList = new ArrayList<List<String>>();
 
@@ -63,14 +64,14 @@ public class GroupListsViewModel extends AndroidViewModel {
         tmp.add(itemBrand);
         tmp.add("1");
 
-        if(shoppingList.getValue().size() > 0)
+        if (shoppingList.getValue().size() > 0)
             tmpList = shoppingList.getValue();
 
         tmpList.add(tmp);
         shoppingList.setValue(tmpList);
     }
 
-    public void addItem(String itemName, String itemBrand, int itemQuantity){
+    public void addItem(String itemName, String itemBrand, int itemQuantity) {
         List<String> tmp = new ArrayList<String>();
         List<List<String>> tmpList = new ArrayList<List<String>>();
 
@@ -78,15 +79,14 @@ public class GroupListsViewModel extends AndroidViewModel {
         tmp.add(itemBrand);
         tmp.add(String.valueOf(itemQuantity));
 
-        if(shoppingList.getValue().size() > 0)
+        if (shoppingList.getValue().size() > 0)
             tmpList = shoppingList.getValue();
 
         tmpList.add(tmp);
         shoppingList.setValue(tmpList);
     }
 
-    public void removeItem(int position)
-    {
+    public void removeItem(int position) {
         List<List<String>> tmp = new ArrayList<List<String>>();
         tmp = shoppingList.getValue();
 
@@ -102,12 +102,11 @@ public class GroupListsViewModel extends AndroidViewModel {
         dbItems.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    for(QueryDocumentSnapshot document : task.getResult()) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d("Hoyah", document.getId() + " => " + document.getData());
-                        if(Objects.equals(itemName, document.getString("name")) &&
-                                Objects.equals(document.getString("user"), email))
-                        {
+                        if (Objects.equals(itemName, document.getString("name")) &&
+                                Objects.equals(document.getString("user"), email)) {
                             docID = document.getId();
                             dbItems.document(docID).delete();
                         } //end if
@@ -118,12 +117,57 @@ public class GroupListsViewModel extends AndroidViewModel {
         });
     }
 
-    public void setShoppingList(String name)
-    {
-        if(name != "")
+    public void wipeList() {
+        List<List<String>> tmpList = new ArrayList<>();
+        shoppingList.setValue(tmpList);
+    }
+
+    public void wipeSelList() {
+        List<Boolean> tmpList = new ArrayList<>();
+        selectedList.setValue(tmpList);
+    }
+
+
+    public void setSelectList(int size) {
+        if (isSelectedList.size() == 0) {
+            //This is to initialize the selected values. The first group list
+            //will always be selected by default.
+            for (int i = 0; i < size; i++) {
+                if (i == 0)
+                    isSelectedList.add(true);
+                else
+                    isSelectedList.add(false);
+
+            }
+        }
+
+        selectedList.setValue(isSelectedList);
+    }
+
+    public void setShoppingList(String name) {
+        if (name != "")
             groupListName = name;
 
-        theRepo.setShoppingList("Tristan");
+        theRepo.setShoppingList(name);
+    }
+
+    public void updateSelList(List<Boolean> bop)
+    {
+        isSelectedList = bop;
+    }
+
+    public MutableLiveData<List<Boolean>> updateSelectList()
+    {
+        /*
+        theRepo.getSelectList().observeForever(selectList ->
+        {
+           if(selectList != null && selectedList.getValue() != selectList)
+           {
+               selectedList.setValue(selectList);
+           }
+        });
+        */
+        return selectedList;
     }
 
     public MutableLiveData<List<List<String>>> updateShoppingList()
@@ -150,6 +194,52 @@ public class GroupListsViewModel extends AndroidViewModel {
 
         }
         return groupList;
+    }
+
+
+    public List<List<String>> fillShoppingList()
+    {
+
+        //String currentListName = groupList.get(getCurrentSelected());
+        String currentListName = "Tristan";
+        List<List<String>> tmpListOfLists = new ArrayList<>();
+        String email = mAuth.getCurrentUser().getEmail();
+        db.collection("Groups").whereEqualTo("ListName", currentListName).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            if(task.getResult().getDocuments().size() > 0)
+                            {
+                                DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
+                                String tmpDocName = tmpDoc.getId();
+
+                                CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
+                                dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()) {
+                                            for(QueryDocumentSnapshot docBoi : task.getResult()) {
+                                                List<String> tmpList = new ArrayList<>();
+                                                brandName = docBoi.getString("brand");
+                                                itemName = docBoi.getString("name");
+
+                                                tmpList.add(itemName);
+                                                tmpList.add(brandName);
+                                                tmpList.add("1");
+                                                tmpListOfLists.add(tmpList);
+                                            }
+                                            Log.i("Query", "Finished filling shopping list");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+        return tmpListOfLists;
     }
 
 

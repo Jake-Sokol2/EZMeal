@@ -59,6 +59,7 @@ public class GroupListsFragment extends Fragment
     private GroupListsFragmentModel theModel = new GroupListsFragmentModel();
     private List<List<String>> localShoppingList;
     private GroupListsViewModel theVM;
+    private boolean grpListLoaded = false;
 
     List<String> list = new ArrayList<String>();
     private RecyclerView rvGroupList;
@@ -177,19 +178,21 @@ public class GroupListsFragment extends Fragment
                 {
                     for(int i = 0; i < groupList.size(); i++)
                     {
-                        if(i==0)
-                        {
-                            theModel.addList(groupList.get(i), true);
-                            listName = groupList.get(i);
-                        }
-                        else
-                        {
-                            theModel.addList(groupList.get(i), false);
-                        }
+                        theModel.addList(groupList.get(i));
                     }
+                    //at this point we should have a grouplist name already.
+                    //theVM.wipeSelList();
+                    theVM.setSelectList(theModel.groupListLength());
+                    loadListData();
+
+                    //adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
                 }
             }
         });
+
+        //theModel.restoreGroceryList(theVM.fillShoppingList());
+        //adapter.notifyDataSetChanged();
+
 
         theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
         {
@@ -199,8 +202,10 @@ public class GroupListsFragment extends Fragment
                 if (shoppingList.size() > theModel.getGroceryList().size())
                 {
                     theModel.dumpList();
-                    for(int i = 0; i < shoppingList.size(); i++)
-                        theModel.addItem(shoppingList.get(i));
+                    for(int i = 0; i < shoppingList.size(); i++) {
+                        if(!Objects.equals(shoppingList.get(0), theModel.itemName))
+                            theModel.addItem(shoppingList.get(i));
+                    }
                 }
 
             }
@@ -215,7 +220,6 @@ public class GroupListsFragment extends Fragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         rvGroupList.setLayoutManager(layoutManager);
 
-        theVM.setShoppingList("Tristan");
 
 
         //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
@@ -252,7 +256,7 @@ public class GroupListsFragment extends Fragment
         //adapter.notifyDataSetChanged();
 
         //Attach the ItemTouchHelper
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel, theVM));
         itemTouchHelper.attachToRecyclerView(rvGroupList);
 
         // Add some data
@@ -314,8 +318,23 @@ public class GroupListsFragment extends Fragment
         });
     }
 
+    public void loadListData()
+    {
+        theModel.restoreSelectList(theVM.updateSelectList().getValue());
+        theVM.wipeList();
+        for(int i = 0; i < theModel.getIsSelectedList().size(); i++)
+        {
+            if(theModel.getIsSelectedList().get(i))
+                listName = theModel.getGroupList().get(i);
+        }
+            //listName = theModel.getGroupList().get(theModel.getCurrentSelected());
+        theVM.setShoppingList(listName);
+        //theVM.setShoppingList("Tristan");
+        }
+    }
 
-}
+
+
 
 
 
