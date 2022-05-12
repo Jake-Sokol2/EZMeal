@@ -1,6 +1,8 @@
 package com.example.ezmeal.Login;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -58,11 +60,11 @@ public class LoginActivity extends AppCompatActivity {
 
         forgotpass = findViewById(R.id.forgotPasswordTextView);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("my notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            NotificationChannel channel = new NotificationChannel("my notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            manager.createNotificationChannel(channel);
+//        }
 
 
         // click on forget password text
@@ -143,16 +145,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loginActivityStart();
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(LoginActivity.this, "my notification")
-                        .setSmallIcon(R.drawable.ezmeals)
-                        .setContentTitle("Login notification")
-                        .setContentText("You succesfully logged in")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText("You succesfully logged in"))
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(LoginActivity.this);
-                managerCompat.notify(1,builder.build());
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(LoginActivity.this, "my notification")
+//                        .setSmallIcon(R.drawable.ezmeals)
+//                        .setContentTitle("Login notification")
+//                        .setContentText("You succesfully logged in")
+//                        .setStyle(new NotificationCompat.BigTextStyle()
+//                                .bigText("You succesfully logged in"))
+//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(LoginActivity.this);
+//                managerCompat.notify(1,builder.build());
             }
         });
 
@@ -238,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText emailet = new EditText(this);
 
         // write the email using which you registered
-        emailet.setText("Email");
+        emailet.setHint("Email");
         emailet.setMinEms(16);
         emailet.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         linearLayout.addView(emailet);
