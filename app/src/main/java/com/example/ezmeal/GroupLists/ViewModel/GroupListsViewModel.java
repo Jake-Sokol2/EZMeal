@@ -27,7 +27,7 @@ import java.util.Objects;
 
 
 public class GroupListsViewModel extends AndroidViewModel {
-    public MutableLiveData<List<String>> groupList;
+    public MutableLiveData<List<String>> groupList = new MutableLiveData<>();
     public MutableLiveData<List<List<String>>> shoppingList = new MutableLiveData<>();
     public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
@@ -184,15 +184,14 @@ public class GroupListsViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<String>> getGroupList()
     {
-        if(groupList == null)
-        {
-            groupList = new MutableLiveData<List<String>>();
-            glRepo.getGroupList().observeForever(repoGroupList ->
-            {
-                groupList.setValue(repoGroupList);
-            });
 
-        }
+        //groupList = new MutableLiveData<List<String>>();
+        glRepo.getGroupList().observeForever(repoGroupList ->
+        {
+            groupList.setValue(repoGroupList);
+        });
+
+
         return groupList;
     }
 

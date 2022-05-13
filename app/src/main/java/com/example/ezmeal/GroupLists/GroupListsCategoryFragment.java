@@ -65,7 +65,8 @@ public class GroupListsCategoryFragment extends Fragment
            {
                if(groupList.size() > glCatModel.groupListLength())
                {
-
+                   grpListBubbles.clear();
+                   glCatModel.dumpList();
                    for(int i = 0; i < groupList.size(); i++)
                    {
 
@@ -79,7 +80,7 @@ public class GroupListsCategoryFragment extends Fragment
                        }
 
                        //glCatModel.addList(groupList.get(i));
-                       grpListBubbles.add(groupList.get(i));
+                       glCatModel.grpListBubbles.add(groupList.get(i));
                    }
                    //glViewModel.setSelectList(glCatModel.groupListLength());
                }
@@ -126,7 +127,7 @@ public class GroupListsCategoryFragment extends Fragment
                     glFragAdapter.notifyDataSetChanged();
 
                     Bundle categoryBundleClick = new Bundle();
-                    categoryBundleClick.putString("cat", grpListBubbles.get(position));
+                    categoryBundleClick.putString("cat", glCatModel.grpListBubbles.get(position));
                     fragCategoryClick.setArguments(categoryBundleClick);
                 }
                 else

@@ -30,7 +30,7 @@ public class GroupListsFragmentModel
 {
     private List<String> groupList = new ArrayList<String>(); //This represents a list you share with other people
     private List<Boolean> isSelectedList = new ArrayList<Boolean>(); //Marker that a given list is selected
-
+    public List<String> grpListBubbles = new ArrayList<String>();
     private List<List<String>> shoppingList = new ArrayList<List<String>>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -39,6 +39,7 @@ public class GroupListsFragmentModel
     public String brandName;
     String docID;
     String tmpName;
+    private String currentGroupList;
 
 
     public GroupListsFragmentModel()
@@ -90,7 +91,7 @@ public class GroupListsFragmentModel
         itemName = shoppingList.get(position).get(0);
         brandName = shoppingList.get(position).get(1);
 
-        String groupName = "Tristan";
+        //String groupName = "Tristan";
 
         shoppingList.remove(position);
 
@@ -121,7 +122,7 @@ public class GroupListsFragmentModel
         */
 
         CollectionReference dbItems = db.collection("Groups");
-        dbItems.whereEqualTo("ListName", groupName).get()
+        dbItems.whereEqualTo("ListName", currentGroupList).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -336,6 +337,16 @@ public class GroupListsFragmentModel
                 });
 
 
+    }
+
+    public void setActiveGroupList(String name)
+    {
+        currentGroupList = name;
+    }
+
+    public String getActiveGrpListName()
+    {
+        return currentGroupList;
     }
 
     public void restoreGroceryList(List<List<String>> theList) {

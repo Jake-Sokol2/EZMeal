@@ -69,7 +69,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
     public AddGroupListFragment(GroupListsFragmentModel theModel, GroupListFragHorizontalRecyclerAdapter hAdapter)
     {
-        //this.theModel = theModel;
+        this.theModel = theModel;
         this.hAdapter = hAdapter;
         //boolean isItNull = this.hAdapter == null;
         Log.d("AddGroupListFragment", "hAdapter is theoretically not null?");
@@ -104,7 +104,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         db = FirebaseFirestore.getInstance();
 
@@ -122,7 +122,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     {
         view = inflater.inflate(R.layout.fragment_add_group_list, container, false);
         theViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
-
+        /*
         //Observer
         theViewModel.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
@@ -142,6 +142,8 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
             }
         });
+        */
+
 
         return view;
     }
@@ -174,6 +176,10 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                 {
 
                     theModel.addList(editListName.getText().toString(), false);
+                    theModel.grpListBubbles.add(editListName.getText().toString());
+                    hAdapter.notifyDataSetChanged();
+                    //theViewModel.
+
                     //TODO data needs to be added to firestore
                     //Get the name of the group
                     groupNameString = editListName.getText().toString();
@@ -197,7 +203,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                         @Override
                         public void onSuccess(DocumentReference documentReference){
                             documentID1 = documentReference.getId();
-
+                            /*
                             Map<String, Object> docData2 = new HashMap<>();
                             docData2.put("Creator", currentUserEmail);
                             docData2.put("ItemBrand", "");
@@ -215,7 +221,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                                 }
                             });
 
-
+                             */
                             //Debug code
                             //Log.i("DEBUG", "Printing document ID in the onSuccess: " + documentID1);
                             //Toast.makeText(getActivity(), "Creation of group " + groupNameString + " success!", Toast.LENGTH_SHORT).show();
@@ -223,6 +229,7 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                     });
                     //theViewModel.updateGroupList()
                     //theViewModel.glFragAdapter.notifyDataSetChanged();
+                    hAdapter.notifyDataSetChanged();
                     dismiss();
                 }
                 break;

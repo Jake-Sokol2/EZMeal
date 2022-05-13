@@ -166,7 +166,7 @@ public class GroupListsFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
-
+        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theModel.getGroupList(), theModel.getIsSelectedList());
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
         //Get the current selected list name.
@@ -176,6 +176,7 @@ public class GroupListsFragment extends Fragment
             {
                 if(groupList.size() > theModel.groupListLength())
                 {
+                    theModel.dumpGroupList();
                     for(int i = 0; i < groupList.size(); i++)
                     {
                         theModel.addList(groupList.get(i));
@@ -302,7 +303,7 @@ public class GroupListsFragment extends Fragment
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 //AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
-                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter);
+                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter, hAdapter);
 
                 //Set the arguments to grab in the new fragment
                 addBtn.setArguments(out);
@@ -324,8 +325,10 @@ public class GroupListsFragment extends Fragment
         theVM.wipeList();
         for(int i = 0; i < theModel.getIsSelectedList().size(); i++)
         {
-            if(theModel.getIsSelectedList().get(i))
-                listName = theModel.getGroupList().get(i);
+            if(theModel.getIsSelectedList().get(i)) {
+                theModel.setActiveGroupList(theModel.getGroupList().get(i));
+                listName = theModel.getActiveGrpListName();
+            }
         }
             //listName = theModel.getGroupList().get(theModel.getCurrentSelected());
         theVM.setShoppingList(listName);
