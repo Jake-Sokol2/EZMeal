@@ -63,29 +63,29 @@ public class GroupListsCategoryFragment extends Fragment
         {
            if (groupList != null)
            {
-               if(groupList.size() > glCatModel.groupListLength())
+               if(groupList.size() > glViewModel.groupListNames.size())
                {
-                   grpListBubbles.clear();
-                   glCatModel.dumpList();
+                   //grpListBubbles.clear();
+                   //glCatModel.dumpList();
                    for(int i = 0; i < groupList.size(); i++)
                    {
 
                        if(i == 0)
                        {
-                           glCatModel.addList(groupList.get(i), true);
+                           glViewModel.addList(groupList.get(i), true);
                        }
                        else
                        {
-                           glCatModel.addList(groupList.get(i), false);
+                           glViewModel.addList(groupList.get(i), false);
                        }
 
                        //glCatModel.addList(groupList.get(i));
-                       glCatModel.grpListBubbles.add(groupList.get(i));
+                       glViewModel.grpListBubbles.add(groupList.get(i));
                    }
                    //glViewModel.setSelectList(glCatModel.groupListLength());
                }
            }
-           glFragAdapter.notifyDataSetChanged();
+           glViewModel.glFragAdapter.notifyDataSetChanged();
            Log.d("glFragAdapter", "adapter se actualizo");
         });
 
@@ -103,11 +103,11 @@ public class GroupListsCategoryFragment extends Fragment
 
         rvGroupListBubbles = (RecyclerView) view.findViewById(R.id.rvGrpHorizontalSelector);
 
-        rvGroupListBubbles.setAdapter(glFragAdapter);
+        rvGroupListBubbles.setAdapter(glViewModel.glFragAdapter);
         RecyclerView.LayoutManager hLayoutMgr = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvGroupListBubbles.setLayoutManager(hLayoutMgr);
 
-        glFragAdapter.setOnItemClickListener(new GroupListFragHorizontalRecyclerAdapter.MainAdapterListener()
+        glViewModel.glFragAdapter.setOnItemClickListener(new GroupListFragHorizontalRecyclerAdapter.MainAdapterListener()
         {
             @Override
             public void onItemClick(int position)
@@ -119,24 +119,24 @@ public class GroupListsCategoryFragment extends Fragment
                 // only pass a bundle if the user selects a card other than featured
                 if (position != 0)
                 {
-                    glCatModel.setNotSelected(currentSelectedCategoryPosition);
-                    glCatModel.setSelected(position);
-                    glViewModel.updateSelList(glCatModel.getIsSelectedList());
-                    glViewModel.updateSelectList().setValue(glCatModel.getIsSelectedList());
+                    glViewModel.setNotSelected(currentSelectedCategoryPosition);
+                    glViewModel.setSelected(position);
+                    glViewModel.updateSelList(glViewModel.isSelectedList);
+                    glViewModel.updateSelectList().setValue(glViewModel.isSelectedList);
                     currentSelectedCategoryPosition = position;
-                    glFragAdapter.notifyDataSetChanged();
+                    glViewModel.glFragAdapter.notifyDataSetChanged();
 
                     Bundle categoryBundleClick = new Bundle();
-                    categoryBundleClick.putString("cat", glCatModel.grpListBubbles.get(position));
+                    categoryBundleClick.putString("cat", glViewModel.grpListBubbles.get(position));
                     fragCategoryClick.setArguments(categoryBundleClick);
                 }
                 else
                 // featured was clicked, set last category to unclicked (visually) and set featured to clicked
                 {
-                    glCatModel.setNotSelected(currentSelectedCategoryPosition);
-                    glCatModel.setSelected(0);
+                    glViewModel.setNotSelected(currentSelectedCategoryPosition);
+                    glViewModel.setSelected(0);
                     currentSelectedCategoryPosition = 0;
-                    glFragAdapter.notifyDataSetChanged();
+                    glViewModel.glFragAdapter.notifyDataSetChanged();
                 }
 
                 getChildFragmentManager().popBackStack();
@@ -151,8 +151,8 @@ public class GroupListsCategoryFragment extends Fragment
     public void onDestroy()
     {
         super.onDestroy();
-        glCatModel.dumpGroupList();
-        glFragAdapter.notifyDataSetChanged();
+        glViewModel.dumpGroupList();
+        glViewModel.glFragAdapter.notifyDataSetChanged();
 
     }
 

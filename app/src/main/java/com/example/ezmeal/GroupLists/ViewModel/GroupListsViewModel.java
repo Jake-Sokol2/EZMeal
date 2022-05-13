@@ -33,11 +33,12 @@ public class GroupListsViewModel extends AndroidViewModel {
     Application application;
     private AddListItemRepository theRepo;
     private GroupListRepository glRepo = new GroupListRepository();
-
+    public List<Boolean> isSelectedList = new ArrayList<Boolean>();
+    public List<String> groupListNames = new ArrayList<String>();
+    //public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
     private GroupListsFragmentModel theModel;
-
-    public List<Boolean> isSelectedList;
-    public List<String> groupListNames;
+    private String currentGroupList;
+    public List<String> grpListBubbles = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String itemName;
@@ -50,12 +51,17 @@ public class GroupListsViewModel extends AndroidViewModel {
         super(application);
         this.application = application;
         //groupList = new MutableLiveData<>();
-        isSelectedList = new ArrayList<Boolean>();
+        //isSelectedList = new ArrayList<Boolean>();
         //shoppingList = itemRepo.getShoppingList();
         theModel = new GroupListsFragmentModel();
         theRepo = new AddListItemRepository(application);
     }
 
+    public void addList(String listName, Boolean isSelected)
+    {
+        groupListNames.add(listName);
+        isSelectedList.add(isSelected);
+    }
     public void addItem(String itemName, String itemBrand) {
         List<String> tmp = new ArrayList<String>();
         List<List<String>> tmpList = new ArrayList<List<String>>();
@@ -84,6 +90,24 @@ public class GroupListsViewModel extends AndroidViewModel {
 
         tmpList.add(tmp);
         shoppingList.setValue(tmpList);
+    }
+    public void setSelected(int position)
+    {
+        for(int i = 0; i < isSelectedList.size(); i++)
+        {
+            isSelectedList.set(i, false);
+        }
+        isSelectedList.set(position, true);
+    }
+    public void dumpGroupList()
+    {
+        groupListNames.clear();
+        isSelectedList.clear();
+    }
+
+    public void setNotSelected(int position)
+    {
+        isSelectedList.set(position, false);
     }
 
     public void removeItem(int position) {
@@ -241,7 +265,14 @@ public class GroupListsViewModel extends AndroidViewModel {
         return tmpListOfLists;
     }
 
-
+    public void setActiveGroupList(String name)
+    {
+        currentGroupList = name;
+    }
+    public String getActiveGrpListName()
+    {
+        return currentGroupList;
+    }
 
 
 

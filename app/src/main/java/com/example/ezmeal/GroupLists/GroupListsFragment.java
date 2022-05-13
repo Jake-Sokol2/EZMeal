@@ -323,11 +323,11 @@ public class GroupListsFragment extends Fragment
     {
         theModel.restoreSelectList(theVM.updateSelectList().getValue());
         theVM.wipeList();
-        for(int i = 0; i < theModel.getIsSelectedList().size(); i++)
+        for(int i = 0; i < theVM.isSelectedList.size(); i++)
         {
-            if(theModel.getIsSelectedList().get(i)) {
-                theModel.setActiveGroupList(theModel.getGroupList().get(i));
-                listName = theModel.getActiveGrpListName();
+            if(theVM.isSelectedList.get(i)) {
+                theVM.setActiveGroupList(theVM.groupListNames.get(i));
+                listName = theVM.getActiveGrpListName();
             }
         }
             //listName = theModel.getGroupList().get(theModel.getCurrentSelected());

@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter<GroupListFragHorizontalRecyclerAdapter.MainViewHolder>
@@ -19,7 +22,7 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
     //private List<String> url;
     private MainAdapterListener listener;
     private List<Boolean> isSelectedList;
-
+    //private GroupListsViewModel glViewModel;
 
 
     public class MainViewHolder extends RecyclerView.ViewHolder
@@ -69,6 +72,7 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_selector_find_recipes, parent, false);
+
         return new MainViewHolder(itemView);
     }
 
@@ -76,23 +80,20 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(MainViewHolder holder, int position)
     {
         holder.txtBubbleTitle.setText(list.get(position));
+        if(isSelectedList.size() > 0) {
+            // if current recyclerview item is marked as selected, then color the bubble to show it
+            if (isSelectedList.get(position)) {
+                holder.cardBubble.setCardBackgroundColor(Color.parseColor("#2dba73"));
+                holder.txtBubbleTitle.setTextColor(Color.parseColor("#ffffff"));
+            } else {
+                holder.cardBubble.setCardBackgroundColor(Color.parseColor("#ffffff"));
+                holder.txtBubbleTitle.setTextColor(Color.parseColor("#000000"));
+            }
 
-        // if current recyclerview item is marked as selected, then color the bubble to show it
-        if(isSelectedList.get(position))
-        {
-            holder.cardBubble.setCardBackgroundColor(Color.parseColor("#2dba73"));
-            holder.txtBubbleTitle.setTextColor(Color.parseColor("#ffffff"));
+            //String urllll = url.get(position);
+            //Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
+            //Glide.with(holder.itemView.getContext()).load(R.drawable.recycler_image_shadow).into(holder.imgBackground);
         }
-        else
-        {
-            holder.cardBubble.setCardBackgroundColor(Color.parseColor("#ffffff"));
-            holder.txtBubbleTitle.setTextColor(Color.parseColor("#000000"));
-        }
-
-        //String urllll = url.get(position);
-        //Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
-        //Glide.with(holder.itemView.getContext()).load(R.drawable.recycler_image_shadow).into(holder.imgBackground);
-
 
     }
 

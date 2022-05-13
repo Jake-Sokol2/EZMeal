@@ -175,9 +175,9 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                 else
                 {
 
-                    theModel.addList(editListName.getText().toString(), false);
-                    theModel.grpListBubbles.add(editListName.getText().toString());
-                    hAdapter.notifyDataSetChanged();
+                    theViewModel.addList(editListName.getText().toString(), false);
+                    theViewModel.grpListBubbles.add(editListName.getText().toString());
+                    theViewModel.glFragAdapter.notifyDataSetChanged();
                     //theViewModel.
 
                     //TODO data needs to be added to firestore
