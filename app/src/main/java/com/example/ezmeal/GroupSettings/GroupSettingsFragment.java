@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -365,6 +366,7 @@ public class GroupSettingsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteUser();
+
                 openActivityLogin();
             }
         });
