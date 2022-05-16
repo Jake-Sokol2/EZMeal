@@ -271,6 +271,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+//                "#807D7D";
                 String email = emailet.getText().toString().trim();
                 beginRecovery(email);
             }
