@@ -177,6 +177,7 @@ public class CategoryFragment extends Fragment
                 {
                     horizontalLists.clear();
                     verticalRecipes.clear();
+                    recipeIdList.clear();
 
 
                     List<HorizontalRecipe> tempHorizontalList = new ArrayList<>();
@@ -185,10 +186,8 @@ public class CategoryFragment extends Fragment
                     for (int i = 0; i < tempRetrievedHorizontalList.size(); i++)
                     {
                         //retrievedRecipeLists.getHorizontalList();
-                        if (tempRetrievedHorizontalList.get(i).getQueryId() == queryId || tempRetrievedHorizontalList.get(i).getCategory() == lastCategory)
-                        {
-                            tempHorizontalList.add(tempRetrievedHorizontalList.get(i));
-                        }
+                        //
+                        tempHorizontalList.add(tempRetrievedHorizontalList.get(i));
                     }
 
                     horizontalLists.add(tempHorizontalList);
@@ -199,14 +198,12 @@ public class CategoryFragment extends Fragment
 
                     for (int i = 0; i < tempRetrievedVerticalList.size(); i++)
                     {
-                        if (tempRetrievedVerticalList.get(i).getQueryId() == queryId || tempRetrievedVerticalList.get(i).getCategory() == lastCategory)
-                        {
-                            verticalRecipes.add(tempRetrievedVerticalList.get(i));
-                            recipeIdList.add(tempRetrievedVerticalList.get(i).getRecipeId());
-                        }
+                        // tempRetrievedVerticalList.get(i).getQueryId() == queryId
+                        verticalRecipes.add(tempRetrievedVerticalList.get(i));
+                        recipeIdList.add(tempRetrievedVerticalList.get(i).getRecipeId());
                     }
 
-                    // category may have changed since the query started (if user spam clicks categories, launching multiple queries)
+                    // category may have changed since the query started due to async (if user spam clicks categories, launching multiple queries)
                     // do this check at the very last moment to reduce the amount of irrelevant queries that make it through
                     if (retrievedRecipeLists.getCategory() == category)
                     {

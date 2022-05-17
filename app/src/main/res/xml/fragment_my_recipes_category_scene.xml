@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="-28dp"
+            android:layout_marginTop="-44dp"
             motion:layout_editor_absoluteX="224dp"
             android:id="@+id/txtTitleFindRecipes2" />
         <Constraint
@@ -87,10 +87,9 @@
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintVertical_bias="0.0"
-            motion:layout_constraintTop_toBottomOf="@+id/myRecipesTab"
+            motion:layout_constraintTop_toBottomOf="@+id/myRecipesTopBar"
             motion:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/rvMyRecipeCategories"
-            android:layout_marginTop="-8dp" />
+            android:id="@+id/rvMyRecipeCategories" />
         <Constraint
             android:layout_height="13dp"
             motion:layout_constraintStart_toStartOf="parent"

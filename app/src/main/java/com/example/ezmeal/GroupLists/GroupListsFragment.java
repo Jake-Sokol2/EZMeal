@@ -169,6 +169,8 @@ public class GroupListsFragment extends Fragment
 
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
+
+
         //Get the current selected list name.
         theVM.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
@@ -198,7 +200,6 @@ public class GroupListsFragment extends Fragment
         {
             if(shoppingList != null)
             {
-
                 if (shoppingList.size() > theModel.getGroceryList().size())
                 {
                     theModel.dumpList();
@@ -325,7 +326,9 @@ public class GroupListsFragment extends Fragment
         for(int i = 0; i < theModel.getIsSelectedList().size(); i++)
         {
             if(theModel.getIsSelectedList().get(i))
+            {
                 listName = theModel.getGroupList().get(i);
+            }
         }
             //listName = theModel.getGroupList().get(theModel.getCurrentSelected());
         theVM.setShoppingList(listName);

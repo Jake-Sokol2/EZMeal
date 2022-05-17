@@ -32,7 +32,7 @@ public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
-    private GroupListRepository glRepo = new GroupListRepository();
+    private GroupListRepository glRepo = new GroupListRepository(getApplication());
 
     private GroupListsFragmentModel theModel;
 
@@ -54,6 +54,8 @@ public class GroupListsViewModel extends AndroidViewModel {
         //shoppingList = itemRepo.getShoppingList();
         theModel = new GroupListsFragmentModel();
         theRepo = new AddListItemRepository(application);
+        glRepo.getIdentifiers();
+
     }
 
     public void addItem(String itemName, String itemBrand) {

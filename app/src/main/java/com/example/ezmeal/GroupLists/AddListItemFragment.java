@@ -138,9 +138,9 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     //Toast.makeText(view.getContext(), "Enter item name...", Toast.LENGTH_SHORT).show();;
                     editItemName.setError("Enter field");
                 }
-                if(TextUtils.isEmpty(editBrandName.getText().toString())) {
+                /*if(TextUtils.isEmpty(editBrandName.getText().toString())) {
                     editBrandName.setError("Empty field");
-                }
+                }*/
                 else {
                     theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
                     theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());

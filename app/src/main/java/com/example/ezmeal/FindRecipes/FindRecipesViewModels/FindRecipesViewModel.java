@@ -17,11 +17,22 @@ public class FindRecipesViewModel extends ViewModel
     private MutableLiveData<FindRecipesFragmentHorizontalRecyclerAdapter> horizontalRecyclerAdapter;
     private MutableLiveData<Boolean> isPopulated = new MutableLiveData<>();
     private MutableLiveData<Integer> lastSelectedCategory = new MutableLiveData<>(0);
+    private MutableLiveData<Long> lastQueryId = new MutableLiveData<>();
 
     public FindRecipesViewModel()
     {
         horizontalRecyclerModel = new MutableLiveData<>();
         horizontalRecyclerAdapter = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Long> getLastQueryId()
+    {
+        return lastQueryId;
+    }
+
+    public void setLastQueryId(Long lastQueryId)
+    {
+        this.lastQueryId.setValue(lastQueryId);
     }
 
     public MutableLiveData<Integer> getLastSelectedCategory()

@@ -56,14 +56,13 @@
         <Constraint
             android:id="@+id/tabRecipe"
             android:elevation="4dp"
-            motion:layout_constraintWidth_percent=".6"
+            motion:layout_constraintWidth_percent=".75"
             android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginStart="80dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="312dp"
-            android:layout_marginLeft="80dp" />
+            motion:layout_constraintEnd_toEndOf="parent" />
         <Constraint
             android:layout_height="wrap_content"
             motion:layout_constraintStart_toStartOf="parent"
@@ -225,7 +224,7 @@
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:elevation="4dp"
-            motion:layout_constraintWidth_percent=".6"
+            motion:layout_constraintWidth_percent=".75"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:id="@+id/tabRecipe"

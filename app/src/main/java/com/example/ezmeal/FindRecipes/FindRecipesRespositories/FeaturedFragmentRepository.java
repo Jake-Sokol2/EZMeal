@@ -267,7 +267,7 @@ public class FeaturedFragmentRepository
 
 
         int finalNumRecipesPerCategory = numRecipesPerCategory;
-        categoryList.add("Breakfast");
+        //categoryList.add("Breakfast");
         dbRecipes.whereArrayContainsAny("categories", categoryList).whereGreaterThan("recipeId", randomNum).limit(10).get().addOnCompleteListener(task ->
         {
             retrieveHorizontal(categoryList.get(0), "Popular Recipe", task);

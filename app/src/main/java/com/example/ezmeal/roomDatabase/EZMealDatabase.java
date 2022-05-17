@@ -11,7 +11,7 @@ import com.example.ezmeal.roomDatabase.Recipe;
 
 
 @Database(entities = {Recipe.class, CategoryEntity.class, com.example.ezmeal.roomDatabase.Rating.class, com.example.ezmeal.roomDatabase.Category.class, com.example.ezmeal.roomDatabase.Identifier.class, com.example.ezmeal.roomDatabase.Category_RecyclerRecipe.class,
-        com.example.ezmeal.roomDatabase.Category2.class, com.example.ezmeal.roomDatabase.RecyclerRecipe2.class, com.example.ezmeal.roomDatabase.UsersCategory.class}, version = 20, exportSchema = false)
+        com.example.ezmeal.roomDatabase.Category2.class, com.example.ezmeal.roomDatabase.RecyclerRecipe2.class, com.example.ezmeal.roomDatabase.UsersCategory.class}, version = 21, exportSchema = false)
 public abstract class EZMealDatabase extends RoomDatabase
 {
     private static EZMealDatabase instance;
