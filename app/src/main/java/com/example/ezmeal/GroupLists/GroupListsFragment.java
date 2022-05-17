@@ -166,8 +166,8 @@ public class GroupListsFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
-
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theVM.groupListNames, theVM.isSelectedList);
 
 
 
@@ -178,23 +178,21 @@ public class GroupListsFragment extends Fragment
             {
                 if(groupList.size() > theModel.groupListLength())
                 {
+
+                    theModel.dumpGroupList();
                     for(int i = 0; i < groupList.size(); i++)
                     {
                         theModel.addList(groupList.get(i));
                     }
                     //at this point we should have a grouplist name already.
                     //theVM.wipeSelList();
-                    theVM.setSelectList(theModel.groupListLength());
+                    theVM.setSelectList(theVM.groupListNames.size());
                     loadListData();
 
                     //adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
                 }
             }
         });
-
-        //theModel.restoreGroceryList(theVM.fillShoppingList());
-        //adapter.notifyDataSetChanged();
-
 
         theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
         {
@@ -304,7 +302,7 @@ public class GroupListsFragment extends Fragment
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 //AddListItemFragment addItemFrag = new AddListItemFragment(theModel, adapter);
-                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter);
+                AddButtonFragment addBtn = new AddButtonFragment(theModel, adapter, hAdapter);
 
                 //Set the arguments to grab in the new fragment
                 addBtn.setArguments(out);
@@ -324,10 +322,13 @@ public class GroupListsFragment extends Fragment
     {
         theModel.restoreSelectList(theVM.updateSelectList().getValue());
         theVM.wipeList();
-        for(int i = 0; i < theModel.getIsSelectedList().size(); i++)
+        for(int i = 0; i < theVM.isSelectedList.size(); i++)
         {
-            if(theModel.getIsSelectedList().get(i))
-                listName = theModel.getGroupList().get(i);
+            if(theVM.isSelectedList.get(i)) {
+                theVM.setActiveGroupList(theVM.groupListNames.get(i));
+                listName = theVM.getActiveGrpListName();
+                theModel.setActiveGroupList(listName);
+            }
         }
             //listName = theModel.getGroupList().get(theModel.getCurrentSelected());
         theVM.setShoppingList(listName);

@@ -3,20 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/drawable/customborder.xml" value="0.295" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/drawable/layout_border.xml" value="0.138" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.1398148148148148" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/activity_main_recycler_item_rounded.xml" value="0.1" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/directions_recycler_item.xml" value="0.25" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_add_button.xml" value="0.1398148148148148" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_email_setting.xml" value="0.1398148148148148" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_group_settings.xml" value="0.25" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_password_setting.xml" value="0.21" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_specific_recipe.xml" value="0.1" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/ingredients_recycler_item.xml" value="0.21" />
-        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/nutrition_recycler_item.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.3546195652173913" />
+        <entry key="..\:/Users/jakes/AndroidStudioProjects/EZMeal/app/src/main/res/layout/fragment_group_settings.xml" value="0.3546195652173913" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.23692307692307693" />
+        <entry key="app/src/main/res/layout/activity_main_recycler_item_rounded.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_group_lists.xml" value="0.16982421874999998" />
+        <entry key="app/src/main/res/layout/fragment_group_settings.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/fragment_new_group_list.xml" value="0.25" />
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
