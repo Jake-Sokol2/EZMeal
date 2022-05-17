@@ -203,8 +203,10 @@ public class AddListItemRepository{
                 });
 
         */
-        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
         String email = mAuth.getCurrentUser().getEmail();
+
+        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
+
         db.collection("Groups").whereEqualTo("ListName", groupListName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -249,9 +251,13 @@ public class AddListItemRepository{
                         }
                         else
                         {
-                            Log.i("Retrieval", "There are no lists for some reason.");
+                            Log.d("Retrieval", "There are no lists for some reason.");
                         }
 
+                        }
+                        else
+                        {
+                            Log.d("Retrieval", "Nothing here chief");
                         }
                     }
                 });

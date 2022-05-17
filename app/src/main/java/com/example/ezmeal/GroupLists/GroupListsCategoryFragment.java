@@ -94,7 +94,18 @@ public class GroupListsCategoryFragment extends Fragment
            glViewModel.glFragAdapter.notifyDataSetChanged();
            Log.d("glFragAdapter", "adapter se actualizo");
         });
+/*
+        glViewModel.getSharedLists().observe(getViewLifecycleOwner(), sharedGroupList ->
+        {
+            if(sharedGroupList.size() != glViewModel.sharedGroupNames.size())
+            {
+                for(String name : sharedGroupList) {
+                    glViewModel.addShareList(name);
+                }
+            }
 
+        });
+*/
         //TODO: replace with view model
         /*
         grpListBubbles.add("My List");
