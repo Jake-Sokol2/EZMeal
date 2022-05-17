@@ -46,7 +46,7 @@ public class AddListItemRepository{
 
     //private GroupListsViewModel theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
-    String brandName, itemName;
+    String brandName, itemName, creator;
 
     public AddListItemRepository(@NonNull Application application)
     {
@@ -230,12 +230,16 @@ public class AddListItemRepository{
                                             List<String> tmpList = new ArrayList<>();
                                             brandName = docBoi.getString("brand");
                                             itemName = docBoi.getString("name");
+                                            creator = docBoi.getString("user");
 
                                             tmpList.add(itemName);
                                             tmpList.add(brandName);
+                                            tmpList.add(creator);
                                             tmpList.add("1");
                                             tmpListOfLists.add(tmpList);
                                             //tmpList.clear();
+
+
 
                                         }
                                     } else {
