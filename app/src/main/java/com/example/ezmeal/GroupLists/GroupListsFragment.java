@@ -169,6 +169,8 @@ public class GroupListsFragment extends Fragment
 
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
+
+
         //Get the current selected list name.
         theVM.getGroupList().observe(getViewLifecycleOwner(), groupList ->
         {
