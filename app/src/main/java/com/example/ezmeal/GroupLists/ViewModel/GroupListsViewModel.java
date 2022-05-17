@@ -27,14 +27,24 @@ import java.util.Objects;
 
 
 public class GroupListsViewModel extends AndroidViewModel {
-    public MutableLiveData<List<String>> groupList;
+    public MutableLiveData<List<String>> groupList = new MutableLiveData<>();
+    public MutableLiveData<List<String>> sharedGroupList = new MutableLiveData<>();
     public MutableLiveData<List<List<String>>> shoppingList = new MutableLiveData<>();
     public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
     private GroupListRepository glRepo = new GroupListRepository(getApplication());
+    public List<Boolean> isSelectedList = new ArrayList<Boolean>();
+    public List<Boolean> shareSelectList = new ArrayList<Boolean>();
+    public List<String> groupListNames = new ArrayList<String>();
+    public List<String> sharedGroupNames = new ArrayList<>();
+    public List<Boolean> isChecked = new ArrayList<Boolean>();
 
+    //public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
     private GroupListsFragmentModel theModel;
+
+    private String currentGroupList;
+    public List<String> grpListBubbles = new ArrayList<>();
 
     public List<Boolean> isSelectedList;
     public List<String> groupListNames;
@@ -56,6 +66,18 @@ public class GroupListsViewModel extends AndroidViewModel {
         theRepo = new AddListItemRepository(application);
         glRepo.getIdentifiers();
 
+    }
+
+    public void addList(String listName, Boolean isSelected)
+    {
+        groupListNames.add(listName);
+        isSelectedList.add(isSelected);
+    }
+
+    public void addShareList(String listName)
+    {
+        sharedGroupNames.add(listName);
+        shareSelectList.add(false);
     }
 
     public void addItem(String itemName, String itemBrand) {
@@ -86,6 +108,24 @@ public class GroupListsViewModel extends AndroidViewModel {
 
         tmpList.add(tmp);
         shoppingList.setValue(tmpList);
+    }
+    public void setSelected(int position)
+    {
+        for(int i = 0; i < isSelectedList.size(); i++)
+        {
+            isSelectedList.set(i, false);
+        }
+        isSelectedList.set(position, true);
+    }
+    public void dumpGroupList()
+    {
+        groupListNames.clear();
+        isSelectedList.clear();
+    }
+
+    public void setNotSelected(int position)
+    {
+        isSelectedList.set(position, false);
     }
 
     public void removeItem(int position) {
@@ -186,65 +226,71 @@ public class GroupListsViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<String>> getGroupList()
     {
-        if(groupList == null)
-        {
-            groupList = new MutableLiveData<List<String>>();
-            glRepo.getGroupList().observeForever(repoGroupList ->
-            {
-                groupList.setValue(repoGroupList);
-            });
 
-        }
+        //groupList = new MutableLiveData<List<String>>();
+        glRepo.getGroupList().observeForever(repoGroupList ->
+        {
+            groupList.setValue(repoGroupList);
+        });
+
+
         return groupList;
     }
 
-
-    public List<List<String>> fillShoppingList()
+    public MutableLiveData<List<String>> getSharedLists()
     {
-
-        //String currentListName = groupList.get(getCurrentSelected());
-        String currentListName = "Tristan";
-        List<List<String>> tmpListOfLists = new ArrayList<>();
-        String email = mAuth.getCurrentUser().getEmail();
-        db.collection("Groups").whereEqualTo("ListName", currentListName).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful())
-                        {
-                            if(task.getResult().getDocuments().size() > 0)
-                            {
-                                DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
-                                String tmpDocName = tmpDoc.getId();
-
-                                CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
-                                dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if(task.isSuccessful()) {
-                                            for(QueryDocumentSnapshot docBoi : task.getResult()) {
-                                                List<String> tmpList = new ArrayList<>();
-                                                brandName = docBoi.getString("brand");
-                                                itemName = docBoi.getString("name");
-
-                                                tmpList.add(itemName);
-                                                tmpList.add(brandName);
-                                                tmpList.add("1");
-                                                tmpListOfLists.add(tmpList);
-                                            }
-                                            Log.i("Query", "Finished filling shopping list");
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-
-        return tmpListOfLists;
+        glRepo.getSharedGroupList().observeForever(sharedGroupLists ->
+        {
+            sharedGroupList.setValue(sharedGroupLists);
+        });
+        return sharedGroupList;
     }
 
 
+    public void setActiveGroupList(String name)
+    {
+        currentGroupList = name;
+    }
+    public String getActiveGrpListName()
+    {
+        return currentGroupList;
+    }
+
+    public void deleteGroupList(int position)
+    {
+        String listToDelete = groupListNames.get(position);
+        grpListBubbles.remove(position);
+        groupListNames.remove(position);
+        isSelectedList.remove(position);
+        groupList.setValue(groupListNames);
+        selectedList.setValue(isSelectedList);
+
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
+        CollectionReference dbItems = db.collection("Groups");
+        dbItems.whereEqualTo("ListName", listToDelete).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful())
+                {
+                  if(task.getResult().getDocuments().size() > 0)
+                  {
+                      String docID = task.getResult().getDocuments().get(0).getId();
+                      dbItems.document(docID).delete();
+                  }
+                }
+            }
+        });
+
+        //glRepo.getGroupList();
+        glRepo.returnGroupList().setValue(groupListNames);
+
+
+    }
 
 
 

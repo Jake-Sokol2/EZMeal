@@ -41,7 +41,7 @@ public class AddListItemRepository{
 
     //private GroupListsViewModel theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
 
-    String brandName, itemName;
+    String brandName, itemName, creator;
 
     public AddListItemRepository(@NonNull Application application)
     {
@@ -201,8 +201,10 @@ public class AddListItemRepository{
                 });
 
         */
-        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
         String email = mAuth.getCurrentUser().getEmail();
+
+        List<List<String>> tmpListOfLists = new ArrayList<List<String>>();
+
         db.collection("Groups").whereEqualTo("ListName", groupListName).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -227,6 +229,7 @@ public class AddListItemRepository{
                                             List<String> tmpList = new ArrayList<>();
                                             brandName = docBoi.getString("brand");
                                             itemName = docBoi.getString("name");
+                                            creator = docBoi.getString("user");
 
                                             String isChecked = "false";
 
@@ -238,6 +241,7 @@ public class AddListItemRepository{
 
                                             tmpList.add(itemName);
                                             tmpList.add(brandName);
+                                            tmpList.add(creator);
                                             tmpList.add("1");
                                             tmpList.add(isChecked);
                                             tmpList.add(tmpDocName);
@@ -272,9 +276,13 @@ public class AddListItemRepository{
                         }
                         else
                         {
-                            Log.i("Retrieval", "There are no lists for some reason.");
+                            Log.d("Retrieval", "There are no lists for some reason.");
                         }
 
+                        }
+                        else
+                        {
+                            Log.d("Retrieval", "Nothing here chief");
                         }
                     }
                 });

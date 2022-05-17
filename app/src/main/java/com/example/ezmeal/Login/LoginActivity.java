@@ -55,8 +55,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         AssetManager assetManager = getAssets();
 
         forgotpass = findViewById(R.id.forgotPasswordTextView);
@@ -272,6 +273,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+//                "#807D7D";
                 String email = emailet.getText().toString().trim();
                 beginRecovery(email);
             }

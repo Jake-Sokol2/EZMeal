@@ -36,6 +36,7 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
         public TextView txtListItem;
         public TextView txtBrandName;
         public CheckBox checkCrossOffItem;
+        public TextView creator;
 
         public MainViewHolder(View view)
         {
@@ -43,6 +44,7 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
             txtListItem = (TextView) view.findViewById(R.id.txtListItem);
             txtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
             checkCrossOffItem = (CheckBox) view.findViewById(R.id.checkCrossOffItem);
+            creator = (TextView) view.findViewById(R.id.txtAuthor);
 
 
             view.setOnClickListener(new View.OnClickListener()
@@ -80,6 +82,7 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
         // get(position) determines which recyclerview item was clicked - .get(0) or 1 is the first or second item in the 2d list
         String itemName = list.get(position).get(0);
         String brand = list.get(position).get(1);
+        String tempCreator = list.get(position).get(2);
         Boolean isChecked = Boolean.valueOf(list.get(position).get(3));
         listName = list.get(position).get(4);
 
@@ -99,6 +102,7 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
 
         // todo: fix/remove this line when user data is being saved on app exit
         holder.txtBrandName.setText(brand);
+        holder.creator.setText(tempCreator);
 
         // if user doesn't enter a brand, set brand textview to be invisible, disabled, and 0 width/height so that cardview shrinks in size
         if (Objects.equals(brand, ""))
