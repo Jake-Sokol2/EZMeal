@@ -250,6 +250,25 @@ public class GroupSettingsFragment extends Fragment {
             }
         });
 
+        CardView usernameSetting = (CardView)  rootView.findViewById(R.id.usernameSetting);
+
+        usernameSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+
+                // pass recipeId to specific recipe page so that it knows which recipe to use
+                bundle.putString("id", "");
+
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_groupSettingsFragment_to_fragmentUsernameSetting, bundle, new NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in)
+                        .setExitAnim(R.anim.stall)
+                        .setPopExitAnim(R.anim.slide_out)
+                        .build());
+            }
+        });
+
 
 
         /*String image = "cookies.webp";

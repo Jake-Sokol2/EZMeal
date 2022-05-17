@@ -40,14 +40,17 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="284dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/twoFactSetting"
+        android:id="@+id/usernameSetting"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="220dp"
+        android:clickable="false"
+        android:visibility="invisible"
         app:cardCornerRadius="4dp"
         app:cardElevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +69,7 @@
             android:layout_width="193dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Two-Factor Authentication"
+            android:text="Username"
             android:textSize="20sp"
             android:textStyle="bold|italic" />
     </androidx.cardview.widget.CardView>
