@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 public class CategoryFragment extends Fragment
 {
@@ -63,6 +64,7 @@ public class CategoryFragment extends Fragment
     private boolean isPopulated;
     private CategoryFragmentViewModel viewModel;
     private String lastCategory;
+    private UUID queryId;
 
 
     @Override
@@ -84,6 +86,10 @@ public class CategoryFragment extends Fragment
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         rvFindRecipes.setLayoutManager(staggeredGridLayoutManager);
         rvFindRecipes.suppressLayout(true);
+        rvFindRecipes.setVisibility(View.INVISIBLE);
+
+        horizontalLists = new ArrayList<List<HorizontalRecipe>>();
+        verticalRecipes = new ArrayList<VerticalRecipe>();
 
         categoryFragmentAdapter = new CategoryFragmentAdapter(verticalRecipes, horizontalLists);
         rvFindRecipes.setAdapter(categoryFragmentAdapter);
@@ -104,16 +110,17 @@ public class CategoryFragment extends Fragment
             }
         });
 
-        rvFindRecipes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+        // todo: remove view tree observer?  It used to be for setting visibiltiy but now viewmodel observer takes care of that
+        /*rvFindRecipes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
         {
             @Override
             public void onGlobalLayout()
             {
-                rvFindRecipes.setVisibility(View.VISIBLE);
-                rvFindRecipes.suppressLayout(false);
+                //rvFindRecipes.setVisibility(View.VISIBLE);
+                //rvFindRecipes.suppressLayout(false);
                 rvFindRecipes.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
-        });
+        });*/
 
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
@@ -139,7 +146,8 @@ public class CategoryFragment extends Fragment
 
                 categoryFragmentAdapter.notifyDataSetChanged();
 
-                viewModel.setDataOther(category);
+                queryId = UUID.randomUUID();
+                viewModel.setDataOther(category, queryId);
 
                 // turn off refreshing logo
                 swipeLayout.setRefreshing(false);
@@ -155,35 +163,60 @@ public class CategoryFragment extends Fragment
             isPopulated = returnIsPopulated;
         });
 
+        viewModel.getLastCategory().observe(getViewLifecycleOwner(), returnedCategory ->
+        {
+            lastCategory = returnedCategory;
+        });
+
         viewModel.getDataOther().observe(getViewLifecycleOwner(), new Observer<RetrievedRecipeLists>()
         {
             @Override
             public void onChanged(RetrievedRecipeLists retrievedRecipeLists)
             {
-                if (retrievedRecipeLists != null)// && list.size() > 0)
+                if (retrievedRecipeLists != null)
                 {
                     horizontalLists.clear();
                     verticalRecipes.clear();
+                    recipeIdList.clear();
 
-                    horizontalLists.add(retrievedRecipeLists.getHorizontalList());
 
-                    List<VerticalRecipe> tempVerticalList = new ArrayList<>();
-                    tempVerticalList = retrievedRecipeLists.getVerticalList();
+                    List<HorizontalRecipe> tempHorizontalList = new ArrayList<>();
+                    List<HorizontalRecipe> tempRetrievedHorizontalList = retrievedRecipeLists.getHorizontalList();
 
-                    for (int i = 0; i < tempVerticalList.size(); i++)
+                    for (int i = 0; i < tempRetrievedHorizontalList.size(); i++)
                     {
-                        verticalRecipes.add(tempVerticalList.get(i));
-                        recipeIdList.add(tempVerticalList.get(i).getRecipeId());
+                        //retrievedRecipeLists.getHorizontalList();
+                        //
+                        tempHorizontalList.add(tempRetrievedHorizontalList.get(i));
                     }
-                    categoryFragmentAdapter.notifyDataSetChanged();
+
+                    horizontalLists.add(tempHorizontalList);
+                    //horizontalLists.add(retrievedRecipeLists.getHorizontalList());
+
+                    List<VerticalRecipe> tempRetrievedVerticalList = retrievedRecipeLists.getVerticalList();
+                    //tempVerticalList = retrievedRecipeLists.getVerticalList();
+
+                    for (int i = 0; i < tempRetrievedVerticalList.size(); i++)
+                    {
+                        // tempRetrievedVerticalList.get(i).getQueryId() == queryId
+                        verticalRecipes.add(tempRetrievedVerticalList.get(i));
+                        recipeIdList.add(tempRetrievedVerticalList.get(i).getRecipeId());
+                    }
+
+                    // category may have changed since the query started due to async (if user spam clicks categories, launching multiple queries)
+                    // do this check at the very last moment to reduce the amount of irrelevant queries that make it through
+                    if (retrievedRecipeLists.getCategory() == category)
+                    {
+                        rvFindRecipes.setVisibility(View.VISIBLE);
+                        rvFindRecipes.suppressLayout(false);
+                        categoryFragmentAdapter.notifyDataSetChanged();
+                    }
+
                 }
             }
         });
 
-        viewModel.getLastCategory().observe(getViewLifecycleOwner(), returnedCategory ->
-        {
-            lastCategory = returnedCategory;
-        });
+
 
         return view;
     }
@@ -195,7 +228,7 @@ public class CategoryFragment extends Fragment
         super.onResume();
 
         // if isPopulated, user is returning to an already created fragment.  Don't repopulate the fragment with new recipes, let LiveData handle it
-        if (!isPopulated || lastCategory != category)
+        if (lastCategory != category)
         {
             viewModel.setLastCategory(category);
             viewModel.setPopulated(true);
@@ -212,7 +245,9 @@ public class CategoryFragment extends Fragment
             {
                 categoryFragmentAdapter.notifyDataSetChanged();
 
-                viewModel.setDataOther(category);
+                queryId = UUID.randomUUID();
+                viewModel.setDataOther(category, queryId);
+                viewModel.setPopulated(true);
             }
         }
     }

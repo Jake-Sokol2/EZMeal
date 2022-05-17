@@ -67,14 +67,14 @@ public class CategoryFragmentRoomRepository
                     if (tempRecyclerRecipeList.get(i).isHorizontal)
                     {
                         HorizontalRecipe tempHorizontalRecipe = new HorizontalRecipe(tempRecyclerRecipeList.get(i).getTitle(), tempRecyclerRecipeList.get(i).getImageUrl(),
-                                tempRecyclerRecipeList.get(i).getRecipeId(), tempRecyclerRecipeList.get(i).getAverageRating());
+                                tempRecyclerRecipeList.get(i).getRecipeId(), tempRecyclerRecipeList.get(i).getAverageRating(), tempRecyclerRecipeList.get(i).getCategory());
 
                         tempHorizontalList.add(tempHorizontalRecipe);
                     }
                     else
                     {
                         VerticalRecipe tempVerticalRecipe = new VerticalRecipe(tempRecyclerRecipeList.get(i).getTitle(), tempRecyclerRecipeList.get(i).getImageUrl(),
-                                tempRecyclerRecipeList.get(i).getRecipeId(), tempRecyclerRecipeList.get(i).getAverageRating(), tempRecyclerRecipeList.get(i).getTotalRatings());
+                                tempRecyclerRecipeList.get(i).getRecipeId(), tempRecyclerRecipeList.get(i).getAverageRating(), tempRecyclerRecipeList.get(i).getTotalRatings(), tempRecyclerRecipeList.get(i).getCategory());
 
                         tempVerticalList.add(tempVerticalRecipe);
                     }

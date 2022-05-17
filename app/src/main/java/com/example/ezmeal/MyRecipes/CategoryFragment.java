@@ -174,6 +174,18 @@ public class CategoryFragment extends Fragment {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (categoryFragmentModel.getRecipeList().size() == 0)
+        {
+            Navigation.findNavController(getActivity(), R.id.fragContainer).navigateUp();
+        }
+
+    }
+
+    @Override
     public void onStop()
     {
         super.onStop();

@@ -30,9 +30,9 @@ public class FeaturedFragmentRoomRepository
         //allNotes = testDao.getActiveCategoriesFromIdentifier();
     }
 
-    public LiveData<List<String>> getActiveCategoriesFromIdentifier()
+    public LiveData<List<String>> getRecentCategoriesFromIdentifier(Long resetTime)
     {
-        return sqlDb.testDao().getActiveCategoriesFromIdentifier();
+        return sqlDb.testDao().getRecentCategoriesFromIdentifier(resetTime);
     }
 
     public void insertRecycler2(RecyclerRecipe2 recipe)

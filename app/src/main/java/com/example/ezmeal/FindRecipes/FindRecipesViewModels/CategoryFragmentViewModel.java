@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class CategoryFragmentViewModel extends AndroidViewModel
 {
@@ -74,9 +75,9 @@ public class CategoryFragmentViewModel extends AndroidViewModel
     }
 
 
-    public void setDataOther(String category)
+    public void setDataOther(String category, UUID queryId)
     {
-        firebaseRepository.setDataOther(category);
+        firebaseRepository.setDataOther(category, queryId);
     }
 
     public void setLastCategory(String category)

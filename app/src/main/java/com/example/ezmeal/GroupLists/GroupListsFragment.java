@@ -166,8 +166,8 @@ public class GroupListsFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
+
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
-        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theVM.groupListNames, theVM.isSelectedList);
 
 
 
@@ -178,15 +178,13 @@ public class GroupListsFragment extends Fragment
             {
                 if(groupList.size() > theModel.groupListLength())
                 {
-
-                    theModel.dumpGroupList();
                     for(int i = 0; i < groupList.size(); i++)
                     {
                         theModel.addList(groupList.get(i));
                     }
                     //at this point we should have a grouplist name already.
                     //theVM.wipeSelList();
-                    theVM.setSelectList(theVM.groupListNames.size());
+                    theVM.setSelectList(theModel.groupListLength());
                     loadListData();
 
                     //adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
@@ -198,7 +196,6 @@ public class GroupListsFragment extends Fragment
         {
             if(shoppingList != null)
             {
-
                 if (shoppingList.size() > theModel.getGroceryList().size())
                 {
                     theModel.dumpList();

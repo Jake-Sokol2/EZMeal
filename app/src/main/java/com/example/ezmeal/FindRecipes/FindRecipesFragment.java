@@ -58,6 +58,7 @@ public class FindRecipesFragment extends Fragment
     private List<String> recipeId = new ArrayList<String>();
 
     public List<String> categories = new ArrayList<String>();
+    private List<String> displayCategories = new ArrayList<String>();
     private List<Boolean> isSelected = new ArrayList<>();
     private Integer lastSelectedCategory = 0;
 
@@ -123,14 +124,13 @@ public class FindRecipesFragment extends Fragment
         RecyclerView.LayoutManager horizontalLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvHorizontal.setLayoutManager(horizontalLayoutManager);
 
-        //horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(findRecipesFragmentModel.getCategoryList(), findRecipesFragmentModel.getIsSelectedList());
         horizontalAdapter = new FindRecipesFragmentHorizontalRecyclerAdapter(categories, isSelected);
-        //horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
         rvHorizontal.setAdapter(horizontalAdapter);
 
         viewModel.getHorizontalRecyclerModel().observe(getViewLifecycleOwner(), model ->
         {
             categories = model.getCategoryList();
+            displayCategories = model.getDisplayCategoryList();
             isSelected = model.getIsSelectedList();
             horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
             horizontalAdapter.notifyDataSetChanged();
@@ -144,19 +144,6 @@ public class FindRecipesFragment extends Fragment
             fm.setCategoryList(categoryList);
             fm.setIsSelectedList(isSelectedList);
             viewModel.setHorizontalRecyclerModel(fm);
-         /*Fragment oldFragment = getChildFragmentManager().findFragmentById(R.id.fragmentContainerView4);
-                if (oldFragment instanceof FeaturedFragment)
-                {
-                    ((FeaturedFragment) oldFragment).cleanUpFragmentInstanceState();
-                }*/
-
-            //categories.add("Featured");
-            //findRecipesFragmentModel.addItem(categories.get(0), true);
-
-
-
-
-
 
             db = FirebaseFirestore.getInstance();
 
@@ -168,12 +155,20 @@ public class FindRecipesFragment extends Fragment
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task)
                 {
-                    viewModel.addItem("Featured", true);
+                    //viewModel.addItem("Featured", true);
                     categories = (ArrayList<String>) task.getResult().get("categories");
 
                     for (int i = 0; i < categories.size(); i++)
                     {
-                        viewModel.addItem(categories.get(i), false);
+                        if (i == 0)
+                        {
+                            viewModel.addItem(categories.get(i), true);
+                        }
+                        else
+                        {
+                            viewModel.addItem(categories.get(i), false);
+                        }
+
                         //findRecipesFragmentModel.addItem(categories.get(i), false);
                     }
 
@@ -185,55 +180,6 @@ public class FindRecipesFragment extends Fragment
                 }
             });
         }
-        else
-        {
-            //viewModel.getListSize();
-
-
-            //horizontalAdapter = viewModel.getHorizontalRecyclerModel().getValue();
-        }
-
-
-
-
-
-        /*// todo: find
-        db.collection("RecipeCategoryRatingList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                for (QueryDocumentSnapshot document : task.getResult())
-                {
-                    //Log.i("retrieve", document.getId() + "=> " + document.getData());
-                    //String title = document.getString("title");
-                    //String imageUrl = document.getString("imageUrl");
-                    categories.add(document.getString("category"));
-                    findRecipesFragmentModel.addItem(document.getString("category"), false);
-                    //recipeId.add(document.getId());
-                }
-
-                horizontalAdapter.notifyDataSetChanged();
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });*/
-
-        /*viewModel.getHorizontalRecyclerAdapter().observe(getViewLifecycleOwner(), adapter ->
-        {
-            if (adapter != null)
-            {
-                horizontalAdapter = adapter;
-                rvHorizontal.setAdapter(horizontalAdapter);
-            }
-        });*/
-
-
 
         return view;
     }
@@ -264,14 +210,6 @@ public class FindRecipesFragment extends Fragment
 
                 Fragment fragCategoryClick;
 
-                /*Fragment oldFragment = getChildFragmentManager().findFragmentById(R.id.fragmentContainerView4);
-                if (oldFragment instanceof CategoryFragment)
-                {
-                    ((CategoryFragment) oldFragment).cleanUpFragmentInstanceState();
-
-                }*/
-
-                FragmentTransaction fragmentTransaction;
 
                 // position 0 is "featured" section, which is not stored as a category in the database and would cause a crash if passed in as one
                 // only pass a bundle if the user selects a card other than featured
@@ -280,19 +218,15 @@ public class FindRecipesFragment extends Fragment
                     fragCategoryClick = new CategoryFragment();
 
                     viewModel.setSelected(lastSelectedCategory, false);
+                    viewModel.setSelected(0, false);
                     viewModel.setSelected(position, true);
                     viewModel.setLastSelectedCategory(position);
 
-                    //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
-                    //findRecipesFragmentModel.setSelected(position);
-
-                    //currentSelectedCategoryPosition = position;
 
                     Bundle categoryBundleClick = new Bundle();
-                    categoryBundleClick.putString("cat", categories.get(position - 1));
+                    categoryBundleClick.putString("cat", categories.get(position));
                     fragCategoryClick.setArguments(categoryBundleClick);
 
-                    fragmentTransaction = getChildFragmentManager().beginTransaction();
                     getChildFragmentManager().popBackStack();
 
                     getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
@@ -305,12 +239,7 @@ public class FindRecipesFragment extends Fragment
                     viewModel.setSelected(lastSelectedCategory, false);
                     viewModel.setSelected(0, true);
                     viewModel.setLastSelectedCategory(0);
-                    //findRecipesFragmentModel.setNotSelected(currentSelectedCategoryPosition);
-                    //findRecipesFragmentModel.setSelected(0);
 
-                    //currentSelectedCategoryPosition = 0;
-
-                    fragmentTransaction = getChildFragmentManager().beginTransaction();
 
                     getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainerView4, fragCategoryClick).commit();
                 }
@@ -320,216 +249,6 @@ public class FindRecipesFragment extends Fragment
 
             }
         });
-    }
-/*    @Override
-    public void onStop()
-    {
-        super.onStop();
-        findRecipesHorizontalModel.dumpList();
-    }*/
-
-
-
-
-/*
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-
-        AsyncClass ac = new AsyncClass();
-        ac.execute();
-    }
-
-    public class AsyncClass extends AsyncTask<Void, Void, Void> {
-        //private Document doc = Jsoup.connect("https://cookstre.com").get();
-        //String url = "https://firebase.google.com/";
-        String urlText = "https://www.allrecipes.com/recipes/78/breakfast-and-brunch/";
-        Elements divs;
-
-        ProgressDialog progressDialog;
-        private Context ctx;
-        public Bitmap bitmap;
-        public String title;
-        public String imgSrc;
-        public String imgUrl;
-
-        TextView textView;
-        private View view;
-
-        AsyncClass()
-        {
-
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-
-            //textView = findViewById(R.id.textView);
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.show();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-
-            //Document get request stuff?
-            try
-            {
-
-
-                //Connect to website
-                Document doc = Jsoup.connect(urlText).get();
-
-                // this "Breakfast and Brunch" page has two sets of div classes - one containing the 12 staff picks recipes, the second containing 24 "More Breakfast and Brunch"
-                // recipes at the bottom of the screen.  We get the first of the two divs and ignore the second
-                Element content = doc.getElementsByClass("category-page-list-content category-page-list-content__recipe-card karma-main-column").get(0);
-                divs = content.getElementsByClass("component card card__category");
-
-                imageList = new String[divs.size()];
-                bitmapList = new Bitmap[divs.size()];
-                titleList = new String[divs.size()];
-
-                mStorageRef = FirebaseStorage.getInstance().getReference();
-
-                db = FirebaseFirestore.getInstance();
-                CollectionReference dbRecipes = db.collection("Recipes");
-
-
-                int i = 0;
-                for(Element e: divs)
-                {
-                    imageList[i] = e.select("img").attr("src");
-                    URL url = new URL(imageList[i]);
-
-                    String random = UUID.randomUUID().toString();
-                    StorageReference recipeRef = mStorageRef.child("recipeImages/" + random);
-
-                    InputStream stream = url.openConnection().getInputStream();
-                    UploadTask uploadTask = recipeRef.putStream(stream);
-                    uploadTask.addOnFailureListener(new OnFailureListener()
-                    {
-                        @Override
-                        public void onFailure(@NonNull Exception e)
-                        {
-                            Log.i("firebase storage tag", "inputstream failed");
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-                    {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                        {
-                            Log.i("firebase storage tag", "inputstream succeeded");
-
-                            recipeRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-                            {
-                                @Override
-                                public void onSuccess(Uri uri)
-                                {
-                                    // String[] categories, String[] directions, String[] ingredients,
-                                    //                  String[] nutrition, String imageUrl, String title, double rating
-                                    ArrayList<String> categories = new ArrayList<>();
-                                    categories.add("Breakfast");
-                                    ArrayList<String> directions = new ArrayList<>();
-                                    directions.add("direction 1");
-                                    directions.add("direction 2");
-                                    directions.add("direction 3");
-
-                                    ArrayList<String> ingredients = new ArrayList<>();
-                                    ingredients.add("ingredient 1");
-                                    ingredients.add("ingredient 2");
-                                    ingredients.add("ingredient 3");
-
-                                    ArrayList<String> nutrition = new ArrayList<>();
-                                    nutrition.add("calories");
-                                    nutrition.add("protein");
-                                    nutrition.add("sodium");
-
-                                    String title = e.select("h3").text();
-
-                                    Recipe recipe = new Recipe(categories, directions, ingredients, nutrition, String.valueOf(uri), title, 0);
-
-                                    dbRecipes.add(recipe).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-                                    {
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference)
-                                        {
-                                            Log.i("firebase storage tag", "recipe added to firestore database");
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener()
-                                    {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e)
-                                        {
-                                            Log.i("firebase storage tag", "FAILED to add recipe to firestore database");
-                                        }
-                                    });
-                                    //Log.i("firebase storage tag", String.valueOf(uri));
-                                }
-                            }).addOnFailureListener(new OnFailureListener()
-                            {
-                                @Override
-                                public void onFailure(@NonNull Exception e)
-                                {
-                                    Log.i("firebase storage tag", "failed to get URL");
-                                }
-                            });
-                        }
-                    });
-
-
-
-
-                    bitmapList[i] = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    titleList[i] = e.select("h3").text();
-                    i++;
-                }
-
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-
-                return null;
-            }
-        // everything in this method is performed on the main thread!
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            super.onPostExecute(aVoid);
-
-
-
-            for(int i = 0; i < divs.size(); i++)
-            {
-                findRecipesModel.addItem(titleList[i], bitmapList[i]);
-            }
-            findRecipesAdapter.notifyDataSetChanged();
-
-            progressDialog.dismiss();
-
-        }
-    }*/
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-
-        //getChildFragmentManager().popBackStackImmediate();
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-
-
     }
 
     @Override

@@ -78,7 +78,7 @@ public interface TestDao {
 
     @Query("SELECT EXISTS(SELECT * FROM Recipe WHERE recipeId = :rid)")
     public boolean isRecipeExists(String rid);
-
+//AND NOT category = 'Breakfast' AND NOT category = 'Lunch' AND NOT category = 'Dinner' AND NOT category = 'Dessert'
     @Query("SELECT DISTINCT category FROM CategoryEntity WHERE category NOT NULL")
     public List<String> getCategoriesCategoryEntity();
 
@@ -215,6 +215,12 @@ public interface TestDao {
     @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
     public LiveData<List<String>> getActiveCategoriesFromIdentifier();
 
+    @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE timeActivated > :resetTime")
+    public LiveData<List<String>> getRecentCategoriesFromIdentifier(Long resetTime);
+
     @Query("SELECT DISTINCT category FROM IDENTIFIER WHERE isActive = 1")
     public List<String> getActiveCategoriesFromIdentifier2();
+
+    @Query("UPDATE IDENTIFIER SET timeActivated = :readTime WHERE identifier = :identifier")
+    void updateIdentifierReadTime(String identifier, Long readTime);
 }

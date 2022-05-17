@@ -70,7 +70,7 @@ public class FindRecipesFragmentHorizontalRecyclerAdapter extends RecyclerView.A
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_selector_find_recipes, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_recycler_find_recipes, parent, false);
         return new MainViewHolder(itemView);
     }
 

@@ -64,13 +64,12 @@
         android:id="@+id/btnAddToMyRecipes"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginStart="348dp"
         android:layout_marginTop="324dp"
-        android:src="@drawable/icons8_plus_48"
-        app:fabCustomSize="45.5dp"
         android:backgroundTint="@color/EzGreen"
         android:elevation="6dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/icons8_plus_48"
+        app:fabCustomSize="45.5dp"
+        app:layout_constraintEnd_toEndOf="@+id/vpRecipe"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.viewpager2.widget.ViewPager2
