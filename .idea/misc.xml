@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/drawable/customborder.xml" value="0.295" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/drawable/layout_border.xml" value="0.138" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/activity_login.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/activity_main_recycler_item_rounded.xml" value="0.1" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/directions_recycler_item.xml" value="0.25" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_add_button.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_email_setting.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_group_settings.xml" value="0.25" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_password_setting.xml" value="0.21" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/fragment_specific_recipe.xml" value="0.1" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/ingredients_recycler_item.xml" value="0.21" />
+        <entry key="..\:/Users/Brandon/StudioProjects/EZMeal/EZMeal/app/src/main/res/layout/nutrition_recycler_item.xml" value="0.1398148148148148" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+</project>
