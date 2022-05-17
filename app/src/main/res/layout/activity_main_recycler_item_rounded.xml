@@ -1,74 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcardList"
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        app:cardBackgroundColor="#FFF"
-        app:cardCornerRadius="10dp"
-
-        app:cardElevation="4dp"
-        app:checkedIconTint="@color/EzGreen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rippleColor="@color/EzGreen"
-        app:strokeColor="@color/EzGreen"
-        app:strokeWidth="1dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_margin="10dp"
+        android:id="@+id/mcardList"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:layout_margin="10dp"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txtBrandName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Brand Name"
-                app:layout_constraintStart_toStartOf="@+id/txtListItem"
-                app:layout_constraintTop_toBottomOf="@+id/checkCrossOffItem" />
-
             <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:buttonTint="@color/EzGreen"
                 android:id="@+id/checkCrossOffItem"
-                android:layout_width="47dp"
-                android:layout_height="42dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content">
+            </CheckBox>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:src="@drawable/list_icon"
+                android:layout_height="50dp">
+
+            </ImageView>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Item Name"
+                    android:textStyle="bold"
+                    android:id="@+id/txtListItem"
+                    android:textColor="#000"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Brand Name"
+                    android:id="@+id/txtBrandName"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
-                android:id="@+id/txtAuthor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="28dp"
+                android:layout_width="match_parent"
+                android:gravity="end|center_vertical"
                 android:text="Creator"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="14dp"
+                android:id="@+id/txtAuthor"
+                android:textColor="#000"
+                android:layout_marginRight="20dp"
+                android:textStyle="bold"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/txtListItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif"
-                android:text="Item Name"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/checkCrossOffItem"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </TextView>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
