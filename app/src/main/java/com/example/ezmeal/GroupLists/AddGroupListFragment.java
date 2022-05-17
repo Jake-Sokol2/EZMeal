@@ -227,9 +227,9 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                             //Toast.makeText(getActivity(), "Creation of group " + groupNameString + " success!", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    //theViewModel.updateGroupList()
-                    //theViewModel.glFragAdapter.notifyDataSetChanged();
-                    hAdapter.notifyDataSetChanged();
+
+                    theViewModel.glFragAdapter.notifyDataSetChanged();
+
                     dismiss();
                 }
                 break;
