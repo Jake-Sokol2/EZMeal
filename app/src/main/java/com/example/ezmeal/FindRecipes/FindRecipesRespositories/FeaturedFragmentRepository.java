@@ -439,7 +439,7 @@ public class FeaturedFragmentRepository
                 numRetrieved = numRetrieved + 1;
                 //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
 
-                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating);
+                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating, category);
                 // add this recipe to the most recently added vertical item
                 horizontalLists.add(newRecipe);
                 //horizontalList.add(newRecipe);
@@ -502,7 +502,7 @@ public class FeaturedFragmentRepository
                 numRetrieved = numRetrieved + 1;
                 //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
 
-                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating);
+                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating, category);
                 // add this recipe to the most recently added vertical item
                 recipeList.appendHorizontalRecipeList(newRecipe);
                 //horizontalList.add(newRecipe);

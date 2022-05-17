@@ -11,4 +11,5 @@
     <color name="group_list_item">@color/black</color>
     <color name="group_list_item_crossed_out">#808080</color>
     <color name="EzGreen">#5FA32D</color>
+    <color name="grey_background">#F1F2F5</color>
 </resources>

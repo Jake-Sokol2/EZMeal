@@ -108,7 +108,7 @@
             android:layout_marginLeft="36dp"
             motion:layout_editor_absoluteX="37dp" />
         <Constraint
-            android:elevation="6dp"
+            android:elevation="20dp"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginStart="356dp"

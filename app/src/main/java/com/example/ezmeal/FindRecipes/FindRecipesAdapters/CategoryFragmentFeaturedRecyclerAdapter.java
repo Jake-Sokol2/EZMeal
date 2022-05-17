@@ -20,6 +20,7 @@ import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentChildHorizontalRecyclerModel;
+import com.example.ezmeal.FindRecipes.FindRecipesModels.FeaturedChildClickListener;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.RecipeActivity;
 import com.example.ezmeal.R;
@@ -32,7 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements FeaturedChildClickListener
 {
     private FirebaseFirestore db;
     public CollectionReference dbRecipes;
@@ -56,6 +57,12 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
     private final int COUNT_THRESHOLD_TO_SHOW_RECIPES = 1;
     private final int HORIZONTAL_VIEW = 0;
     private final int VERTICAL_VIEW = 1;
+
+    @Override
+    public void onChildItemClick(int parentPosition, int childPosition, String item)
+    {
+
+    }
 
     public class MainViewHolder extends RecyclerView.ViewHolder
     {
@@ -224,6 +231,12 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
 
         horizontalHolder.txtTitle.setText(verticalTitleList.get(position));
 
+        if (verticalTitleList.get(position) == "Popular Recipes This Week")
+        {
+
+
+        }
+
         if (horizontalLists.size() > 0)
         {
             Log.i("active categories", "horizontalLists size > 0 inside vertical recyclerAdapter");
@@ -237,6 +250,8 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
 
             CategoryFragmentChildHorizontalRecylerAdapter highRatedRecipesAdapter = new CategoryFragmentChildHorizontalRecylerAdapter(horizontalLists.get(position));
 
+
+
             highRatedRecipesAdapter.setOnItemClickListener(new CategoryFragmentChildHorizontalRecylerAdapter.MainAdapterListener()
             {
                 @Override
@@ -245,7 +260,7 @@ public class CategoryFragmentFeaturedRecyclerAdapter extends RecyclerView.Adapte
                     Intent intent = new Intent(holder.itemView.getContext(), RecipeActivity.class);
                     Bundle bundle = new Bundle();
 
-                    bundle.putString("id", horizontalLists.get(0).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
+                    bundle.putString("id", horizontalLists.get(holder.getAbsoluteAdapterPosition()).get(position).getRecipeId()); //highRatedRecipeIdList.get(position));
                     intent.putExtras(bundle);
                     holder.itemView.getContext().startActivity(intent);
                 }

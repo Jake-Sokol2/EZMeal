@@ -12,6 +12,7 @@ public class RetrievedRecipeLists
     private List<String> recipeIdList = new ArrayList<>();
     private Set<Integer> setOfUniqueVerticalRecipes = new HashSet<>();
     private Set<Integer> setOfUniqueHorizontalRecipes = new HashSet<>();
+    private String category;
     private int verticalStartId;
     private int verticalEndId;
     private int numVerticalToQuery = 0;
@@ -145,5 +146,15 @@ public class RetrievedRecipeLists
     public void setVerticalEndId(int verticalEndId)
     {
         this.verticalEndId = verticalEndId;
+    }
+
+    public void setCategory(String category)
+    {
+        this.category = category;
+    }
+
+    public String getCategory()
+    {
+        return category;
     }
 }

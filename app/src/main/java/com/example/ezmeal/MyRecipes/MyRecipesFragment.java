@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -34,8 +35,9 @@ public class MyRecipesFragment extends Fragment
     List<String> list = new ArrayList<String>();
     private RecyclerView rvCategories;
     private MyRecipesFragmentRecyclerAdapter adapter;
-
+    private LinearLayoutManager linearLayoutManager;
     public List<String> cat;
+    private MotionLayout motionLayout;
 
     private static final String RECYCLER_VIEW_KEY = "recycler_view_key";
     private static final String RV_DATA = "rv_data";
@@ -93,12 +95,14 @@ public class MyRecipesFragment extends Fragment
         adapter = new MyRecipesFragmentRecyclerAdapter(myRecipesFragmentModel.getCategoryList(), myRecipesFragmentModel.getUrl());
         rvCategories.setAdapter(adapter);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvCategories.setLayoutManager(linearLayoutManager);
 
 
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
+
+
 
         // retrieve list of categories and some random images from Room
         cat = sqlDb.testDao().getCategoriesCategoryEntity();
@@ -135,9 +139,47 @@ public class MyRecipesFragment extends Fragment
             }
         });
 
+
+        motionLayout = view.findViewById(R.id.mlMyRecipes);
+
+
+
+
+        /*if (linearLayoutManager.findLastCompletelyVisibleItemPosition() < adapter.getItemCount() -1)
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(true);
+        }
+        else
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(false);
+        }*/
+
+        /*if (rvCategories.canScrollVertically(1) || rvCategories.canScrollVertically(-1))
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(true);
+        }
+        else
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(false);
+        }*/
+
         return view;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1)
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(false);
+        }
+        else
+        {
+            motionLayout.getTransition(R.id.myRecipesTransition).setEnabled(true);
+        }
+    }
 
     @Override
     public void onStop()

@@ -76,6 +76,12 @@ public class FindRecipesViewModel extends ViewModel
         //this.url.add(url);
     }
 
+    public void addDisplayCategoryItem(String category)//, String url)
+    {
+        horizontalRecyclerModel.getValue().getDisplayCategoryList().add(category);
+        //this.url.add(url);
+    }
+
     public int getListSize()
     {
         return horizontalRecyclerModel.getValue().getCategoryList().size();

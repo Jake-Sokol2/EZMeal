@@ -58,6 +58,7 @@ public class FindRecipesFragment extends Fragment
     private List<String> recipeId = new ArrayList<String>();
 
     public List<String> categories = new ArrayList<String>();
+    private List<String> displayCategories = new ArrayList<String>();
     private List<Boolean> isSelected = new ArrayList<>();
     private Integer lastSelectedCategory = 0;
 
@@ -131,6 +132,7 @@ public class FindRecipesFragment extends Fragment
         viewModel.getHorizontalRecyclerModel().observe(getViewLifecycleOwner(), model ->
         {
             categories = model.getCategoryList();
+            displayCategories = model.getDisplayCategoryList();
             isSelected = model.getIsSelectedList();
             horizontalAdapter.setData(model.getCategoryList(), model.getIsSelectedList());
             horizontalAdapter.notifyDataSetChanged();
@@ -144,6 +146,10 @@ public class FindRecipesFragment extends Fragment
             fm.setCategoryList(categoryList);
             fm.setIsSelectedList(isSelectedList);
             viewModel.setHorizontalRecyclerModel(fm);
+
+            viewModel.setSelected(lastSelectedCategory, false);
+            viewModel.setSelected(0, true);
+            viewModel.setLastSelectedCategory(0);
          /*Fragment oldFragment = getChildFragmentManager().findFragmentById(R.id.fragmentContainerView4);
                 if (oldFragment instanceof FeaturedFragment)
                 {
@@ -168,7 +174,7 @@ public class FindRecipesFragment extends Fragment
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task)
                 {
-                    viewModel.addItem("Featured", true);
+                    //viewModel.addItem("Featured", true);
                     categories = (ArrayList<String>) task.getResult().get("categories");
 
                     for (int i = 0; i < categories.size(); i++)
@@ -289,7 +295,7 @@ public class FindRecipesFragment extends Fragment
                     //currentSelectedCategoryPosition = position;
 
                     Bundle categoryBundleClick = new Bundle();
-                    categoryBundleClick.putString("cat", categories.get(position - 1));
+                    categoryBundleClick.putString("cat", categories.get(position));
                     fragCategoryClick.setArguments(categoryBundleClick);
 
                     fragmentTransaction = getChildFragmentManager().beginTransaction();

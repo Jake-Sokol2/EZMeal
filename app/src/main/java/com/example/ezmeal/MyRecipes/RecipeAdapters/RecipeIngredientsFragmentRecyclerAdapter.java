@@ -29,7 +29,7 @@ public class RecipeIngredientsFragmentRecyclerAdapter extends RecyclerView.Adapt
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtIngredient = (TextView) view.findViewById(R.id.txtIngredient);
+            txtIngredient = (TextView) view.findViewById(R.id.txtRecipeItem);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -57,7 +57,7 @@ public class RecipeIngredientsFragmentRecyclerAdapter extends RecyclerView.Adapt
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout. ingredients_recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 

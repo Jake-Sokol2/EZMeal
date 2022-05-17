@@ -13,7 +13,8 @@
             motion:dragDirection="dragUp"
             motion:touchAnchorId="@id/fragmentContainerView4"
             motion:touchAnchorSide="start"
-            />
+            motion:maxVelocity="0.58"
+            motion:maxAcceleration="0.1" />
     </Transition>
 
 
@@ -22,20 +23,22 @@
             android:id="@+id/txtFindRecipesTitle"
             android:elevation="6dp"
             android:layout_width="0dp"
-            android:layout_height="42dp"
-            android:layout_marginBottom="20dp"
+            android:layout_height="41dp"
             motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintWidth_percent=".46"
-            motion:layout_constraintEnd_toEndOf="parent" />
+            motion:layout_constraintWidth_percent=".55"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="-7dp" />
         <Constraint
-            android:layout_height="554dp"
+            android:layout_height="0dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="412dp"
+            android:background="@color/grey_background"
             motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
             android:id="@+id/fragmentContainerView4"
-            motion:layout_editor_absoluteX="-1dp" />
+            motion:layout_constraintBottom_toBottomOf="parent" />
         <Constraint
             android:id="@+id/rvHorizontalSelector"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -47,45 +50,54 @@
             motion:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="15dp"
             android:id="@+id/txtTitleFindRecipes"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:layout_height="13dp"
+            android:layout_height="12dp"
             motion:layout_editor_absoluteX="0dp"
             android:layout_width="match_parent"
             android:id="@+id/txtTopBar"
             motion:layout_constraintTop_toTopOf="parent" />
         <Constraint
             android:id="@+id/fragmentContainerView4"
-            android:layout_width="match_parent"
-            android:layout_height="550dp"
-            motion:layout_editor_absoluteX="16dp"
-            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+            android:layout_width="412dp"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintEnd_toEndOf="parent" />
         <Constraint
             android:id="@+id/fragmentContainerView4"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            motion:layout_editor_absoluteX="16dp"
-            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+            android:layout_width="412dp"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/txtFindRecipesTitle"
-            android:elevation="6dp"
+            android:elevation="10dp"
             android:layout_height="13dp"
-            motion:layout_constraintWidth_percent=".26"
+            motion:layout_constraintWidth_percent=".55"
             android:layout_width="0dp"
             motion:layout_constraintTop_toTopOf="parent"
 
-            motion:layout_constraintEnd_toEndOf="parent" />
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="0dp" />
         <Constraint
             android:id="@+id/fragmentContainerView4"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="554dp"
+            android:layout_height="0dp"
+            android:background="@color/grey_background"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintVertical_bias="0.0"
             motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
@@ -94,24 +106,23 @@
         <Constraint
             android:layout_height="56dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:id="@+id/rvHorizontalSelector" />
+            android:id="@+id/rvHorizontalSelector"
+            motion:layout_constraintTop_toBottomOf="@+id/txtFindRecipesTitle" />
         <Constraint
             android:layout_height="wrap_content"
-            android:layout_marginTop="-75dp"
+            android:layout_marginTop="-28dp"
             motion:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
 
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginLeft="84dp"
 
-            android:layout_marginEnd="15dp"
-            android:id="@+id/txtTitleFindRecipes" />
+            android:id="@+id/txtTitleFindRecipes"
+            motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:layout_height="1dp"
+            android:layout_height="5dp"
             motion:layout_editor_absoluteX="0dp"
             android:layout_width="match_parent"
             android:id="@+id/txtTopBar"
@@ -119,14 +130,22 @@
         <Constraint
             android:id="@+id/fragmentContainerView4"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="0dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
+            motion:layout_constraintVertical_bias="0.0"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintEnd_toEndOf="parent" />
         <Constraint
             android:id="@+id/fragmentContainerView4"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="0dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector" />
+            motion:layout_constraintTop_toBottomOf="@+id/rvHorizontalSelector"
+            motion:layout_constraintVertical_bias="0.0"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>
 </MotionScene>

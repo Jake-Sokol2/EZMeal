@@ -29,7 +29,7 @@ public class RecipeDirectionsFragmentRecyclerAdapter extends RecyclerView.Adapte
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtDirection = (TextView) view.findViewById(R.id.txtDirections);
+            txtDirection = (TextView) view.findViewById(R.id.txtRecipeItem);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -56,7 +56,7 @@ public class RecipeDirectionsFragmentRecyclerAdapter extends RecyclerView.Adapte
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.directions_recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 

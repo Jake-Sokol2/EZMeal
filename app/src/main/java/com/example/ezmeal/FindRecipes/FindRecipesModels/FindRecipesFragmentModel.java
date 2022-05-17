@@ -6,6 +6,7 @@ import java.util.List;
 public class FindRecipesFragmentModel
 {
     private List<String> categoryList;
+    private List<String> displayCategoryList;
     private List<Boolean> isSelectedList;
     //private List<String> url;
     //private boolean isChecked;
@@ -14,6 +15,7 @@ public class FindRecipesFragmentModel
     public FindRecipesFragmentModel()
     {
         categoryList = new ArrayList<String>();
+        displayCategoryList = new ArrayList<>();
         isSelectedList = new ArrayList<Boolean>();
         //url = new ArrayList<String>();
     }
@@ -22,6 +24,12 @@ public class FindRecipesFragmentModel
     {
         categoryList.add(category);
         isSelectedList.add(isSelected);
+        //this.url.add(url);
+    }
+
+    public void addDisplayCategoryItem(String category)//, String url)
+    {
+        displayCategoryList.add(category);
         //this.url.add(url);
     }
 
@@ -56,6 +64,11 @@ public class FindRecipesFragmentModel
     public List<String> getCategoryList()
     {
         return categoryList;
+    }
+
+    public List<String> getDisplayCategoryList()
+    {
+        return displayCategoryList;
     }
 
     public List<Boolean> getIsSelectedList()

@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +79,7 @@ public class CategoryFragmentRepository
         this.application = application;
     }
 
-    public void setDataOther(String category)
+    public void setDataOther(String category, UUID queryId)
     {
         recipeLists = new RetrievedRecipeLists();
         //MutableLiveData<RetrievedRecipeLists> returnLists = new MutableLiveData<>();
@@ -102,19 +103,22 @@ public class CategoryFragmentRepository
 
         // total number remaining
         recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumVerticalToQuery());
+        recipeLists.setCategory(category);
 
         //sqlDb.testDao().insertRecyclerRecipe2(recipe);
 
+        // todo: remove category parameter, use recipeLists.getCategory() instead inside readRecipes
         readRecipes(new RecipeCallback()
         {
             @Override
             public void onCallback(RetrievedRecipeLists retrievedRecipeLists)
             {
+                retrievedRecipeLists.setCategory(category);
                 recipeLists = retrievedRecipeLists;
                 Log.i("a", "a");
                 returnLists.setValue(recipeLists);
             }
-        }, category, recipeLists);
+        }, category, recipeLists, queryId);
     }
 
     public MutableLiveData<RetrievedRecipeLists> getDataOther()
@@ -122,7 +126,7 @@ public class CategoryFragmentRepository
         return returnLists;
     }
 
-    public void readRecipes(RecipeCallback callback, String category, RetrievedRecipeLists recipeLists)
+    public void readRecipes(RecipeCallback callback, String category, RetrievedRecipeLists recipeLists, UUID queryId)
     {
             int numRecipesToQuery;
             int recipeSearchStartId;
@@ -142,552 +146,581 @@ public class CategoryFragmentRepository
                 recipeSearchStartId = recipeLists.getVerticalEndId();
             }
 
-            dbRecipes.whereArrayContains("categories", category).whereGreaterThanOrEqualTo("recipeId", recipeSearchStartId).orderBy("recipeId").limit(numRecipesToQuery).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task)
-                        {
-                            List<VerticalRecipe> verticalList = new ArrayList<>();
-                            List<HorizontalRecipe> horizontalList = new ArrayList<>();
-                            List<RecyclerRecipe2> recyclerRecipe2List = new ArrayList<>();
-                            List<RecyclerRecipe2> horizontalRecyclerRecipe2List = new ArrayList<>();
+        /*dbRecipes.whereArrayContains("categories", category).whereEqualTo("highlyRated", true).whereGreaterThanOrEqualTo("recipeId", recipeSearchStartId).orderBy("recipeId").limit(10).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                       {
+                                           @Override
+                                           public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                           {
+                                               Log.i("queries", "queried outer");
+                                               List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeLists, category, "Popular Recipe", task);
+                                               recipeLists.appendHorizontalList(retrievedHorizontalList);
 
-                            int startId = 0;
-                            int endId = 0;
-                            int i = 0;
+                                               *//*int numLeftToRetrieve = recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size();
 
-                            // todo: change for loop format, enhanced for isn't right for this
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                    double recipeIdDouble = document.getDouble("recipeId");
-                                    int recipeIdInt = (int) recipeIdDouble;
+                                               if (numLeftToRetrieve > 0)
+                                               {
+                                                   // search to the right of the right bound
+                                                   dbRecipes.whereArrayContains("categories", category).whereLessThan("recipeId", recipeLists.getVerticalEndId()).limit(numLeftToRetrieve).get()
+                                                           .addOnCompleteListener(taskSecondHorizontal ->
+                                                           {
 
-                                    if (i == 0)
+                                                               Log.i("queries", "queried inner");
+                                                               List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskSecondHorizontal);
+                                                               recipeLists.appendHorizontalList(retrievedListInner);
+
+                                                               callback.onCallback(recipeLists);
+                                                               //liveDataHorizontal.setValue(horizontalLists);
+                                                           });
+                                               }*//*
+                                           }
+                                       });*/
+
+                        dbRecipes.whereArrayContains("categories", category).whereGreaterThanOrEqualTo("recipeId", recipeSearchStartId).orderBy("recipeId").limit(numRecipesToQuery).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task)
                                     {
-                                        // keep track of first recipeId for later queries
-                                        startId = recipeIdInt;
-                                    }
-                                    else
-                                    {
-                                        // keep track of last recipeId for later queries
-                                        endId = recipeIdInt;
-                                    }
+                                        List<VerticalRecipe> verticalList = new ArrayList<>();
+                                        List<HorizontalRecipe> horizontalList = new ArrayList<>();
+                                        List<RecyclerRecipe2> recyclerRecipe2List = new ArrayList<>();
+                                        List<RecyclerRecipe2> horizontalRecyclerRecipe2List = new ArrayList<>();
 
-                                    String imageUrl = document.getString("imageUrl");
-                                    String title = document.getString("title");
-                                    String recipeIdString = document.getId();
-                                    boolean highlyRated = document.getBoolean("highlyRated");
+                                        int startId = 0;
+                                        int endId = 0;
+                                        int i = 0;
 
-                                    Double countRating = document.getDouble("countRating");
-                                    Double avgRating;
-                                    if (countRating != null)
-                                    {
-                                        avgRating = document.getDouble("rating") / countRating;
-                                    }
-                                    else
-                                    {
-                                        countRating = 0.0;
-                                        avgRating = 0.0;
-                                    }
-
-                                    if (Double.isNaN(avgRating))
-                                    {
-                                        avgRating = 0.0;
-                                    }
-
-                                    Integer totalRating = countRating.intValue();
-
-                                    int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
-                                    recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
-
-                                    // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                    if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
-                                    {
-                                        // only add recipe to the vertical recycler if its not highly rated, we've already filled the horizontal with the max number of recipes,
-                                        // or we aren't in our first query (accounting for high rated recipes in the third query would force us to do recursion to ensure we get enough vertical recipes)
-
-                                        if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery())) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
+                                        // todo: change for loop format, enhanced for isn't right for this
+                                        for (QueryDocumentSnapshot document : task.getResult())
                                         {
-                                            recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
+                                            double recipeIdDouble = document.getDouble("recipeId");
+                                            int recipeIdInt = (int) recipeIdDouble;
 
-                                            RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
-                                            recyclerRecipe2List.add(recyclerRecipe2);
-
-                                            VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating);
-                                            verticalList.add(newRecipe);
-
-                                            ///verticalRecipeIdList.add(recipeIdString);
-
-                                            // todo: may need to uncomment and convert this for onClick
-                                            //recipeId.add(recipeIdString);
-                                        }
-                                        // add to horizontal highly rated list instead of vertical recyclerview
-                                        else
-                                        {
-                                            //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
-
-                                            int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
-                                            recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
-
-                                            //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
-                                            //setOfUniqueHighRatedRecipes.add(recipeIdInt);
-
-                                            // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                            if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
+                                            if (i == 0)
                                             {
-                                                //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
-                                                // todo: may need to uncomment and convert, adding new private member to the class
-                                                //numOfRetrievedHighRatedRecipes++;
-
-                                                //highRatedTitles.add(title);
-                                                //highRatedImages.add(imageUrl);
-                                                //highRatedRecipeIdList.add(recipeIdString);
-                                                //highRatedRatings.add(avgRating);
-
-                                                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating);
-                                                horizontalList.add(newRecipe);
-                                                //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
-
-                                                ///horizontalRecipeIdList.add(recipeIdString);
-
-                                                RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
-                                                        avgRating, "Popular Recipe", true, totalRating);
-                                                horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
-                                                //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
-                                            }
-                                        }
-                                    }
-
-                                    i++;
-                                }
-
-                            //recipeLists.appendVerticalList(verticalList);
-                            //recipeLists.appendHorizontalList(horizontalList);
-                            //recipeLists.setVerticalStartId(startId);
-                            //recipeLists.setVerticalEndId(endId);
-
-                            // todo: uncomment
-                            //callback.onCallback(verticalList, horizontalList, startId, endId);
-
-                            recipeLists.setVerticalStartId(startId);
-                            recipeLists.setVerticalEndId(endId);
-
-                            recipeLists.appendVerticalList(verticalList);
-                            recipeLists.appendHorizontalList(horizontalList);
-
-                            //recipeLists.setNumRemainingVerticalRecipes(verticalList.size() - recipeLists.getNumRemainingVerticalRecipes());
-
-                            // try to query all remaining vertical recipes in the opposite direction.  This could still fail to return all vertical recipes
-                            dbRecipes.whereArrayContains("categories", category).whereLessThan("recipeId", recipeLists.getRandomQueryId()).orderBy("recipeId").limit(recipeLists.getNumRemainingVerticalRecipes()).get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task)
-                                        {
-                                            //int numRetrievedRecipes = numOfRetrievedRecipes; //viewModel.getNumOfRetrievedRecipes();
-
-                                            List<VerticalRecipe> verticalList = new ArrayList<>();
-                                            List<HorizontalRecipe> horizontalList = new ArrayList<>();
-                                            int startId = 0;
-                                            //int endId = 0;
-
-                                            // todo: change for loop format, enhanced for isn't right for this
-                                            for (QueryDocumentSnapshot document : task.getResult())
-                                            {
-                                                double recipeIdDouble = document.getDouble("recipeId");
-                                                int recipeIdInt = (int) recipeIdDouble;
-
-                                                // here, startId refers to the entire query's start.  It is the left bound of all searched recipeId's
+                                                // keep track of first recipeId for later queries
                                                 startId = recipeIdInt;
-
-                                                String imageUrl = document.getString("imageUrl");
-                                                String title = document.getString("title");
-                                                String recipeIdString = document.getId();
-                                                boolean highlyRated = document.getBoolean("highlyRated");
-
-                                                Double countRating = document.getDouble("countRating");
-                                                Double avgRating;
-                                                if (countRating != null)
-                                                {
-                                                    avgRating = document.getDouble("rating") / countRating;
-                                                }
-                                                else
-                                                {
-                                                    countRating = 0.0;
-                                                    avgRating = 0.0;
-                                                }
-
-                                                if (Double.isNaN(avgRating))
-                                                {
-                                                    avgRating = 0.0;
-                                                }
-
-                                                Integer totalRating = countRating.intValue();
-
-                                                //Set<Integer> setOfUniqueRecipes = viewModel.getSetOfUniqueRecipes();
-
-                                                int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
-                                                recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
-
-                                                // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                                if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
-                                                {
-                                                    // only add recipe to the vertical recycler if its not highly rated or we've already filled the horizontal with the max number of recipes
-                                                    if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery())) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
-                                                    {
-                                                        //viewModel.incrementNumOfRetrievedRecipesBy(1);
-                                                        recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
-
-                                                        //ratings.add(avgRating);
-                                                        //totalRatingsCountList.add(totalRating);
-
-                                                        RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
-                                                        //recyclerRecipeList2.add(recyclerRecipe2);
-                                                        recyclerRecipe2List.add(recyclerRecipe2);
-                                                        //categoryFragmentModel.addItem(title, imageUrl, avgRating, totalRating);
-
-                                                        VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating);
-                                                        verticalList.add(newRecipe);
-
-                                                        ///verticalRecipeIdList.add(recipeIdString);
-                                                        //verticalRecipes.add(newRecipe);
-
-                                                        // todo: may need to uncomment and convert this for onClick
-                                                        //recipeId.add(recipeIdString);
-                                                    }
-                                                    // add to horizontal highly rated list instead of vertical recyclerview
-                                                    else
-                                                    {
-                                                        //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
-
-                                                        int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
-                                                        recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
-                                                        //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
-                                                        //setOfUniqueHighRatedRecipes.add(recipeIdInt);
-
-                                                        // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                                        if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
-                                                        {
-                                                            //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
-                                                            // todo: may need to uncomment and convert, adding new private member to the class
-                                                            //numOfRetrievedHighRatedRecipes++;
-
-                                                            //highRatedTitles.add(title);
-                                                            //highRatedImages.add(imageUrl);
-                                                            //highRatedRecipeIdList.add(recipeIdString);
-                                                            //highRatedRatings.add(avgRating);
-
-                                                            HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating);
-                                                            horizontalList.add(newRecipe);
-
-                                                            ///horizontalRecipeIdList.add(recipeIdString);
-                                                            //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
-
-                                                            RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
-                                                                    avgRating, "Popular Recipe", true, totalRating);
-                                                            horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
-                                                            //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            recipeLists.setVerticalStartId(startId);
-
-                                            recipeLists.appendVerticalList(verticalList);
-                                            recipeLists.appendHorizontalList(horizontalList);
-
-                                            //recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - verticalList.size());
-
-
-                                            // query the rest of the vertical recipes if necessary
-                                            if ((recipeLists.getNumRemainingVerticalRecipes() > 0) && (recipeLists.getNumRemainingVerticalRecipes() < recipeLists.getNumVerticalToQuery()))
-                                            {
-                                                int numRecipesToQuery;
-                                                int recipeSearchStartId;
-
-                                                // try to query only half the recipes the first time to reduce repeating patterns in random queries
-                                                // the rest will be queried later
-                                                if (recipeLists.getNumVerticalToQuery() == recipeLists.getNumRemainingVerticalRecipes())
-                                                {
-                                                    numRecipesToQuery = recipeLists.getNumVerticalToQuery() / 2;
-                                                    recipeSearchStartId = recipeLists.getRandomQueryId();
-                                                }
-                                                // if this isn't the first time through, just query the rest of the remaining recipes starting where the first query ended
-                                                // doing this guarantees that we will find all of the recipes we need
-                                                else
-                                                {
-                                                    numRecipesToQuery = recipeLists.getNumRemainingVerticalRecipes();
-                                                    recipeSearchStartId = recipeLists.getVerticalEndId();
-                                                }
-
-                                                dbRecipes.whereArrayContains("categories", category).whereGreaterThanOrEqualTo("recipeId", recipeSearchStartId).orderBy("recipeId").limit(numRecipesToQuery).get()
-                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                                                        {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<QuerySnapshot> task)
-                                                            {
-                                                                //int numRetrievedRecipes = numOfRetrievedRecipes; //viewModel.getNumOfRetrievedRecipes();
-
-                                                                List<VerticalRecipe> verticalList = new ArrayList<>();
-                                                                List<HorizontalRecipe> horizontalList = new ArrayList<>();
-                                                                int startId = 0;
-                                                                int endId = 0;
-                                                                int i = 0;
-
-                                                                // todo: change for loop format, enhanced for isn't right for this
-                                                                for (QueryDocumentSnapshot document : task.getResult())
-                                                                {
-                                                                    double recipeIdDouble = document.getDouble("recipeId");
-                                                                    int recipeIdInt = (int) recipeIdDouble;
-
-                                                                    if (i == 0)
-                                                                    {
-                                                                        // keep track of first recipeId for later queries
-                                                                        startId = recipeIdInt;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        // keep track of last recipeId for later queries
-                                                                        endId = recipeIdInt;
-                                                                    }
-
-                                                                    String imageUrl = document.getString("imageUrl");
-                                                                    String title = document.getString("title");
-                                                                    String recipeIdString = document.getId();
-                                                                    boolean highlyRated = document.getBoolean("highlyRated");
-
-                                                                    Double countRating = document.getDouble("countRating");
-                                                                    Double avgRating;
-                                                                    if (countRating != null)
-                                                                    {
-                                                                        avgRating = document.getDouble("rating") / countRating;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        countRating = 0.0;
-                                                                        avgRating = 0.0;
-                                                                    }
-
-                                                                    if (Double.isNaN(avgRating))
-                                                                    {
-                                                                        avgRating = 0.0;
-                                                                    }
-
-                                                                    Integer totalRating = countRating.intValue();
-
-                                                                    //Set<Integer> setOfUniqueRecipes = viewModel.getSetOfUniqueRecipes();
-
-                                                                    int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
-                                                                    recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
-
-                                                                    // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                                                    if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
-                                                                    {
-                                                                        // only add recipe to the vertical recycler if its not highly rated, we've already filled the horizontal with the max number of recipes,
-                                                                        // or we aren't in our first query (accounting for high rated recipes in the third query would force us to do recursion to ensure we get enough vertical recipes)
-                                                                        if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery()) || (numRecipesToQuery <= 0)) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
-                                                                        {
-                                                                            //viewModel.incrementNumOfRetrievedRecipesBy(1);
-                                                                            recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
-
-                                                                            //ratings.add(avgRating);
-                                                                            //totalRatingsCountList.add(totalRating);
-
-                                                                            RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
-                                                                            recyclerRecipe2List.add(recyclerRecipe2);
-
-                                                                            //categoryFragmentModel.addItem(title, imageUrl, avgRating, totalRating);
-
-                                                                            VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating);
-                                                                            verticalList.add(newRecipe);
-
-                                                                            ///verticalRecipeIdList.add(recipeIdString);
-                                                                            //verticalRecipes.add(newRecipe);
-
-                                                                            // todo: may need to uncomment and convert this for onClick
-                                                                            //recipeId.add(recipeIdString);
-                                                                        }
-                                                                        // add to horizontal highly rated list instead of vertical recyclerview
-                                                                        else
-                                                                        {
-                                                                            //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
-
-                                                                            int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
-                                                                            recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
-                                                                            //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
-                                                                            //setOfUniqueHighRatedRecipes.add(recipeIdInt);
-
-                                                                            // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
-                                                                            if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
-                                                                            {
-                                                                                //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
-                                                                                // todo: may need to uncomment and convert, adding new private member to the class
-                                                                                //numOfRetrievedHighRatedRecipes++;
-
-                                                                                //highRatedTitles.add(title);
-                                                                                //highRatedImages.add(imageUrl);
-                                                                                //highRatedRecipeIdList.add(recipeIdString);
-                                                                                //highRatedRatings.add(avgRating);
-
-                                                                                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating);
-                                                                                horizontalList.add(newRecipe);
-
-                                                                                ///horizontalRecipeIdList.add(recipeIdString);
-                                                                                //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
-
-                                                                                RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
-                                                                                        avgRating, "Popular Recipe", true, totalRating);
-                                                                                horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
-
-                                                                                //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
-                                                                            }
-                                                                        }
-                                                                    }
-
-                                                                    i++;
-                                                                }
-
-                                                                recipeLists.setVerticalEndId(endId);
-
-                                                                recipeLists.appendVerticalList(verticalList);
-                                                                recipeLists.appendHorizontalList(horizontalList);
-                                                                //recipeLists.appendVerticalRecipeIdList(verticalRecipeIdList);
-                                                                //recipeLists.appendHorizontalRecipeIdList(horizontalRecipeIdList);
-
-                                                                recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - verticalList.size());
-
-                                                                List<RecyclerRecipe2> tempList = new ArrayList<>();
-                                                                        //recyclerRecipe2List.addAll(horizontalRecyclerRecipe2List);
-                                                                tempList.addAll(recyclerRecipe2List);
-                                                                tempList.addAll(horizontalRecyclerRecipe2List);
-
-                                                                roomRepository.insertAllRecyclerRecipe2(recyclerRecipe2List);
-                                                                roomRepository.insertAllRecyclerRecipe2(horizontalRecyclerRecipe2List);
-
-                                                                if (recipeLists.getHorizontalList().size() < recipeLists.getNumHorizontalToQuery())
-                                                                {
-                                                                    // search to the left of the left bound
-                                                                    dbRecipes.whereArrayContains("categories", category).whereGreaterThan("recipeId", recipeLists.getVerticalStartId())
-                                                                            .limit(recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size()).get().addOnCompleteListener(taskHorizontal ->
-                                                                    {
-                                                                        Log.i("queries", "queried outer");
-                                                                        List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskHorizontal);
-                                                                        recipeLists.appendHorizontalList(retrievedHorizontalList);
-
-                                                                        int numLeftToRetrieve = recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size();
-
-                                                                        if (numLeftToRetrieve > 0)
-                                                                        {
-                                                                            // search to the right of the right bound
-                                                                            dbRecipes.whereArrayContains("categories", category).whereLessThan("recipeId", recipeLists.getVerticalEndId()).limit(numLeftToRetrieve).get()
-                                                                                    .addOnCompleteListener(taskSecondHorizontal ->
-                                                                                    {
-
-                                                                                        Log.i("queries", "queried inner");
-                                                                                        List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskSecondHorizontal);
-                                                                                        recipeLists.appendHorizontalList(retrievedListInner);
-
-                                                                                        callback.onCallback(recipeLists);
-                                                                                        //liveDataHorizontal.setValue(horizontalLists);
-                                                                                    });
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            callback.onCallback(recipeLists);
-                                                                        }
-                                                                    });
-                                                                }
-                                                                else
-                                                                {
-
-                                                                }
-                                                            }
-                                                        });
-
                                             }
                                             else
                                             {
-                                                if (recipeLists.getHorizontalList().size() < recipeLists.getNumHorizontalToQuery())
+                                                // keep track of last recipeId for later queries
+                                                endId = recipeIdInt;
+                                            }
+
+                                            String imageUrl = document.getString("imageUrl");
+                                            String title = document.getString("title");
+                                            String recipeIdString = document.getId();
+                                            boolean highlyRated = document.getBoolean("highlyRated");
+
+                                            Double countRating = document.getDouble("countRating");
+                                            Double avgRating;
+                                            if (countRating != null)
+                                            {
+                                                avgRating = document.getDouble("rating") / countRating;
+                                            }
+                                            else
+                                            {
+                                                countRating = 0.0;
+                                                avgRating = 0.0;
+                                            }
+
+                                            if (Double.isNaN(avgRating))
+                                            {
+                                                avgRating = 0.0;
+                                            }
+
+                                            Integer totalRating = countRating.intValue();
+
+                                            int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
+                                            recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
+
+                                            // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                            if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
+                                            {
+                                                // only add recipe to the vertical recycler if its not highly rated, we've already filled the horizontal with the max number of recipes,
+                                                // or we aren't in our first query (accounting for high rated recipes in the third query would force us to do recursion to ensure we get enough vertical recipes)
+
+                                                if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery())) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
                                                 {
-                                                    // search to the left of the left bound
-                                                    dbRecipes.whereArrayContains("categories", category).whereGreaterThan("recipeId", recipeLists.getVerticalStartId())
-                                                            .limit(recipeLists.getNumHorizontalToQuery()).get().addOnCompleteListener(taskHorizontal ->
+                                                    recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
+
+                                                    RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
+                                                    recyclerRecipe2List.add(recyclerRecipe2);
+
+                                                    VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating, category, queryId);
+                                                    verticalList.add(newRecipe);
+
+                                                    ///verticalRecipeIdList.add(recipeIdString);
+
+                                                    // todo: may need to uncomment and convert this for onClick
+                                                    //recipeId.add(recipeIdString);
+                                                }
+                                                // add to horizontal highly rated list instead of vertical recyclerview
+                                                else
+                                                {
+                                                    //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
+
+                                                    int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
+                                                    recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
+
+                                                    //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
+                                                    //setOfUniqueHighRatedRecipes.add(recipeIdInt);
+
+                                                    // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                                    if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
                                                     {
-                                                        Log.i("queries", "queried outer");
-                                                        List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskHorizontal);
-                                                        recipeLists.appendHorizontalList(retrievedHorizontalList);
+                                                        //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
+                                                        // todo: may need to uncomment and convert, adding new private member to the class
+                                                        //numOfRetrievedHighRatedRecipes++;
 
-                                                        int numLeftToRetrieve = recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size();
+                                                        //highRatedTitles.add(title);
+                                                        //highRatedImages.add(imageUrl);
+                                                        //highRatedRecipeIdList.add(recipeIdString);
+                                                        //highRatedRatings.add(avgRating);
 
-                                                        if (numLeftToRetrieve > 0)
-                                                        {
-                                                            // search to the right of the right bound
-                                                            dbRecipes.whereArrayContains("categories", category).whereLessThan("recipeId", recipeLists.getVerticalEndId()).limit(numLeftToRetrieve).get()
-                                                                    .addOnCompleteListener(taskSecondHorizontal ->
-                                                                    {
+                                                        HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating, category, queryId);
+                                                        horizontalList.add(newRecipe);
+                                                        //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
 
-                                                                        Log.i("queries", "queried inner");
-                                                                        List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskSecondHorizontal);
-                                                                        recipeLists.appendHorizontalList(retrievedListInner);
+                                                        ///horizontalRecipeIdList.add(recipeIdString);
 
-                                                                        callback.onCallback(recipeLists);
-                                                                        //liveDataHorizontal.setValue(horizontalLists);
-                                                                    });
-                                                        }
-                                                        else
-                                                        {
-                                                            callback.onCallback(recipeLists);
-                                                        }
-                                                    });
+                                                        RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
+                                                                avgRating, "Popular Recipe", true, totalRating);
+                                                        horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
+                                                        //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
+                                                    }
                                                 }
                                             }
 
-                                            //recipeLists.appendVerticalList(verticalList);
-                                            //recipeLists.appendHorizontalList(horizontalList);
-                                            //recipeLists.setVerticalStartId(startId);
-                                            //recipeLists.setVerticalEndId(endId);
-
-                                            //callback.onCallback(verticalList, horizontalList, startId);
-
-                                            //currentNumOfQueries = currentNumOfQueries + task.getResult().size() - 1;
-
-                                            // number of reads to firebase - for preventing excessive and expensive reads
-                                            //Log.i("number of queries", String.valueOf(currentNumOfQueries));
-
-                                            // todo: change this to retrieveAndSaveRandomRecipesLessThan to improve randomness.  Make sure new functions does NOT create a new random number!  Pass in current random number instead
-                                            //retrieveAndSaveRandomRecipesGreaterThanQuery(rand, numOfRecipes, halfMaxNumberOfHighRatedRecipes, individualQueryVerticalRecipeLimit, category, finalTotalRecursions);
-
-                                            // todo: delete
-                                            //categoryFragmentAdapter.notifyDataSetChanged();
+                                            i++;
                                         }
-                                    });
+
+                                        //recipeLists.appendVerticalList(verticalList);
+                                        //recipeLists.appendHorizontalList(horizontalList);
+                                        //recipeLists.setVerticalStartId(startId);
+                                        //recipeLists.setVerticalEndId(endId);
+
+                                        // todo: uncomment
+                                        //callback.onCallback(verticalList, horizontalList, startId, endId);
+
+                                        recipeLists.setVerticalStartId(startId);
+                                        recipeLists.setVerticalEndId(endId);
+
+                                        recipeLists.appendVerticalList(verticalList);
+                                        recipeLists.appendHorizontalList(horizontalList);
+
+                                        //recipeLists.setNumRemainingVerticalRecipes(verticalList.size() - recipeLists.getNumRemainingVerticalRecipes());
+
+                                        // try to query all remaining vertical recipes in the opposite direction.  This could still fail to return all vertical recipes
+                                        dbRecipes.whereArrayContains("categories", category).whereLessThan("recipeId", recipeLists.getRandomQueryId()).orderBy("recipeId").limit(recipeLists.getNumRemainingVerticalRecipes()).get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                                {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                                    {
+                                                        //int numRetrievedRecipes = numOfRetrievedRecipes; //viewModel.getNumOfRetrievedRecipes();
+
+                                                        List<VerticalRecipe> verticalList = new ArrayList<>();
+                                                        List<HorizontalRecipe> horizontalList = new ArrayList<>();
+                                                        int startId = 0;
+                                                        //int endId = 0;
+
+                                                        // todo: change for loop format, enhanced for isn't right for this
+                                                        for (QueryDocumentSnapshot document : task.getResult())
+                                                        {
+                                                            double recipeIdDouble = document.getDouble("recipeId");
+                                                            int recipeIdInt = (int) recipeIdDouble;
+
+                                                            // here, startId refers to the entire query's start.  It is the left bound of all searched recipeId's
+                                                            startId = recipeIdInt;
+
+                                                            String imageUrl = document.getString("imageUrl");
+                                                            String title = document.getString("title");
+                                                            String recipeIdString = document.getId();
+                                                            boolean highlyRated = document.getBoolean("highlyRated");
+
+                                                            Double countRating = document.getDouble("countRating");
+                                                            Double avgRating;
+                                                            if (countRating != null)
+                                                            {
+                                                                avgRating = document.getDouble("rating") / countRating;
+                                                            }
+                                                            else
+                                                            {
+                                                                countRating = 0.0;
+                                                                avgRating = 0.0;
+                                                            }
+
+                                                            if (Double.isNaN(avgRating))
+                                                            {
+                                                                avgRating = 0.0;
+                                                            }
+
+                                                            Integer totalRating = countRating.intValue();
+
+                                                            //Set<Integer> setOfUniqueRecipes = viewModel.getSetOfUniqueRecipes();
+
+                                                            int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
+                                                            recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
+
+                                                            // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                                            if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
+                                                            {
+                                                                // only add recipe to the vertical recycler if its not highly rated or we've already filled the horizontal with the max number of recipes
+                                                                if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery())) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
+                                                                {
+                                                                    //viewModel.incrementNumOfRetrievedRecipesBy(1);
+                                                                    recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
+
+                                                                    //ratings.add(avgRating);
+                                                                    //totalRatingsCountList.add(totalRating);
+
+                                                                    RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
+                                                                    //recyclerRecipeList2.add(recyclerRecipe2);
+                                                                    recyclerRecipe2List.add(recyclerRecipe2);
+                                                                    //categoryFragmentModel.addItem(title, imageUrl, avgRating, totalRating);
+
+                                                                    VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating, category, queryId);
+                                                                    verticalList.add(newRecipe);
+
+                                                                    ///verticalRecipeIdList.add(recipeIdString);
+                                                                    //verticalRecipes.add(newRecipe);
+
+                                                                    // todo: may need to uncomment and convert this for onClick
+                                                                    //recipeId.add(recipeIdString);
+                                                                }
+                                                                // add to horizontal highly rated list instead of vertical recyclerview
+                                                                else
+                                                                {
+                                                                    //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
+
+                                                                    int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
+                                                                    recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
+                                                                    //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
+                                                                    //setOfUniqueHighRatedRecipes.add(recipeIdInt);
+
+                                                                    // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                                                    if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
+                                                                    {
+                                                                        //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
+                                                                        // todo: may need to uncomment and convert, adding new private member to the class
+                                                                        //numOfRetrievedHighRatedRecipes++;
+
+                                                                        //highRatedTitles.add(title);
+                                                                        //highRatedImages.add(imageUrl);
+                                                                        //highRatedRecipeIdList.add(recipeIdString);
+                                                                        //highRatedRatings.add(avgRating);
+
+                                                                        HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating, category, queryId);
+                                                                        horizontalList.add(newRecipe);
+
+                                                                        ///horizontalRecipeIdList.add(recipeIdString);
+                                                                        //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
+
+                                                                        RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
+                                                                                avgRating, "Popular Recipe", true, totalRating);
+                                                                        horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
+                                                                        //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        recipeLists.setVerticalStartId(startId);
+
+                                                        recipeLists.appendVerticalList(verticalList);
+                                                        recipeLists.appendHorizontalList(horizontalList);
+
+                                                        //recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - verticalList.size());
 
 
+                                                        // query the rest of the vertical recipes if necessary
+                                                        if ((recipeLists.getNumRemainingVerticalRecipes() > 0) && (recipeLists.getNumRemainingVerticalRecipes() < recipeLists.getNumVerticalToQuery()))
+                                                        {
+                                                            int numRecipesToQuery;
+                                                            int recipeSearchStartId;
 
-                            //currentNumOfQueries = currentNumOfQueries + task.getResult().size() - 1;
+                                                            // try to query only half the recipes the first time to reduce repeating patterns in random queries
+                                                            // the rest will be queried later
+                                                            if (recipeLists.getNumVerticalToQuery() == recipeLists.getNumRemainingVerticalRecipes())
+                                                            {
+                                                                numRecipesToQuery = recipeLists.getNumVerticalToQuery() / 2;
+                                                                recipeSearchStartId = recipeLists.getRandomQueryId();
+                                                            }
+                                                            // if this isn't the first time through, just query the rest of the remaining recipes starting where the first query ended
+                                                            // doing this guarantees that we will find all of the recipes we need
+                                                            else
+                                                            {
+                                                                numRecipesToQuery = recipeLists.getNumRemainingVerticalRecipes();
+                                                                recipeSearchStartId = recipeLists.getVerticalEndId();
+                                                            }
 
-                            // number of reads to firebase - for preventing excessive and expensive reads
-                            //Log.i("number of queries", String.valueOf(currentNumOfQueries));
+                                                            dbRecipes.whereArrayContains("categories", category).whereGreaterThanOrEqualTo("recipeId", recipeSearchStartId).orderBy("recipeId").limit(numRecipesToQuery).get()
+                                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                                                    {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                                                        {
+                                                                            //int numRetrievedRecipes = numOfRetrievedRecipes; //viewModel.getNumOfRetrievedRecipes();
 
-                            // todo: change this to retrieveAndSaveRandomRecipesLessThan to improve randomness.  Make sure new functions does NOT create a new random number!  Pass in current random number instead
-                            //retrieveAndSaveRandomRecipesGreaterThanQuery(rand, numOfRecipes, halfMaxNumberOfHighRatedRecipes, individualQueryVerticalRecipeLimit, category, finalTotalRecursions);
+                                                                            List<VerticalRecipe> verticalList = new ArrayList<>();
+                                                                            List<HorizontalRecipe> horizontalList = new ArrayList<>();
+                                                                            int startId = 0;
+                                                                            int endId = 0;
+                                                                            int i = 0;
 
-                            // todo: delete
-                            //categoryFragmentAdapter.notifyDataSetChanged();
-                        }
-                    });
+                                                                            // todo: change for loop format, enhanced for isn't right for this
+                                                                            for (QueryDocumentSnapshot document : task.getResult())
+                                                                            {
+                                                                                double recipeIdDouble = document.getDouble("recipeId");
+                                                                                int recipeIdInt = (int) recipeIdDouble;
+
+                                                                                if (i == 0)
+                                                                                {
+                                                                                    // keep track of first recipeId for later queries
+                                                                                    startId = recipeIdInt;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // keep track of last recipeId for later queries
+                                                                                    endId = recipeIdInt;
+                                                                                }
+
+                                                                                String imageUrl = document.getString("imageUrl");
+                                                                                String title = document.getString("title");
+                                                                                String recipeIdString = document.getId();
+                                                                                boolean highlyRated = document.getBoolean("highlyRated");
+
+                                                                                Double countRating = document.getDouble("countRating");
+                                                                                Double avgRating;
+                                                                                if (countRating != null)
+                                                                                {
+                                                                                    avgRating = document.getDouble("rating") / countRating;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    countRating = 0.0;
+                                                                                    avgRating = 0.0;
+                                                                                }
+
+                                                                                if (Double.isNaN(avgRating))
+                                                                                {
+                                                                                    avgRating = 0.0;
+                                                                                }
+
+                                                                                Integer totalRating = countRating.intValue();
+
+                                                                                //Set<Integer> setOfUniqueRecipes = viewModel.getSetOfUniqueRecipes();
+
+                                                                                int sizeOfSet = recipeLists.getSetOfUniqueVerticalRecipes().size();
+                                                                                recipeLists.addToSetOfUniqueVerticalRecipes(recipeIdInt);
+
+                                                                                // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                                                                if (recipeLists.getSetOfUniqueVerticalRecipes().size() != sizeOfSet)
+                                                                                {
+                                                                                    // only add recipe to the vertical recycler if its not highly rated, we've already filled the horizontal with the max number of recipes,
+                                                                                    // or we aren't in our first query (accounting for high rated recipes in the third query would force us to do recursion to ensure we get enough vertical recipes)
+                                                                                    if ((!highlyRated) || ((recipeLists.getHorizontalList().size()) >= recipeLists.getNumHorizontalToQuery()) || (numRecipesToQuery <= 0)) //(viewModel.getNumOfRetrievedHighRatedRecipes() >= (halfMaxNumberOfHighRatedRecipes * 2)))
+                                                                                    {
+                                                                                        //viewModel.incrementNumOfRetrievedRecipesBy(1);
+                                                                                        recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - 1);
+
+                                                                                        //ratings.add(avgRating);
+                                                                                        //totalRatingsCountList.add(totalRating);
+
+                                                                                        RecyclerRecipe2 recyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl, avgRating, "vertical", false, totalRating);
+                                                                                        recyclerRecipe2List.add(recyclerRecipe2);
+
+                                                                                        //categoryFragmentModel.addItem(title, imageUrl, avgRating, totalRating);
+
+                                                                                        VerticalRecipe newRecipe = new VerticalRecipe(title, imageUrl, recipeIdString, avgRating, totalRating, category, queryId);
+                                                                                        verticalList.add(newRecipe);
+
+                                                                                        ///verticalRecipeIdList.add(recipeIdString);
+                                                                                        //verticalRecipes.add(newRecipe);
+
+                                                                                        // todo: may need to uncomment and convert this for onClick
+                                                                                        //recipeId.add(recipeIdString);
+                                                                                    }
+                                                                                    // add to horizontal highly rated list instead of vertical recyclerview
+                                                                                    else
+                                                                                    {
+                                                                                        //Set<Integer> setOfUniqueHighRatedRecipes = viewModel.getSetOfUniqueHighRatedRecipes();
+
+                                                                                        int sizeOfHighRatedSetBefore = recipeLists.getSetOfUniqueHorizontalRecipes().size();
+                                                                                        recipeLists.addToSetOfUniqueHorizontalRecipes(recipeIdInt);
+                                                                                        //viewModel.addToSetOfUniqueHighRatedRecipes(recipeIdInt);
+                                                                                        //setOfUniqueHighRatedRecipes.add(recipeIdInt);
+
+                                                                                        // duplicates cannot be added to Sets - only go ahead if we haven't found a duplicate recipe
+                                                                                        if (sizeOfHighRatedSetBefore != recipeLists.getSetOfUniqueHorizontalRecipes().size())
+                                                                                        {
+                                                                                            //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
+                                                                                            // todo: may need to uncomment and convert, adding new private member to the class
+                                                                                            //numOfRetrievedHighRatedRecipes++;
+
+                                                                                            //highRatedTitles.add(title);
+                                                                                            //highRatedImages.add(imageUrl);
+                                                                                            //highRatedRecipeIdList.add(recipeIdString);
+                                                                                            //highRatedRatings.add(avgRating);
+
+                                                                                            HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, recipeIdString, avgRating, category, queryId);
+                                                                                            horizontalList.add(newRecipe);
+
+                                                                                            ///horizontalRecipeIdList.add(recipeIdString);
+                                                                                            //horizontalLists.get(horizontalLists.size() - 1).add(newRecipe);
+
+                                                                                            RecyclerRecipe2 horizontalRecyclerRecipe2 = new RecyclerRecipe2(category, recipeIdString, title, imageUrl,
+                                                                                                    avgRating, "Popular Recipe", true, totalRating);
+                                                                                            horizontalRecyclerRecipe2List.add(horizontalRecyclerRecipe2);
+
+                                                                                            //sqlDb.testDao().insertRecyclerRecipe2(recyclerRecipePopular2);
+                                                                                        }
+                                                                                    }
+                                                                                }
+
+                                                                                i++;
+                                                                            }
+
+                                                                            recipeLists.setVerticalEndId(endId);
+
+                                                                            recipeLists.appendVerticalList(verticalList);
+                                                                            recipeLists.appendHorizontalList(horizontalList);
+                                                                            //recipeLists.appendVerticalRecipeIdList(verticalRecipeIdList);
+                                                                            //recipeLists.appendHorizontalRecipeIdList(horizontalRecipeIdList);
+
+                                                                            recipeLists.setNumRemainingVerticalRecipes(recipeLists.getNumRemainingVerticalRecipes() - verticalList.size());
+
+                                                                            List<RecyclerRecipe2> tempList = new ArrayList<>();
+                                                                            //recyclerRecipe2List.addAll(horizontalRecyclerRecipe2List);
+                                                                            tempList.addAll(recyclerRecipe2List);
+                                                                            tempList.addAll(horizontalRecyclerRecipe2List);
+
+                                                                            roomRepository.insertAllRecyclerRecipe2(recyclerRecipe2List);
+                                                                            roomRepository.insertAllRecyclerRecipe2(horizontalRecyclerRecipe2List);
+
+                                                                            if (recipeLists.getHorizontalList().size() < recipeLists.getNumHorizontalToQuery())
+                                                                            {
+                                                                                // search to the left of the left bound
+                                                                                dbRecipes.whereArrayContains("categories", category).whereEqualTo("highlyRated", true).whereGreaterThan("recipeId", recipeLists.getVerticalStartId())
+                                                                                        .limit(recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size()).get().addOnCompleteListener(taskHorizontal ->
+                                                                                {
+                                                                                    Log.i("queries", "queried outer");
+                                                                                    List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskHorizontal, queryId);
+                                                                                    recipeLists.appendHorizontalList(retrievedHorizontalList);
+
+                                                                                    int numLeftToRetrieve = recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size();
+
+                                                                                    if (numLeftToRetrieve > 0)
+                                                                                    {
+                                                                                        // search to the right of the right bound
+                                                                                        dbRecipes.whereArrayContains("categories", category).whereEqualTo("highlyRated", true).whereLessThan("recipeId", recipeLists.getVerticalEndId()).limit(numLeftToRetrieve).get()
+                                                                                                .addOnCompleteListener(taskSecondHorizontal ->
+                                                                                                {
+
+                                                                                                    Log.i("queries", "queried inner");
+                                                                                                    List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskSecondHorizontal, queryId);
+                                                                                                    recipeLists.appendHorizontalList(retrievedListInner);
+
+                                                                                                    callback.onCallback(recipeLists);
+                                                                                                    //liveDataHorizontal.setValue(horizontalLists);
+                                                                                                });
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        callback.onCallback(recipeLists);
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                            else
+                                                                            {
+
+                                                                            }
+                                                                        }
+                                                                    });
+
+                                                        }
+                                                        else
+                                                        {
+                                                            if (recipeLists.getHorizontalList().size() < recipeLists.getNumHorizontalToQuery())
+                                                            {
+                                                                // search to the left of the left bound
+                                                                dbRecipes.whereArrayContains("categories", category).whereEqualTo("highlyRated", true).whereGreaterThan("recipeId", recipeLists.getVerticalStartId())
+                                                                        .limit(recipeLists.getNumHorizontalToQuery()).get().addOnCompleteListener(taskHorizontal ->
+                                                                {
+                                                                    Log.i("queries", "queried outer");
+                                                                    List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskHorizontal, queryId);
+                                                                    recipeLists.appendHorizontalList(retrievedHorizontalList);
+
+                                                                    int numLeftToRetrieve = recipeLists.getNumHorizontalToQuery() - recipeLists.getHorizontalList().size();
+
+                                                                    if (numLeftToRetrieve > 0)
+                                                                    {
+                                                                        // search to the right of the right bound
+                                                                        dbRecipes.whereArrayContains("categories", category).whereEqualTo("highlyRated", true).whereLessThan("recipeId", recipeLists.getVerticalEndId()).limit(numLeftToRetrieve).get()
+                                                                                .addOnCompleteListener(taskSecondHorizontal ->
+                                                                                {
+
+                                                                                    Log.i("queries", "queried inner");
+                                                                                    List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeLists, category, "Popular Recipe", taskSecondHorizontal, queryId);
+                                                                                    recipeLists.appendHorizontalList(retrievedListInner);
+
+                                                                                    callback.onCallback(recipeLists);
+                                                                                    //liveDataHorizontal.setValue(horizontalLists);
+                                                                                });
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        callback.onCallback(recipeLists);
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+
+                                                        //recipeLists.appendVerticalList(verticalList);
+                                                        //recipeLists.appendHorizontalList(horizontalList);
+                                                        //recipeLists.setVerticalStartId(startId);
+                                                        //recipeLists.setVerticalEndId(endId);
+
+                                                        //callback.onCallback(verticalList, horizontalList, startId);
+
+                                                        //currentNumOfQueries = currentNumOfQueries + task.getResult().size() - 1;
+
+                                                        // number of reads to firebase - for preventing excessive and expensive reads
+                                                        //Log.i("number of queries", String.valueOf(currentNumOfQueries));
+
+                                                        // todo: change this to retrieveAndSaveRandomRecipesLessThan to improve randomness.  Make sure new functions does NOT create a new random number!  Pass in current random number instead
+                                                        //retrieveAndSaveRandomRecipesGreaterThanQuery(rand, numOfRecipes, halfMaxNumberOfHighRatedRecipes, individualQueryVerticalRecipeLimit, category, finalTotalRecursions);
+
+                                                        // todo: delete
+                                                        //categoryFragmentAdapter.notifyDataSetChanged();
+                                                    }
+                                                });
+
+
+                                        //currentNumOfQueries = currentNumOfQueries + task.getResult().size() - 1;
+
+                                        // number of reads to firebase - for preventing excessive and expensive reads
+                                        //Log.i("number of queries", String.valueOf(currentNumOfQueries));
+
+                                        // todo: change this to retrieveAndSaveRandomRecipesLessThan to improve randomness.  Make sure new functions does NOT create a new random number!  Pass in current random number instead
+                                        //retrieveAndSaveRandomRecipesGreaterThanQuery(rand, numOfRecipes, halfMaxNumberOfHighRatedRecipes, individualQueryVerticalRecipeLimit, category, finalTotalRecursions);
+
+                                        // todo: delete
+                                        //categoryFragmentAdapter.notifyDataSetChanged();
+                                    }
+                                });
     }
 
-    public void readRemainingHorizontalRecipes(HorizontalCallback callback, String category, RetrievedRecipeLists recipeList)
+    /*public void readRemainingHorizontalRecipes(HorizontalCallback callback, String category, RetrievedRecipeLists recipeList)
     {
         // search to the left of the left bound
         dbRecipes.whereArrayContains("categories", category).whereGreaterThan("recipeId", recipeList.getVerticalStartId())
                 .limit(recipeList.getNumHorizontalToQuery()).get().addOnCompleteListener(task ->
         {
             Log.i("queries", "queried outer");
-            List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeList, category, "Popular Recipe", task);
+            List<HorizontalRecipe> retrievedHorizontalList = retrieveHorizontal(recipeList, category, "Popular Recipe", task, queryId);
             recipeList.appendHorizontalList(retrievedHorizontalList);
 
             int numLeftToRetrieve = recipeList.getNumHorizontalToQuery() - recipeList.getHorizontalList().size();
@@ -700,7 +733,7 @@ public class CategoryFragmentRepository
                         {
 
                             Log.i("queries", "queried inner");
-                            List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeList, category, "Popular Recipe", task1);
+                            List<HorizontalRecipe> retrievedListInner = retrieveHorizontal(recipeList, category, "Popular Recipe", task1, queryId);
                             recipeList.appendHorizontalList(retrievedListInner);
 
                             callback.onCallback();
@@ -711,11 +744,11 @@ public class CategoryFragmentRepository
             {
                 callback.onCallback();
             }
-        });
-    }
+        });*/
+    //}
 
     // returns number of recipes that were actually retrieved
-    private List<HorizontalRecipe> retrieveHorizontal(RetrievedRecipeLists recipeList, String category, String typeOfRecyclerItem, Task<QuerySnapshot> task)
+    private List<HorizontalRecipe> retrieveHorizontal(RetrievedRecipeLists recipeList, String category, String typeOfRecyclerItem, Task<QuerySnapshot> task, UUID queryId)
     {
         // delete all existing featured recipes in SQL
         deleteAllRecycler2();
@@ -760,7 +793,7 @@ public class CategoryFragmentRepository
                 //numRetrieved = numRetrieved + 1;
                 //viewModel.incrementNumOfRetrievedHighRatedRecipes(1);
 
-                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating);
+                HorizontalRecipe newRecipe = new HorizontalRecipe(title, imageUrl, highRatedRecipeId, avgRating, category, queryId);
                 // add this recipe to the most recently added vertical item
                 //horizontalLists.add(newRecipe);
                 returnList.add(newRecipe);

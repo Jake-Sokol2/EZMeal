@@ -7,13 +7,18 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/txtIngredient"
-        android:layout_width="wrap_content"
+        android:id="@+id/txtRecipeItem"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:paddingBottom="20dp"
+        android:ellipsize="none"
+        android:padding="20dp"
+        android:paddingBottom="0dp"
         android:text="1 pound skinless, boneless chicken breast halves"
-        android:textSize="15sp"
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,8 @@ public class RecipeNutritionFragmentRecyclerAdapter extends RecyclerView.Adapter
             super(view);
 
             cardView = (CardView) view.findViewById(R.id.cardCategory);
-            txtNutrition = (TextView) view.findViewById(R.id.txtNutrition);
+                                                        //R.id.txtNutrition
+            txtNutrition = (TextView) view.findViewById(R.id.txtRecipeItem);
 
             view.setOnClickListener(new View.OnClickListener()
             {
@@ -56,7 +57,8 @@ public class RecipeNutritionFragmentRecyclerAdapter extends RecyclerView.Adapter
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.nutrition_recycler_item, parent, false);
+                                                                            //R.layout.nutrition_recycler_item
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_recycler_item, parent, false);
         return new MainViewHolder(itemView);
     }
 

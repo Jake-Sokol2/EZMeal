@@ -23,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.ezmeal.FindRecipes.FindRecipesAdapters.CategoryFragmentAdapter;
 import com.example.ezmeal.FindRecipes.FindRecipesAdapters.CategoryFragmentFeaturedRecyclerAdapter;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.CategoryFragmentModel;
+import com.example.ezmeal.FindRecipes.FindRecipesModels.FeaturedChildClickListener;
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.FindRecipesRespositories.FeaturedFragmentRoomRepository;
 import com.example.ezmeal.FindRecipes.FindRecipesViewModels.FeaturedFragmentViewModel;
@@ -76,6 +77,8 @@ public class FeaturedFragment extends Fragment
 
     private final int RECIPE_RESET_TIME = 5;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -89,14 +92,10 @@ public class FeaturedFragment extends Fragment
         sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();
 
-        RecyclerRecipe2 test = new RecyclerRecipe2("Cookies", "D1ccah7inhNbzXfLk04C", "Lace Cookies (Florentine Cookies)", "test", 4, "test", true, 1);
-        sqlDb.testDao().insertRecyclerRecipe2(test);
-        RecyclerRecipe2 test2 = new RecyclerRecipe2("Breakfast", "9rDucWsmgDgfVam3cdqp", "Best Buckwheat Pancakes", "test", 4, "test", true, 1);
-        sqlDb.testDao().insertRecyclerRecipe2(test2);
-        RecyclerRecipe2 test3 = new RecyclerRecipe2("Breakfast", "V2IQKIBoxP5WFwqYGzuh", "Oatmeal Pancakes II", "test", 4, "test", true, 1);
-        sqlDb.testDao().insertRecyclerRecipe2(test3);
-
-
+        // Featured Recipes shares a layout with the other recipe categories, but shouldn't be refreshable
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeCategory);
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setEnabled(false);
 
 
             // Firebase
@@ -146,9 +145,6 @@ public class FeaturedFragment extends Fragment
         {
             isPopulated = returnIsPopulated;
         });
-
-
-
 
         return view;
     }
@@ -281,4 +277,6 @@ public class FeaturedFragment extends Fragment
         }
 
     }
+
+
 }
