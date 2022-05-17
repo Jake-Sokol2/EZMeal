@@ -19,6 +19,7 @@ import com.example.ezmeal.GroupLists.ViewModel.AddListItemFragmentViewModel;
 import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class AddListItemFragment extends BottomSheetDialogFragment
     public GroupListsFragmentRecyclerAdapter adapter;
     private GroupListsViewModel theVM;
     private EditText editItemName, editBrandName;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public AddListItemFragment() {
 
@@ -142,7 +144,8 @@ public class AddListItemFragment extends BottomSheetDialogFragment
                     editBrandName.setError("Empty field");
                 }*/
                 else {
-                    theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString());
+                    String email = mAuth.getCurrentUser().toString();
+                    theModel.addItem(editItemName.getText().toString(), editBrandName.getText().toString(), theModel.getActiveGrpListName(), email);
                     theModel.addDataToFirestore(editItemName.getText().toString(), editBrandName.getText().toString());
 
                     adapter.notifyDataSetChanged();

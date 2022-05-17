@@ -78,7 +78,7 @@ public class GroupListRepository {
         identifiers = sqlDb.testDao().getDistinctIdentifiers();
 
         // todo: remove, this is nuking shared preferences
-        //application.getSharedPreferences("FirstRunAfterUpdate", 0).edit().clear().commit();
+        application.getSharedPreferences("FirstRunAfterUpdate", 0).edit().clear().commit();
 
         sqlDb = Room.databaseBuilder(application.getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().enableMultiInstanceInvalidation().build();

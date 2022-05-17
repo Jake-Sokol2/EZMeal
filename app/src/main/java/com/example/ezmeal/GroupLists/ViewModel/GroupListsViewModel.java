@@ -46,8 +46,8 @@ public class GroupListsViewModel extends AndroidViewModel {
     private String currentGroupList;
     public List<String> grpListBubbles = new ArrayList<>();
 
-    public List<Boolean> isSelectedList;
-    public List<String> groupListNames;
+    public List<Boolean> isCheckedList;
+    //public List<String> groupListNames;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String itemName;

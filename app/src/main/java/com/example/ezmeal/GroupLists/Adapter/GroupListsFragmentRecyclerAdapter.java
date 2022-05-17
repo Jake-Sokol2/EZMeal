@@ -83,13 +83,18 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
         String itemName = list.get(position).get(0);
         String brand = list.get(position).get(1);
         String tempCreator = list.get(position).get(2);
-        Boolean isChecked = Boolean.valueOf(list.get(position).get(3));
-        listName = list.get(position).get(4);
+
+        Boolean isChecked = false;
+        isChecked = Boolean.valueOf(list.get(position).get(4));
+        listName = list.get(position).get(5);
+
+
+
 
         if (isChecked)
         {
             holder.checkCrossOffItem.setChecked(true);
-            holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
+            //holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
             holder.txtListItem.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.group_list_item_crossed_out));
         }
         else
@@ -124,7 +129,7 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
             public void onClick(View view)
             {
                 // add strikethrough flag to grocery list item name's paint flags.  When clicked a second time, the strikethrough flag is removed
-                holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
+                //holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
 
                 db.collection("Groups").document(listName).collection("Items").whereEqualTo("name", itemName).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                 {
@@ -138,7 +143,9 @@ public class GroupListsFragmentRecyclerAdapter extends RecyclerView.Adapter<Grou
                             // if user checked the checkbox, update firebase to "checked" and change visually
                             if (holder.checkCrossOffItem.isChecked())
                             {
+                                //holder.txtListItem.setPaintFlags(holder.txtListItem.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG);
                                 db.collection("Groups").document(listName).collection("Items").document(docId).update("isSelected", true);
+                                holder.txtListItem.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.group_list_item_crossed_out));
                             }
                             // else update to not checked and change visually
                             else
