@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23692307692307693" />
         <entry key="app/src/main/res/layout/fragment_group_lists.xml" value="0.16982421874999998" />
         <entry key="app/src/main/res/layout/fragment_group_settings.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/fragment_new_group_list.xml" value="0.25" />
       </map>
     </option>
   </component>

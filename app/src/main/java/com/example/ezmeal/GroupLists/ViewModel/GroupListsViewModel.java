@@ -274,6 +274,42 @@ public class GroupListsViewModel extends AndroidViewModel {
         return currentGroupList;
     }
 
+    public void deleteGroupList(int position)
+    {
+        String listToDelete = groupListNames.get(position);
+        grpListBubbles.remove(position);
+        groupListNames.remove(position);
+        isSelectedList.remove(position);
+        groupList.setValue(groupListNames);
+        selectedList.setValue(isSelectedList);
+
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        String email = mCurrentUser.getEmail();
+
+        CollectionReference dbItems = db.collection("Groups");
+        dbItems.whereEqualTo("ListName", listToDelete).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful())
+                {
+                  if(task.getResult().getDocuments().size() > 0)
+                  {
+                      String docID = task.getResult().getDocuments().get(0).getId();
+                      dbItems.document(docID).delete();
+                  }
+                }
+            }
+        });
+
+        //glRepo.getGroupList();
+        glRepo.returnGroupList().setValue(groupListNames);
+
+
+    }
+
 
 
 

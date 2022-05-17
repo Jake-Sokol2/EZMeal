@@ -85,6 +85,10 @@ public class GroupListRepository {
     }
 
 
+    public MutableLiveData<List<String>> returnGroupList()
+    {
+        return repoGroupList;
+    }
 
 
     public interface SomeCallBack

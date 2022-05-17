@@ -174,8 +174,11 @@ public class GroupListsFragmentModel
 
     public void dumpGroupList()
     {
-        groupList.clear();
-        isSelectedList.clear();
+        if(groupList != null)
+            groupList.clear();
+
+        if(isSelectedList != null)
+            isSelectedList.clear();
     }
 
     public void setGroupList(List<String> categoryList)
@@ -357,6 +360,10 @@ public class GroupListsFragmentModel
     {
         isSelectedList = theList;
     }
+
+
+
+
 
 
 }

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -58,6 +59,23 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
                     }
                 }
             });
+
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override public boolean onLongClick(View v)
+                {
+                    if(listener != null)
+                    {
+                        int position = getBindingAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION)
+                        {
+                            listener.onItemLongClick(position);
+                        }
+
+                    }
+                    return true;
+                }
+            });
         }
     }
 
@@ -97,6 +115,7 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
 
     }
 
+
     @Override
     public int getItemCount()
     {
@@ -112,10 +131,16 @@ public class GroupListFragHorizontalRecyclerAdapter extends RecyclerView.Adapter
     public interface MainAdapterListener
     {
         void onItemClick(int position);
+        void onItemLongClick(int position);
     }
+
+
 
     public void setOnItemClickListener(MainAdapterListener listener)
     {
         this.listener = listener;
     }
+
+
+
 }

@@ -1,11 +1,16 @@
 package com.example.ezmeal.GroupLists;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.ezmeal.FindRecipes.CategoryFragment;
@@ -63,10 +68,11 @@ public class GroupListsCategoryFragment extends Fragment
         {
            if (groupList != null)
            {
-               if(groupList.size() > glViewModel.groupListNames.size())
+               if(groupList.size() != glViewModel.groupListNames.size())
                {
-                   //grpListBubbles.clear();
-                   //glCatModel.dumpList();
+                   glViewModel.grpListBubbles.clear();
+                   glViewModel.groupListNames.clear();
+                   glViewModel.isSelectedList.clear();
                    for(int i = 0; i < groupList.size(); i++)
                    {
 
@@ -119,7 +125,10 @@ public class GroupListsCategoryFragment extends Fragment
                 // only pass a bundle if the user selects a card other than featured
                 if (position != 0)
                 {
-                    glViewModel.setNotSelected(currentSelectedCategoryPosition);
+                    //check if it wasn't just deleted from the end
+                    if(currentSelectedCategoryPosition < glViewModel.isSelectedList.size()) {
+                        glViewModel.setNotSelected(currentSelectedCategoryPosition);
+                    }
                     glViewModel.setSelected(position);
                     glViewModel.updateSelList(glViewModel.isSelectedList);
                     glViewModel.updateSelectList().setValue(glViewModel.isSelectedList);
@@ -142,9 +151,54 @@ public class GroupListsCategoryFragment extends Fragment
                 getChildFragmentManager().popBackStack();
                 getChildFragmentManager().beginTransaction().replace(R.id.grpListContainerView, fragCategoryClick).commit();
             }
+
+            @Override
+            public void onItemLongClick(int position)
+            {
+                Toast.makeText(getContext(), "Long press", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Are you sure you want to delete " + glViewModel.groupListNames.get(position) + "?");
+                LinearLayout linearLayout = new LinearLayout(getContext());
+
+                builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener()
+                {
+                   @Override
+                   public void onClick(DialogInterface dialog, int pos)
+                   {
+                       dialog.dismiss();
+                   }
+
+                });
+
+                builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int pos)
+                   {
+                       Fragment fragCategoryClick = new GroupListsFragment();
+
+                       String deletedName = glViewModel.groupListNames.get(position);
+                       glViewModel.deleteGroupList(position);
+                       glViewModel.glFragAdapter.notifyDataSetChanged();
+
+                       //getChildFragmentManager().popBackStack();
+                       //getChildFragmentManager().beginTransaction().replace(R.id.grpListContainerView, fragCategoryClick).commit();
+
+                       Toast.makeText(getContext(), deletedName + " deleted successfully", Toast.LENGTH_SHORT).show();
+                   }
+                });
+
+
+                builder.create().show();
+            }
+
         });
 
+
+
+
         return view;
+
+
     }
 
     @Override

@@ -45,7 +45,8 @@
         android:layout_height="54dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtGrpListTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/txtGrpListTitle"
+        android:longClickable="true" />
 
 
     <androidx.fragment.app.FragmentContainerView

@@ -166,8 +166,8 @@ public class GroupListsFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
-        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theModel.getGroupList(), theModel.getIsSelectedList());
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theVM.groupListNames, theVM.isSelectedList);
 
         //Get the current selected list name.
         theVM.getGroupList().observe(getViewLifecycleOwner(), groupList ->
@@ -176,6 +176,7 @@ public class GroupListsFragment extends Fragment
             {
                 if(groupList.size() > theModel.groupListLength())
                 {
+
                     theModel.dumpGroupList();
                     for(int i = 0; i < groupList.size(); i++)
                     {
@@ -183,17 +184,13 @@ public class GroupListsFragment extends Fragment
                     }
                     //at this point we should have a grouplist name already.
                     //theVM.wipeSelList();
-                    theVM.setSelectList(theModel.groupListLength());
+                    theVM.setSelectList(theVM.groupListNames.size());
                     loadListData();
 
                     //adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
                 }
             }
         });
-
-        //theModel.restoreGroceryList(theVM.fillShoppingList());
-        //adapter.notifyDataSetChanged();
-
 
         theVM.updateShoppingList().observe(getViewLifecycleOwner(), shoppingList ->
         {
@@ -328,6 +325,7 @@ public class GroupListsFragment extends Fragment
             if(theVM.isSelectedList.get(i)) {
                 theVM.setActiveGroupList(theVM.groupListNames.get(i));
                 listName = theVM.getActiveGrpListName();
+                theModel.setActiveGroupList(listName);
             }
         }
             //listName = theModel.getGroupList().get(theModel.getCurrentSelected());
