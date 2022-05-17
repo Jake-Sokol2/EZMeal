@@ -10,10 +10,12 @@
         android:id="@+id/txtDirections"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/layout_border"
         android:paddingBottom="20dp"
         android:text="1 pound skinless, boneless chicken breast halves"
         android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
