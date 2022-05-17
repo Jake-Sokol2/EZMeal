@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.ezmeal.FindRecipes.RecipeDirectionsFragment;
 import com.example.ezmeal.FindRecipes.RecipeIngredientsFragment;
 import com.example.ezmeal.FindRecipes.RecipeNutritionFragment;
+import com.example.ezmeal.FindRecipes.RecipeRatingsFragment;
 
 import java.util.ArrayList;
 
@@ -67,6 +68,16 @@ public class RecipeActivityViewPagerAdapter extends FragmentStateAdapter
                 frag.setArguments(bundleRecipeId);
 
                 return frag;
+            case 3:
+                frag = new RecipeRatingsFragment();
+
+                bundleRecipeId.putString("id", recipeId);
+                /*json = gson.toJson(ingredients);
+                bundleRecipeId.putString("test", json);*/
+                //bundleRecipeId.putSerializable("ingredients", ingredients);
+                frag.setArguments(bundleRecipeId);
+
+                return frag;
             default:
                 frag = new RecipeIngredientsFragment();
 
@@ -82,6 +93,6 @@ public class RecipeActivityViewPagerAdapter extends FragmentStateAdapter
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

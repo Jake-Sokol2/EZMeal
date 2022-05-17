@@ -161,7 +161,7 @@ public class FindRecipesFragment extends Fragment
             db = FirebaseFirestore.getInstance();
 
             // todo: RecipesRating
-            CollectionReference dbRecipes = db.collection("RecipesRatingBigInt");
+            CollectionReference dbRecipes = db.collection("Recipes");
 
             db.collection("RecipeCategoryRatingList").document("categories").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
             {

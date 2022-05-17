@@ -193,7 +193,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<RecyclerView.V
         {
             db = FirebaseFirestore.getInstance();
             // todo: RecipesRating
-            dbRecipes = db.collection("RecipesRatingBigInt");
+            dbRecipes = db.collection("Recipes");
 
             StaggeredGridLayoutManager.LayoutParams staggeredLayout = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
             staggeredLayout.setFullSpan(true);

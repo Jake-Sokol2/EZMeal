@@ -85,16 +85,6 @@
 
     </androidx.viewpager2.widget.ViewPager2>
 
-    <RatingBar
-        android:id="@+id/rateRecipe"
-        android:layout_width="240dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:numStars="5"
-        android:stepSize="1"
-        app:layout_constraintTop_toBottomOf="@+id/txtRatingBarTitle"
-        tools:layout_editor_absoluteX="36dp" />
-
     <ImageView
         android:id="@+id/imageRecipeTitleShadow"
         android:layout_width="match_parent"
@@ -124,6 +114,12 @@
         app:tabPaddingEnd="1dp"
         app:tabPaddingStart="-.5dp"
         app:tabRippleColor="@null">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wednesday" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -262,19 +258,6 @@
             android:text="TextView"
             android:textColor="#000000" />
     </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/txtRatingBarTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Rate This Recipe"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/vpRecipe" />
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -26,7 +26,6 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="415dp"
         android:layout_height="732dp"
-android:background="@drawable/ezezea"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

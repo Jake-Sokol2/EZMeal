@@ -41,6 +41,8 @@ public class FeaturedFragmentViewModel extends AndroidViewModel
     private MutableLiveData<Task<QuerySnapshot>> taskPopularRecipesLess;
     private MutableLiveData<Task<QuerySnapshot>> taskFeatured;
 
+    private MutableLiveData<Boolean> isPopulated = new MutableLiveData<>();
+
     //private FeaturedFragmentRepository repository = FeaturedFragmentRepository.getInstance(); //new FeaturedFragmentRepository();
     private FeaturedFragmentRepository repository;// = new FeaturedFragmentRepository();
     @NonNull
@@ -55,7 +57,9 @@ public class FeaturedFragmentViewModel extends AndroidViewModel
 
     private MutableLiveData<List<String>> allNotes;
 
-    private MutableLiveData<List<HorizontalRecipe>> horizontalList;
+    private MutableLiveData<List<HorizontalRecipe>> horizontalList = new MutableLiveData<>();
+    private MutableLiveData<List<HorizontalRecipe>> newRecipesList = new MutableLiveData<>();
+    private MutableLiveData<List<HorizontalRecipe>> popularRecipesThisWeekList = new MutableLiveData<>();
 
     private Observer<List<HorizontalRecipe>> testObserver;
     private TestDao testDao;
@@ -78,9 +82,20 @@ public class FeaturedFragmentViewModel extends AndroidViewModel
         Set<Integer> initialHighRatedSet = new HashSet<>();
         setOfUniqueHighRatedRecipes = new MutableLiveData<Set<Integer>>(initialHighRatedSet);
 
+        isPopulated = new MutableLiveData<>(false);
         //allNotes = roomRepository.getAllNotes();
         //returnList = roomRepository.getActiveCategoriesFromIdentifier();
 
+    }
+
+    public MutableLiveData<Boolean> getIsPopulated()
+    {
+        return isPopulated;
+    }
+
+    public void setPopulated(Boolean choice)
+    {
+        isPopulated.setValue(choice);
     }
 
     public void setLastActiveCategories(List<String> lastActiveCategories)
@@ -100,20 +115,60 @@ public class FeaturedFragmentViewModel extends AndroidViewModel
 
     public MutableLiveData<List<HorizontalRecipe>> getHorizontalList(List<String> categoryList)
     {
-        if (horizontalList == null || categoryList != lastActiveCategories)
+        if (categoryList != lastActiveCategories)
         {
-            horizontalList = new MutableLiveData<List<HorizontalRecipe>>();
-
-            repository.getHorizontalLists(categoryList).observeForever(list ->
+            repository.getHorizontalLists().observeForever(list ->
             {
-                horizontalList.setValue(list);
-                lastActiveCategories.setValue(categoryList);
+                Log.i("active categories", "ViewModel - inside repo observer");
+                if (list != null)
+                {
+                    if (list.size() != 0)
+                    {
+                        Log.i("active categories", "ViewModel - inside repo observer - list not null - setting horizontal list!");
+                        horizontalList.setValue(list);
+                        lastActiveCategories.setValue(categoryList);
+                    }
+
+                }
             });
         }
-
-
         //repository.getHorizontalLists().removeObserver(testObserver);
         //horizontalList = repository.getHorizontalLists();
-        return horizontalList;
+         return horizontalList;
+    }
+
+    public void setHorizontalList(List<String> categoryList)
+    {
+        repository.setHorizontalLists(categoryList);
+    }
+
+    public void setNewRecipesList()
+    {
+        repository.setNewRecipesList();
+    }
+
+    public void setPopularRecipesThisWeekList()
+    {
+        repository.setPopularRecipesThisWeekList();
+    }
+
+    public MutableLiveData<List<HorizontalRecipe>> getNewRecipesList()
+    {
+        repository.getNewRecipesList().observeForever(list ->
+        {
+            newRecipesList.setValue(list);
+        });
+
+        return newRecipesList;
+    }
+
+    public MutableLiveData<List<HorizontalRecipe>> getPopularRecipesThisWeekList()
+    {
+        repository.getPopularRecipesThisWeekList().observeForever(list ->
+        {
+            popularRecipesThisWeekList.setValue(list);
+        });
+
+        return popularRecipesThisWeekList;
     }
 }

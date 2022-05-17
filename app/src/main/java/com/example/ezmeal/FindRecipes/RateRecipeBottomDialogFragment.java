@@ -61,6 +61,11 @@ public class RateRecipeBottomDialogFragment extends BottomSheetDialogFragment{
         this.rateRecipeInterface = rateRecipeInterface;
     }
 
+    public RateRecipeBottomDialogFragment(float rating)
+    {
+        this.rating = rating;
+    }
+
     // TODO: Rename and change types and numbers of params
     public static RateRecipeBottomDialogFragment newInstance(String param1, String param2){
         RateRecipeBottomDialogFragment fragment = new RateRecipeBottomDialogFragment();
