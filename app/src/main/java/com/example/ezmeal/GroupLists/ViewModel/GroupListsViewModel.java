@@ -38,6 +38,8 @@ public class GroupListsViewModel extends AndroidViewModel {
     public List<Boolean> shareSelectList = new ArrayList<Boolean>();
     public List<String> groupListNames = new ArrayList<String>();
     public List<String> sharedGroupNames = new ArrayList<>();
+    public List<Boolean> isChecked = new ArrayList<Boolean>();
+
     //public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
     private GroupListsFragmentModel theModel;
     private String currentGroupList;

@@ -37,8 +37,8 @@ public class GroupListRepository {
             @Override
             public void callback(List<String> someList) { repoGroupList.setValue(someList); }
         };
-        getListData(asyncBB);
-
+        //getListData(asyncBB);
+        getSharedListData(asyncBB);
         return repoGroupList;
         //getSharedListData();
 
@@ -51,7 +51,7 @@ public class GroupListRepository {
             public void callback(List<String> someList) { sharedGroupLists.setValue(someList); }
         };
 
-        getSharedListData(yeet);
+        //getSharedListData(yeet);
         return sharedGroupLists;
 
     }
@@ -135,7 +135,7 @@ public class GroupListRepository {
 
     }
 
-    public void getSharedListData(YetAnotherCallBack beep)
+    public void getSharedListData(SomeCallBack beep)
     {
         List<String> tmpList = new ArrayList<String>();
         String email = mAuth.getCurrentUser().getEmail();
