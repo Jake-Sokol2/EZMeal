@@ -43,7 +43,7 @@ public class GroupListRepository {
         //getSharedListData();
 
     }
-
+/*
     public MutableLiveData<List<String>> getSharedGroupList()
     {
         YetAnotherCallBack yeet = new YetAnotherCallBack() {
@@ -56,7 +56,7 @@ public class GroupListRepository {
 
     }
 
-
+*/
 
     public MutableLiveData<List<Boolean>> getSelected()
     {
@@ -166,6 +166,8 @@ public class GroupListRepository {
         return repoGroupList;
     }
 
+    public void manualSetValue(List<String> aList) { repoGroupList.setValue(aList); }
+    public void manualSetSelValue(List<Boolean> aList) { isSelectedList.setValue(aList); }
 
     public interface SomeCallBack
     {
@@ -181,6 +183,8 @@ public class GroupListRepository {
     {
         public void callback(List<String> someList);
     }
+
+
 
 }
 

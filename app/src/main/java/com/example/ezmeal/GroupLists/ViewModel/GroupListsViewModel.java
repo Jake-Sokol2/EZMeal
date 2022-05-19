@@ -33,7 +33,7 @@ public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
-    private GroupListRepository glRepo = new GroupListRepository();
+    public GroupListRepository glRepo = new GroupListRepository();
     public List<Boolean> isSelectedList = new ArrayList<Boolean>();
     public List<Boolean> shareSelectList = new ArrayList<Boolean>();
     public List<String> groupListNames = new ArrayList<String>();
@@ -230,7 +230,7 @@ public class GroupListsViewModel extends AndroidViewModel {
 
         return groupList;
     }
-
+/*
     public MutableLiveData<List<String>> getSharedLists()
     {
         glRepo.getSharedGroupList().observeForever(sharedGroupLists ->
@@ -239,7 +239,7 @@ public class GroupListsViewModel extends AndroidViewModel {
         });
         return sharedGroupList;
     }
-
+*/
 
     public void setActiveGroupList(String name)
     {

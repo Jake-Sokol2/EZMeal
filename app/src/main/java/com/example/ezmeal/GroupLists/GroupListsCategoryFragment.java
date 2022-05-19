@@ -2,14 +2,17 @@ package com.example.ezmeal.GroupLists;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -20,7 +23,15 @@ import com.example.ezmeal.GroupLists.Adapter.GroupListSelectionAdapter;
 import com.example.ezmeal.GroupLists.Model.GroupListsFragmentModel;
 import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
 import com.example.ezmeal.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.v1.WriteResult;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 //These are the little bubbles at the top
 public class GroupListsCategoryFragment extends Fragment
@@ -94,28 +106,6 @@ public class GroupListsCategoryFragment extends Fragment
            glViewModel.glFragAdapter.notifyDataSetChanged();
            Log.d("glFragAdapter", "adapter se actualizo");
         });
-/*
-        glViewModel.getSharedLists().observe(getViewLifecycleOwner(), sharedGroupList ->
-        {
-            if(sharedGroupList.size() != glViewModel.sharedGroupNames.size())
-            {
-                for(String name : sharedGroupList) {
-                    glViewModel.addShareList(name);
-                }
-            }
-
-        });
-*/
-        //TODO: replace with view model
-        /*
-        grpListBubbles.add("My List");
-        grpListBubbles.add("Jake's List");
-        grpListBubbles.add("Tristan's List");
-        glCatModel.addList(grpListBubbles.get(0), true);
-        glCatModel.addList(grpListBubbles.get(1), false);
-        glCatModel.addList(grpListBubbles.get(2), false);
-        */
-
 
 
         rvGroupListBubbles = (RecyclerView) view.findViewById(R.id.rvGrpHorizontalSelector);
@@ -166,12 +156,13 @@ public class GroupListsCategoryFragment extends Fragment
             @Override
             public void onItemLongClick(int position)
             {
-                Toast.makeText(getContext(), "Long press", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Are you sure you want to delete " + glViewModel.groupListNames.get(position) + "?");
-                LinearLayout linearLayout = new LinearLayout(getContext());
 
-                builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener()
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Group Options");
+                LinearLayout linearLayout = new LinearLayout(getContext());
+                String selectedName = glViewModel.getActiveGrpListName();
+
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener()
                 {
                    @Override
                    public void onClick(DialogInterface dialog, int pos)
@@ -181,7 +172,7 @@ public class GroupListsCategoryFragment extends Fragment
 
                 });
 
-                builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Delete Group", new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int pos)
                    {
@@ -191,10 +182,67 @@ public class GroupListsCategoryFragment extends Fragment
                        glViewModel.deleteGroupList(position);
                        glViewModel.glFragAdapter.notifyDataSetChanged();
 
-                       //getChildFragmentManager().popBackStack();
-                       //getChildFragmentManager().beginTransaction().replace(R.id.grpListContainerView, fragCategoryClick).commit();
 
                        Toast.makeText(getContext(), deletedName + " deleted successfully", Toast.LENGTH_SHORT).show();
+                   }
+                });
+
+                builder.setPositiveButton("Add User", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int pos)
+                   {
+                       AlertDialog.Builder newBuilder = new AlertDialog.Builder(getContext());
+                       newBuilder.setTitle("Enter new user's email address: ");
+                       final EditText emailField = new EditText(getContext());
+                       LinearLayout linearLayout = new LinearLayout(getContext());
+
+                       emailField.setHint("Email");
+                       emailField.setMinEms(16);
+                       emailField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                       linearLayout.addView(emailField);
+                       linearLayout.setPadding(10, 20, 10, 20);
+                       newBuilder.setView(linearLayout);
+
+                       newBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int pos) { dialog.dismiss(); }
+                       });
+
+                       newBuilder.setPositiveButton("Add User", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               //Toast.makeText(getContext(), "Add a user", Toast.LENGTH_SHORT).show();
+                               String email = emailField.getText().toString().trim();
+
+                               //Add user to array field from FireBase
+                               FirebaseFirestore db = FirebaseFirestore.getInstance();
+                               FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                               String currentUser = mAuth.getCurrentUser().getEmail();
+
+                               db.collection("Groups").get()
+                                       .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                               if(task.isSuccessful())
+                                               {
+                                                   for(QueryDocumentSnapshot doc : task.getResult())
+                                                   {
+                                                       String listName = doc.getString("ListName");
+                                                       if(Objects.equals(listName, selectedName))
+                                                       {
+                                                           //add the new email to the list of users
+                                                           db.collection("Groups").document(doc.getId()).update("SharedUsers", FieldValue.arrayUnion(email));
+                                                           Toast.makeText(getContext(), "User added", Toast.LENGTH_SHORT).show();
+                                                       }
+                                                   }
+                                               }
+                                           }
+                                       });
+
+                           }
+                       });
+
+                       newBuilder.create().show();
                    }
                 });
 
