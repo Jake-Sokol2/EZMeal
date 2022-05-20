@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 //These are the little bubbles at the top
@@ -212,7 +213,7 @@ public class GroupListsCategoryFragment extends Fragment
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
                                //Toast.makeText(getContext(), "Add a user", Toast.LENGTH_SHORT).show();
-                               String email = emailField.getText().toString().trim();
+                               String email = emailField.getText().toString().toLowerCase(Locale.ROOT).trim();
 
                                //Add user to array field from FireBase
                                FirebaseFirestore db = FirebaseFirestore.getInstance();
