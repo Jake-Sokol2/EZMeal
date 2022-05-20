@@ -33,7 +33,7 @@ public class GroupListsViewModel extends AndroidViewModel {
     public MutableLiveData<List<Boolean>> selectedList = new MutableLiveData<>();
     Application application;
     private AddListItemRepository theRepo;
-    private GroupListRepository glRepo = new GroupListRepository(getApplication());
+    public GroupListRepository glRepo = new GroupListRepository();
     public List<Boolean> isSelectedList = new ArrayList<Boolean>();
     public List<Boolean> shareSelectList = new ArrayList<Boolean>();
     public List<String> groupListNames = new ArrayList<String>();
@@ -42,12 +42,8 @@ public class GroupListsViewModel extends AndroidViewModel {
 
     //public GroupListFragHorizontalRecyclerAdapter glFragAdapter = new GroupListFragHorizontalRecyclerAdapter(groupListNames, isSelectedList);
     private GroupListsFragmentModel theModel;
-
     private String currentGroupList;
     public List<String> grpListBubbles = new ArrayList<>();
-
-    public List<Boolean> isCheckedList;
-    //public List<String> groupListNames;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String itemName;
@@ -60,12 +56,10 @@ public class GroupListsViewModel extends AndroidViewModel {
         super(application);
         this.application = application;
         //groupList = new MutableLiveData<>();
-        isSelectedList = new ArrayList<Boolean>();
+        //isSelectedList = new ArrayList<Boolean>();
         //shoppingList = itemRepo.getShoppingList();
         theModel = new GroupListsFragmentModel();
         theRepo = new AddListItemRepository(application);
-        glRepo.getIdentifiers();
-
     }
 
     public void addList(String listName, Boolean isSelected)
@@ -236,7 +230,7 @@ public class GroupListsViewModel extends AndroidViewModel {
 
         return groupList;
     }
-
+/*
     public MutableLiveData<List<String>> getSharedLists()
     {
         glRepo.getSharedGroupList().observeForever(sharedGroupLists ->
@@ -245,7 +239,7 @@ public class GroupListsViewModel extends AndroidViewModel {
         });
         return sharedGroupList;
     }
-
+*/
 
     public void setActiveGroupList(String name)
     {

@@ -162,12 +162,11 @@ public class GroupListsFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_group_lists, container, false);
         view = inflater.inflate(R.layout.fragment_group_list_category, container, false);
 
         adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
-
         theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
+        hAdapter = new GroupListFragHorizontalRecyclerAdapter(theVM.groupListNames, theVM.isSelectedList);
 
 
 
@@ -178,16 +177,15 @@ public class GroupListsFragment extends Fragment
             {
                 if(groupList.size() > theModel.groupListLength())
                 {
+
+                    theModel.dumpGroupList();
                     for(int i = 0; i < groupList.size(); i++)
                     {
                         theModel.addList(groupList.get(i));
                     }
-                    //at this point we should have a grouplist name already.
-                    //theVM.wipeSelList();
-                    theVM.setSelectList(theModel.groupListLength());
+                    theVM.setSelectList(theVM.groupListNames.size());
                     loadListData();
 
-                    //adapter = new GroupListsFragmentRecyclerAdapter(theModel.getGroceryList());
                 }
             }
         });
@@ -196,6 +194,7 @@ public class GroupListsFragment extends Fragment
         {
             if(shoppingList != null)
             {
+
                 if (shoppingList.size() > theModel.getGroceryList().size())
                 {
                     theModel.dumpList();
@@ -218,39 +217,13 @@ public class GroupListsFragment extends Fragment
         rvGroupList.setLayoutManager(layoutManager);
 
 
-
-        //RatingsDatabase ratingsDb = Room.databaseBuilder(getContext().getApplicationContext(), RatingsDatabase.class, "user")
-        //        .allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        //float r = ratingsDb.ratingDao().getSpecificRating("1QEndfywxZpq7vnzFZo0");
-        // back stack logs
-        //String numOfBackstack = String.valueOf(getParentFragmentManager().getBackStackEntryCount());
-        //Log.i("TRACK BACKSTACK", "Group Lists opened: " + numOfBackstack);
-
         return view;
     }
 
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-
-
-
-
-        //Observe live data and update grocery list
-
-        // back stack logs
-
-        //adapter = new MainRecyclerAdapter(groceryList);
-        //adapter = new MainRecyclerAdapter(theModel.getGroceryList());
-
-
-
-
-
-        //adapter.notifyDataSetChanged();
 
         //Attach the ItemTouchHelper
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDeleteCallback(adapter, theModel, theVM));

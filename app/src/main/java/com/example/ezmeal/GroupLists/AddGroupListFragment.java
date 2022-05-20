@@ -122,28 +122,6 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
     {
         view = inflater.inflate(R.layout.fragment_add_group_list, container, false);
         theViewModel = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
-        /*
-        //Observer
-        theViewModel.getGroupList().observe(getViewLifecycleOwner(), groupList ->
-        {
-            if(groupList.size() > 0)
-            {
-                for(int i = 0; i < groupList.size(); i++)
-                {
-                    if(i==0)
-                    {
-                        theModel.addList(groupList.get(i), true);
-                    }
-                    else
-                    {
-                        theModel.addList(groupList.get(i), false);
-                    }
-                }
-
-            }
-        });
-        */
-
 
         return view;
     }
@@ -177,6 +155,10 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
 
                     theViewModel.addList(editListName.getText().toString(), false);
                     theViewModel.grpListBubbles.add(editListName.getText().toString());
+                    //theViewModel.groupListNames.add(editListName.getText().toString());
+                    //theViewModel.isSelectedList.add(false);
+                    theViewModel.setSelected(theViewModel.isSelectedList.size()-1);
+
                     theViewModel.glFragAdapter.notifyDataSetChanged();
                     //theViewModel.
 
@@ -202,34 +184,12 @@ public class AddGroupListFragment extends BottomSheetDialogFragment implements V
                     db.collection("Groups").add(docData1).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference){
-                            documentID1 = documentReference.getId();
-                            /*
-                            Map<String, Object> docData2 = new HashMap<>();
-                            docData2.put("Creator", currentUserEmail);
-                            docData2.put("ItemBrand", "");
-                            docData2.put("ItemName", "Welcome to group " + groupNameString);
-                            docData2.put("ItemQuantity", 0);
-                            docData2.put("ItemChecked", false);
-
-                            db.collection("Groups").document(documentID1).collection("Items").add(docData2).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    //Debug code
-                                    //Toast.makeText(getApplicationContext(), documentID2, Toast.LENGTH_SHORT).show();
-
-
-                                }
-                            });
-
-                             */
-                            //Debug code
-                            //Log.i("DEBUG", "Printing document ID in the onSuccess: " + documentID1);
-                            //Toast.makeText(getActivity(), "Creation of group " + groupNameString + " success!", Toast.LENGTH_SHORT).show();
+                            //documentID1 = documentReference.getId();
+                            //Toast.makeText(getContext(), groupNameString + " created successfully", Toast.LENGTH_SHORT).show();
                         }
                     });
-
-                    theViewModel.glFragAdapter.notifyDataSetChanged();
-
+                    theViewModel.glRepo.manualSetValue(theViewModel.groupListNames);
+                    theViewModel.glRepo.manualSetSelValue(theViewModel.isSelectedList);
                     dismiss();
                 }
                 break;
