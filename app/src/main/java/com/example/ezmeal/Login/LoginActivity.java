@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // skip login
-        /*mAuth.signInWithEmailAndPassword("test@email.com", "testpassword")
+        mAuth.signInWithEmailAndPassword("test@email.com", "testpassword")
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 e.printStackTrace();
             }
-        });*/
+        });
 
 
 

@@ -401,18 +401,18 @@ public class GroupSettingsFragment extends Fragment {
 
 
 
-    /*public class AsyncClass extends AsyncTask<Void, Void, Void>
-    public class AsyncClass extends AsyncTask<Void, Void, Void>
+    //public class AsyncClass extends AsyncTask<Void, Void, Void>
+/*    public class AsyncClass extends AsyncTask<Void, Void, Void>
     {
         private Random rand;
         //private Document doc = Jsoup.connect("https://cookstre.com").get();
         //String url = "https://firebase.google.com/";
         // NOT READY
-        String urlText = "https://www.allrecipes.com/recipes/1316/breakfast-and-brunch/waffles/";
+        String urlText = "https://www.allrecipes.com/recipes/416/seafood/fish/salmon/";
         //String category = "Breakfast";
         ArrayList<String> categoryList = new ArrayList<>();
         // ready for next run
-        double recipeId = 25;
+        double recipeId = 1;
         Elements divs;
         Elements individialDivs;
         ProgressDialog progressDialog;
@@ -442,8 +442,8 @@ public class GroupSettingsFragment extends Fragment {
             //Document get request stuff?
             try
             {
-                categoryList.add("Waffles");
-                categoryList.add("Breakfast");
+                categoryList.add("Fish");
+                //categoryList.add("");
 
                 int randInt = rand.nextInt(Integer.MAX_VALUE - 2);
                 //Connect to website
@@ -463,7 +463,7 @@ public class GroupSettingsFragment extends Fragment {
                 // todo: RecipesRating
                 CollectionReference dbRecipes = db.collection("Recipes");
                 int i = 0;
-                for(Element e: divs)
+                for (Element e : divs)
                 {
                     urlList[i] = e.select("a").attr("href");
                     Log.i("urlList", String.valueOf(urlList[i]));
@@ -500,7 +500,7 @@ public class GroupSettingsFragment extends Fragment {
                     Elements ingredientLis = divIngredients.getElementsByClass("ingredients-item");
 
                     ArrayList<String> ingredientList = new ArrayList<>();
-                    for (Element element: ingredientLis)
+                    for (Element element : ingredientLis)
                     {
                         String ingredient = element.select("span").first().text();
                         ingredientList.add(ingredient);
@@ -512,7 +512,7 @@ public class GroupSettingsFragment extends Fragment {
                     Elements directionLis = classDirections.getElementsByClass("subcontainer instructions-section-item");
 
                     ArrayList<String> directionsList = new ArrayList<>();
-                    for (Element element: directionLis)
+                    for (Element element : directionLis)
                     {
                         String direction = element.select("p").text();
                         directionsList.add(direction);
@@ -522,8 +522,6 @@ public class GroupSettingsFragment extends Fragment {
 
                     Element classNutrition = contentSpecificPage.getElementsByClass("recipeNutritionSectionBlock").get(0);
                     //Element directionLis = classNutrition.getElementsByClass("subcontainer instructions-section-item");
-
-
 
 
                     String nutrition = classNutrition.select("div[class=section-body]").text();
@@ -538,7 +536,7 @@ public class GroupSettingsFragment extends Fragment {
                     // split into individual items
                     nutritionList = Arrays.asList(nutrition.split("; "));
 
-                    for(int q = 0; q < nutritionList.size(); q++)
+                    for (int q = 0; q < nutritionList.size(); q++)
                     {
                         Log.i("individual nutrition item", String.valueOf(nutritionList.get(q)));
                     }
@@ -549,7 +547,7 @@ public class GroupSettingsFragment extends Fragment {
                     String fat = "";
                     String cholesterol = "";
                     String sodium = "";
-                    for (String s: nutritionList)
+                    for (String s : nutritionList)
                     {
                         if (s.contains("calories"))
                         {
@@ -568,7 +566,7 @@ public class GroupSettingsFragment extends Fragment {
                             carbohydrates = s.substring(s.indexOf(" ") + 1);
                             carbohydrates.trim();
                             Log.i("individual protein", String.valueOf(protein));
-                           //break;
+                            //break;
                         }
                         else if (s.contains("fat"))
                         {
@@ -589,14 +587,14 @@ public class GroupSettingsFragment extends Fragment {
                             sodium.trim();
                             Log.i("individual protein", String.valueOf(protein));
                         }
-                    }
+                    }*/
 
-                    /*Recipe recipe = new Recipe(rand.nextInt(Integer.MAX_VALUE - 2),
-                            categoryList, directionsList, ingredientList, "",
-                            title, 0, 0, false,
-                            calories, protein, carbohydrates, fat, cholesterol, sodium);*/
+                    //Recipe recipe = new Recipe(rand.nextInt(Integer.MAX_VALUE - 2),
+                     //       categoryList, directionsList, ingredientList, "",
+                      //      title, 0, 0, false,
+                       //     calories, protein, carbohydrates, fat, cholesterol, sodium);*/
 
-                    /*recipe = new HashMap<>();
+             /*       recipe = new HashMap<>();
                     recipe.put("recipeId", rand.nextInt(Integer.MAX_VALUE - 2));
                     recipe.put("categories", categoryList);
                     recipe.put("directions", directionsList);
@@ -672,7 +670,7 @@ public class GroupSettingsFragment extends Fragment {
                     });
                     //bitmapList[i] = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     //titleList[i] = e.select("h3").text();
-                    Thread.sleep(15000);
+                    Thread.sleep(5000);
 
                     i++;
                 }*/
@@ -701,8 +699,8 @@ public class GroupSettingsFragment extends Fragment {
                         //categoryList.add(newCategory);
                     }*/
 
-  //                  Log.i("urlList", String.valueOf(urlList[iterator]));
-    //                Log.i("imageList", String.valueOf(imageList[iterator]));
+                //                  Log.i("urlList", String.valueOf(urlList[iterator]));
+                //                Log.i("imageList", String.valueOf(imageList[iterator]));
                     /*for (Element e: divsSpecificPage)
                     {
                         imageList[i] = e.select("img").attr("src");
@@ -780,9 +778,9 @@ public class GroupSettingsFragment extends Fragment {
                         i++;
                     }*/
 
-               // }
-/*
-            catch (MalformedURLException malformedURLException)
+                // }
+            }
+/*            catch (MalformedURLException malformedURLException)
             {
                 malformedURLException.printStackTrace();
             }
@@ -793,8 +791,8 @@ public class GroupSettingsFragment extends Fragment {
             catch (InterruptedException e)
             {
                 e.printStackTrace();
-            }
-*/
+            }*/
+
 
 
             // original working code
@@ -891,7 +889,7 @@ public class GroupSettingsFragment extends Fragment {
                     titleList[i] = e.select("h3").text();
                     i++;*/
 
- /*           return null;
+/*             return null;
         }
         // everything in this method is performed on the main thread!
         @Override
@@ -907,4 +905,4 @@ public class GroupSettingsFragment extends Fragment {
             //progressDialog.dismiss();
         }
     }*/
-}
+//}
