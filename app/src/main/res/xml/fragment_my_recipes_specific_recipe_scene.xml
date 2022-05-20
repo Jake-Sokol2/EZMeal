@@ -56,14 +56,13 @@
         <Constraint
             android:id="@+id/tabRecipe"
             android:elevation="4dp"
-            motion:layout_constraintWidth_percent=".6"
+            motion:layout_constraintWidth_percent=".65"
             android:layout_width="0dp"
             android:layout_height="28dp"
-            android:layout_marginStart="80dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="312dp"
-            android:layout_marginLeft="80dp" />
+            motion:layout_constraintEnd_toEndOf="parent" />
         <Constraint
             android:layout_height="wrap_content"
             motion:layout_constraintStart_toStartOf="parent"
@@ -72,7 +71,7 @@
             android:layout_width="match_parent"
             android:id="@+id/vpRecipe"
             android:elevation="6dp"
-            motion:layout_constraintHorizontal_bias="1.0" />
+            motion:layout_constraintHorizontal_bias="0.0" />
         <Constraint
             android:layout_height="wrap_content"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -87,15 +86,6 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/btnDeleteFromMyRecipes"
-            android:elevation="10dp"
-            android:layout_width="39dp"
-            android:layout_height="39dp"
-            android:layout_marginStart="356dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="40dp" />
-        <Constraint
             android:id="@+id/txtRecipeTitle"
             android:elevation="10dp"
             android:layout_width="366dp"
@@ -108,14 +98,14 @@
             android:layout_marginLeft="36dp"
             motion:layout_editor_absoluteX="37dp" />
         <Constraint
-            android:elevation="6dp"
+            android:elevation="25dp"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginStart="356dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="328dp"
-            android:id="@+id/btnAddToMyRecipes"
+            android:id="@+id/btnDeleteFromMyRecipes"
             android:layout_marginLeft="356dp" />
         <Constraint
             android:id="@+id/rbRecipeIndicator"
@@ -195,6 +185,16 @@
             android:layout_marginTop="32dp"
             android:layout_marginStart="7dp"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:layout_height="45dp"
+            android:layout_marginTop="324dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_width="45dp"
+            android:elevation="30dp"
+            android:id="@+id/btnAddToMyRecipes"
+            motion:layout_constraintEnd_toEndOf="@+id/vpRecipe"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -225,7 +225,7 @@
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:elevation="4dp"
-            motion:layout_constraintWidth_percent=".6"
+            motion:layout_constraintWidth_percent=".65"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:id="@+id/tabRecipe"
@@ -249,25 +249,16 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
-            android:id="@+id/btnAddToMyRecipes"
-            android:elevation="6dp"
+            android:id="@+id/btnDeleteFromMyRecipes"
+            android:elevation="30dp"
             android:layout_width="42dp"
             android:layout_height="42dp"
 
-            android:layout_marginStart="356dp"
+            android:layout_marginStart="352dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="128dp"
-            android:layout_marginLeft="356dp" />
-        <Constraint
-            android:id="@+id/btnDeleteFromMyRecipes"
-            android:elevation="10dp"
-            android:layout_width="39dp"
-            android:layout_height="39dp"
-            android:layout_marginStart="356dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="124dp"
+            android:layout_marginLeft="352dp" />
         <Constraint
             android:id="@+id/txtRecipeTitle"
             android:elevation="10dp"
@@ -350,6 +341,28 @@
             android:layout_marginTop="-150dp"
             android:layout_marginStart="7dp"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:layout_height="42dp"
+            android:layout_marginTop="124dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_width="42dp"
+            android:elevation="30dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="352dp"
+            android:layout_marginStart="352dp"
+            android:id="@+id/btnDeleteFromMyRecipes" />
+        <Constraint
+            android:layout_height="45dp"
+            android:layout_marginTop="120dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_width="45dp"
+            android:elevation="30dp"
+            android:id="@+id/btnAddToMyRecipes"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="344dp"
+            android:layout_marginStart="344dp"
+            motion:layout_constraintHorizontal_bias="0.058" />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/SwipeDown" />
 </MotionScene>

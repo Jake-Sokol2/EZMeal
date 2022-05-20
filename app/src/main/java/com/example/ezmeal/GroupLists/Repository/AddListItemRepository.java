@@ -3,19 +3,13 @@ package com.example.ezmeal.GroupLists.Repository;
 // A repository is a class where we fetch data from API or DB.
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
-import com.example.ezmeal.GroupLists.ViewModel.GroupListsViewModel;
-import com.example.ezmeal.roomDatabase.Category;
 import com.example.ezmeal.roomDatabase.EZMealDatabase;
-import com.example.ezmeal.roomDatabase.Identifier;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,9 +20,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /*
     Working with live data and SQL cannot use mutable live data
@@ -37,11 +30,13 @@ import java.util.Objects;
 
 public class AddListItemRepository{
     final MutableLiveData<List<List<String>>> aList = new MutableLiveData<List<List<String>>>();
-    final MutableLiveData<List<Boolean>> selectList = new MutableLiveData<>();
+    private MutableLiveData<List<Boolean>> selectList = new MutableLiveData<>();
+    private List<Boolean> tempCheckedItemList = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public List<String> identifiers = new ArrayList<String>();
     public EZMealDatabase sqlDb;
+
     Application application;
 
     //private GroupListsViewModel theVM = new ViewModelProvider(requireActivity()).get(GroupListsViewModel.class);
@@ -56,7 +51,7 @@ public class AddListItemRepository{
 
     }
 
-    public void doSomething() {
+    /*public void doSomething() {
 
         identifiers = sqlDb.testDao().getDistinctIdentifiers();
 
@@ -124,13 +119,16 @@ public class AddListItemRepository{
             Log.i("sp", "not first run");
         }
 
-    }
+    }*/
 
     public void setShoppingList(String name)
     {
         String groupListName = "";
         if(name != "" )
+        {
             groupListName = name;
+        }
+
 
         GetItemCallBack aCallback = new GetItemCallBack() {
             @Override
@@ -218,13 +216,14 @@ public class AddListItemRepository{
                             DocumentSnapshot tmpDoc = task.getResult().getDocuments().get(0);
                             String tmpDocName = tmpDoc.getId();
 
+
                             CollectionReference dbShoppingList = db.collection("Groups").document(tmpDocName).collection("Items");
                             dbShoppingList.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-
                                     if (task.isSuccessful()) {
+                                        List<String> identifiers = sqlDb.testDao().getDistinctIdentifiers();
+
                                         for (QueryDocumentSnapshot docBoi : task.getResult()) {
                                             //add the items (sub documents) to a list and return it as the shopping list
                                             List<String> tmpList = new ArrayList<>();
@@ -232,15 +231,37 @@ public class AddListItemRepository{
                                             itemName = docBoi.getString("name");
                                             creator = docBoi.getString("user");
 
+                                            String isChecked = "false";
+
+                                            if (docBoi.getBoolean("isSelected") != null)
+                                            {
+                                                isChecked = docBoi.getBoolean("isSelected").toString();
+                                            }
+
+
                                             tmpList.add(itemName);
                                             tmpList.add(brandName);
                                             tmpList.add(creator);
                                             tmpList.add("1");
+                                            tmpList.add(isChecked);
+                                            tmpList.add(tmpDocName);
                                             tmpListOfLists.add(tmpList);
                                             //tmpList.clear();
 
+                                            for (String identifier:identifiers)
+                                            {
+                                                if (itemName.toLowerCase().contains(identifier))
+                                                {
+                                                    // mark the identifier as active - tells Find Recipes to query recipes for the category belonging to this identifier
+                                                    sqlDb.testDao().updateIdentifierIsActive(identifier);
+                                                    sqlDb.testDao().updateIdentifierReadTime(identifier, new Date().getTime());
+                                                }
+                                            }
 
-
+                                            if (tempCheckedItemList != null)
+                                            {
+                                                selectList.setValue(tempCheckedItemList);
+                                            }
                                         }
                                     } else {
                                         Log.i("Retrieval", "Error getting documents", task.getException());

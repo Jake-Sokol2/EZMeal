@@ -1,15 +1,20 @@
 package com.example.ezmeal.FindRecipes;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +36,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -110,6 +116,7 @@ public class RecipeIngredientsFragment extends Fragment{
         rvIngredients.setAdapter(recipeIngredientsFragmentRecyclerAdapter);
         rvIngredients.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvIngredients.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(Objects.requireNonNull(ResourcesCompat.getDrawable(getResources(), R.drawable.recycler_border_layer, null)));
         rvIngredients.addItemDecoration(dividerItemDecoration);
 
         Bundle extras = getArguments();
@@ -170,8 +177,187 @@ public class RecipeIngredientsFragment extends Fragment{
         EZMealDatabase sqlDb = Room.databaseBuilder(getActivity().getApplicationContext(), EZMealDatabase.class, "user")
                 .allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
+
+        String email = mAuth.getCurrentUser().getEmail();
+        List<String> listOfShoppingLists = new ArrayList<>();
+        List<String> listOfShoppingIds = new ArrayList<>();
+        db.collection("Groups").whereEqualTo("Creator", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document: task.getResult())
+                    {
+                        listOfShoppingLists.add(document.getString("ListName"));
+                        listOfShoppingIds.add(document.getId());
+                    }
+                }
+            }
+        });
+
+        db.collection("Groups").whereArrayContains("SharedUsers", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document: task.getResult())
+                    {
+                        listOfShoppingLists.add(document.getString("ListName"));
+                    }
+                }
+            }
+        });
+
+
         // add all ingredients for this recipe to the user's Item collection in Firestore
         btnAddToList = view.findViewById(R.id.btnAddToList);
+        btnAddToList.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                View dialog = getLayoutInflater().inflate(R.layout.add_to_list_dialog, null);
+                builder.setTitle("Choose a List");
+
+                final Spinner spinner = (Spinner) dialog.findViewById(R.id.spinnerList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listOfShoppingLists);
+                spinner.setAdapter(adapter);
+
+                builder.setPositiveButton("Add Ingredients to List", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        for (int j = 0; j < ingredients.size(); j++)
+                        {
+                            if (ingredients.get(j) != null)
+                            {
+                                //mAuth = FirebaseAuth.getInstance();
+
+
+
+                                CollectionReference dbGroupList = db.collection("Groups");
+                                Item item = new Item(ingredients.get(j), null, email);
+
+                                dbGroupList.document(listOfShoppingIds.get(spinner.getSelectedItemPosition())).collection("Items").add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        // keep track that an item was added so we can tell the user with a toast later
+                                        //itemAdded = true;
+                                        Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener()
+                                {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                });
+
+                                // prevent user from adding same list of ingredients twice
+                                /*dbGroupList.whereEqualTo("name", ingredients.get(i)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                    {
+                                        if (task.getResult().isEmpty())
+                                        {
+                                            dbGroupList.add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    // keep track that an item was added so we can tell the user with a toast later
+                                                    itemAdded = true;
+                                                    Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener()
+                                            {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+                                            });
+
+                                            // if any items were actually added, tell the user
+                                            if (itemAdded)
+                                            {
+                                                Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                }).addOnFailureListener(new OnFailureListener()
+                                {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e)
+                                    {
+                                        Log.i("q", "get failed");
+                                    }
+                                });*/
+
+                            }
+                            else
+                            {
+                                // escape loop if rest of ingredients list is null (nulls are a symptom of database insertion)
+                                i = ingredients.size();
+                            }
+                        }
+
+
+                        btnAddToList.setEnabled(false);
+                        btnAddToList.setTextColor(Color.parseColor("#808080"));
+
+                        /*if (spinner.getSelectedItem().toString().equals("Jake's List"))
+                        {
+                            Log.i("dialog", "clicked Jake's list");
+                        }*/
+
+                        dialogInterface.dismiss();
+                        //confirmChoice = true;
+                        //dialogInterface.dismiss();
+
+                        // if user clicked yes in confirm deletion dialog, delete the recipe and navigate up to the previous screen
+                        //if (confirmChoice)
+                        //{
+                        //    sqlDb.testDao().deleteSingleRecipeFromItem(recipeId);
+                        //    sqlDb.testDao().deleteSingleRecipeFromRecipe(recipeId);
+                        //    Navigation.findNavController(getActivity(), R.id.fragContainer).navigateUp();
+                        //}
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setView(dialog);
+                AlertDialog alert = builder.create();
+                alert.show();
+
+                // in case user edited ingredient list, re-read ingredients from database
+                //ingredients = sqlDb.testDao().getIngredients(recipeId);
+
+                //FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+                //String email = mCurrentUser.getEmail();
+
+
+
+
+            }
+        });
+
+        // add all ingredients for this recipe to the user's Item collection in Firestore
+        /*btnAddToList = view.findViewById(R.id.btnAddToList);
         btnAddToList.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -227,7 +413,7 @@ public class RecipeIngredientsFragment extends Fragment{
 
 
 
-                                /*if (task.isSuccessful())
+                                *//*if (task.isSuccessful())
                                 {
                                     for (DocumentSnapshot document : task.getResult())
                                     {
@@ -261,7 +447,7 @@ public class RecipeIngredientsFragment extends Fragment{
                                 else
                                 {
                                     Log.i("q", "task not successful");
-                                }*/
+                                }*//*
                             }
 
                         }).addOnFailureListener(new OnFailureListener()
@@ -286,7 +472,7 @@ public class RecipeIngredientsFragment extends Fragment{
 
 
             }
-        });
+        });*/
 
         return view;
     }

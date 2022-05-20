@@ -24,6 +24,7 @@ import com.example.ezmeal.MyRecipes.RecipeAdapters.RecipeFragmentViewPagerAdapte
 import com.example.ezmeal.R;
 import com.example.ezmeal.roomDatabase.EZMealDatabase;
 import com.example.ezmeal.roomDatabase.RecipeCategoryTuple;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -36,7 +37,7 @@ public class RecipeFragment extends Fragment
 {
     private NestedScrollView nestedScrollView;
 
-    private Button btnDeleteFromMyRecipes;
+    private FloatingActionButton btnDeleteFromMyRecipes;
     public String recipeId;
     private boolean confirmChoice;
 

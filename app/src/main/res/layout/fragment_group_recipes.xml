@@ -5,7 +5,7 @@
     android:id="@+id/clFindRecipes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1F2F5"
+    android:background="@color/grey_background"
     android:elevation="20dp"
     app:layoutDescription="@xml/fragment_group_recipes_scene"
     tools:context=".FindRecipes.FindRecipesFragment">
@@ -17,10 +17,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:elevation="20dp"
-        android:text="Find Recipes"
         android:fontFamily="@font/sonsie_one"
+        android:text="Find Recipes"
         android:textColor="#000000"
-        android:textSize="15sp"
+        android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="224dp" />
 
@@ -31,11 +31,11 @@
         android:background="@drawable/half_rounded"
         android:backgroundTint="@color/EzGreen"
         android:elevation="6dp"
+        android:fontFamily="@font/sonsie_one"
         android:gravity="bottom|center"
         android:paddingStart="15dp"
         android:paddingBottom="20dp"
         android:textColor="#000000"
-        android:fontFamily="@font/sonsie_one"
         android:textSize="25sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4"
@@ -45,13 +45,12 @@
         android:id="@+id/rvHorizontalSelector"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginTop="144dp"
-        android:background="#F1F2F5"
+        android:layout_marginTop="9dp"
+        android:background="@color/grey_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/txtFindRecipesTitle" />
 
 
     <TextView
@@ -68,6 +67,7 @@
         android:name="com.example.ezmeal.FindRecipes.FeaturedFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/grey_background"
         tools:layout_editor_absoluteX="96dp"
         tools:layout_editor_absoluteY="244dp" />
 

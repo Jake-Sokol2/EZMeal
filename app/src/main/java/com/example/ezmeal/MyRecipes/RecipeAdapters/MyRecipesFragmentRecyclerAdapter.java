@@ -75,7 +75,7 @@ public class MyRecipesFragmentRecyclerAdapter extends RecyclerView.Adapter<MyRec
 
         String urllll = url.get(position);
         Glide.with(holder.itemView.getContext()).load(urllll).into(holder.imgRecipe);
-        Glide.with(holder.itemView.getContext()).load(R.drawable.recycler_image_shadow).into(holder.imgBackground);
+        //Glide.with(holder.itemView.getContext()).load(R.drawable.recycler_image_shadow).into(holder.imgBackground);
 
 
     }

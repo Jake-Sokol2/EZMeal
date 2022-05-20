@@ -62,23 +62,26 @@ public class GroupListsFragmentModel
         groupList.add(listName);
     }
 
-    public void addItem(String itemName, String itemBrand){
+    public void addItem(String itemName, String itemBrand, String listName, String creator){
         List<String> tmp = new ArrayList<String>();
         tmp.add(itemName);
         tmp.add(itemBrand);
         tmp.add("1");
+        tmp.add(creator);
+        tmp.add("false");
+        tmp.add(listName);
 
         shoppingList.add(tmp);
     }
 
-    public void addItem(String itemName, String itemBrand, int itemQuantity){
+    /*public void addItem(String itemName, String itemBrand, int itemQuantity){
         List<String> tmp = new ArrayList<String>();
         tmp.add(itemName);
         tmp.add(itemBrand);
         tmp.add(String.valueOf(itemQuantity));
 
         shoppingList.add(tmp);
-    }
+    }*/
 
     public void addItem(List<String> completeItem)
     {

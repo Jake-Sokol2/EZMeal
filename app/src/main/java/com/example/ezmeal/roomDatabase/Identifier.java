@@ -23,11 +23,15 @@ public class Identifier
     @ColumnInfo (name = "isActive")
     public boolean isActive;
 
-    public Identifier(String category, String identifier, boolean isActive)
+    @ColumnInfo (name = "timeActivated")
+    public Long timeActivated;
+
+    public Identifier(String category, String identifier, boolean isActive, Long timeActivated)
     {
         this.category = category;
         this.identifier = identifier;
         this.isActive = isActive;
+        this.timeActivated = timeActivated;
     }
 
     @NonNull

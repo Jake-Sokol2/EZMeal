@@ -36,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
+
 public class LoginActivity extends AppCompatActivity {
 
 
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // skip login
-        /*mAuth.signInWithEmailAndPassword("merge@email.com", "testmerge")
+        /*mAuth.signInWithEmailAndPassword("test@email.com", "testpassword")
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
@@ -96,8 +97,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 e.printStackTrace();
             }
-        });
-*/
+        });*/
+
 
 
         /*ImageView img = findViewById(R.id.imageTest);

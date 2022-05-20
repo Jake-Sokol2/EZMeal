@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import com.example.ezmeal.FindRecipes.FindRecipesModels.HorizontalRecipe;
 import com.example.ezmeal.FindRecipes.FindRecipesRespositories.FeaturedFragmentRepository;
@@ -22,9 +21,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import javax.annotation.Nullable;
 
 public class FeaturedFragmentViewModel extends AndroidViewModel
 {
@@ -108,9 +104,9 @@ public class FeaturedFragmentViewModel extends AndroidViewModel
         return lastActiveCategories;
     }
 
-    public LiveData<List<String>> getActiveCategoriesFromIdentifier()
+    public LiveData<List<String>> getRecentCategoriesFromIdentifier(Long resetTime)
     {
-        return roomRepository.getActiveCategoriesFromIdentifier();
+        return roomRepository.getRecentCategoriesFromIdentifier(resetTime);
     }
 
     public MutableLiveData<List<HorizontalRecipe>> getHorizontalList(List<String> categoryList)
